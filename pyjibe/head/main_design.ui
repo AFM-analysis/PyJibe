@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>816</width>
+    <height>579</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="statusTip">
+   <string/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="acceptDrops">
+       <bool>false</bool>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="background">
+       <brush brushstyle="SolidPattern">
+        <color alpha="255">
+         <red>250</red>
+         <green>255</green>
+         <blue>249</blue>
+        </color>
+       </brush>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>816</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_open_bulk"/>
+    <addaction name="action_open_single"/>
+    <addaction name="action_open_multiple"/>
+   </widget>
+   <widget class="QMenu" name="menuExport">
+    <property name="title">
+     <string>&amp;Export</string>
+    </property>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menuExport"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_open_bulk">
+   <property name="text">
+    <string>Open &amp;bulk data</string>
+   </property>
+   <property name="toolTip">
+    <string>Open bulk data</string>
+   </property>
+   <property name="statusTip">
+    <string>Load all data from a folder into one analysis</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_open_single">
+   <property name="text">
+    <string>Open &amp;single file</string>
+   </property>
+   <property name="toolTip">
+    <string>Open single file</string>
+   </property>
+   <property name="statusTip">
+    <string>Only open a single file</string>
+   </property>
+  </action>
+  <action name="action_open_multiple">
+   <property name="text">
+    <string>Open &amp;multple files</string>
+   </property>
+   <property name="toolTip">
+    <string>Open multple files</string>
+   </property>
+   <property name="statusTip">
+    <string>Open each file as a single analysis</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

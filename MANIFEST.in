@@ -1,0 +1,6 @@
+include CHANGELOG
+include LICENSE
+include README.rst
+recursive-include examples *.py
+recursive-include tests *.jpk-force *.py
+recursive-include pyjibe *.png *.ui

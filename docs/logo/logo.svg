@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="131.80341"
+   height="45.674713"
+   viewBox="0 0 131.80341 45.674713"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/paul/repos/PyJibe/docs/logo/logo.png"
+   inkscape:export-xdpi="126.00585"
+   inkscape:export-ydpi="126.00585">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="51.375567"
+     inkscape:cy="31.520387"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:window-width="1863"
+     inkscape:window-height="1025"
+     inkscape:window-x="57"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:snap-global="true" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-132.66973,-938.12026)">
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:0.95999995;fill:#9cff84;fill-opacity:0.79190799;stroke:none;stroke-width:0.92454052;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 134.23343,938.12026 h 128.67602 c 0.86628,0 1.56369,0.77196 1.56369,1.73084 v 8.87781 c 0,0.95889 -0.69741,1.73084 -1.56369,1.73084 H 134.23343 c -0.86629,0 -1.5637,-0.77195 -1.5637,-1.73084 v -8.87781 c 0,-0.95888 0.69741,-1.73084 1.5637,-1.73084 z"
+       id="rect4140" />
+    <path
+       inkscape:connector-curvature="0"
+       style="opacity:0.95999995;fill:#9cff84;fill-opacity:0.79190799;stroke:none;stroke-width:0.81472963;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 134.23343,960.59457 h 128.67602 c 0.86628,0 1.56369,0.59947 1.56369,1.34411 v 20.51217 c 0,0.74466 -0.69741,1.34412 -1.56369,1.34412 H 134.23343 c -0.86629,0 -1.5637,-0.59946 -1.5637,-1.34412 v -20.51217 c 0,-0.74464 0.69741,-1.34411 1.5637,-1.34411 z"
+       id="rect4140-8-9"
+       sodipodi:nodetypes="sssssssss" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans';letter-spacing:0px;word-spacing:0px;fill:#666666;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="197.85666"
+       y="974.88745"
+       id="text4136"><tspan
+         sodipodi:role="line"
+         id="tspan4138"
+         x="197.85666"
+         y="974.88745"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:47.38040543px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Light';text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#666666">PyJibe</tspan></text>
+  </g>
+</svg>
