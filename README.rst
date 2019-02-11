@@ -4,15 +4,15 @@
 |PyPI Version| |Tests Status Linux| |Tests Status Win| |Coverage Status| |Docs Status|
 
 
-**PyJibe** is a Python library and a command-line tool for manipulating
-and analyzing quantitative phase microscopy images of cell-sized objects.
+**PyJibe** is a graphical end-user software for the analysis of atomic force
+microscopy data.
 
 
 Documentation
 -------------
 
 The documentation, including the code reference and examples, is available at
-`PyJibe.readthedocs.io <https://pyjibe.readthedocs.io/en/stable/>`__.
+`pyjibe.readthedocs.io <https://pyjibe.readthedocs.io/en/stable/>`__.
 
 
 Installation
