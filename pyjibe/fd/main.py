@@ -246,7 +246,6 @@ class UiForceDistance(UiForceDistanceBase):
                         optimal_fit_edelta=optimal_fit_edelta,
                         optimal_fit_num_samples=optimal_fit_num_samples,
                         )
-
         ftab = self.table_parameters_fitted
         if fdist.fit_properties["success"]:
             # Perform automatic saving of results
