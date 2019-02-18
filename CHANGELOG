@@ -1,6 +1,6 @@
 0.4.1
- - fix: autoscaling according to fitting range did not work
- - fix: not possible to load .jpk-force-map files
- - ref: migrate qmap generation to nanite
+- fix: autoscaling according to fitting range did not work
+- fix: not possible to load .jpk-force-map files
+- ref: migrate qmap generation to nanite
 0.4.0
- - migration to GitHub
+- migration to GitHub
