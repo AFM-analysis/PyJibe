@@ -295,14 +295,20 @@ class UiForceDistance(UiForceDistanceBase):
 
     def mpl_curve_update(self, fdist):
         """Update the force-indentation curve"""
-        rescale_x = self.cb_mpl_rescale_plot_x.checkState() == 2
-        rescale_y = self.cb_mpl_rescale_plot_y.checkState() == 2
-        if not rescale_x:
+        autoscale_x = self.cb_mpl_rescale_plot_x.checkState() == 2
+        autoscale_y = self.cb_mpl_rescale_plot_y.checkState() == 2
+        if autoscale_x:
+            rescale_x = None
+        else:
             rescale_x = (self.cb_mpl_rescale_plot_x_min.value(),
                          self.cb_mpl_rescale_plot_x_max.value())
-        if not rescale_y:
+
+        if autoscale_y:
+            rescale_y = None
+        else:
             rescale_y = (self.cb_mpl_rescale_plot_y_min.value(),
                          self.cb_mpl_rescale_plot_y_max.value())
+
         self.mpl_curve.update(fdist,
                               rescale_x=rescale_x,
                               rescale_y=rescale_y)
