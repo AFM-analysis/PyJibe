@@ -2,7 +2,7 @@ from . import fd
 
 
 analysis_types = {"fd":
-                  {"file extensions": [".jpk", ".jpk-force"],
+                  {"file extensions": [".jpk", ".jpk-force", ".jpk-force-map"],
                    "gui": fd.UiForceDistance,
                    }}
 

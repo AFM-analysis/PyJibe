@@ -705,8 +705,8 @@ class UiForceDistanceBase(UiForceDistanceCore):
 
     @property
     def selected_curves(self):
-        """Returns all curves selected by the user"""
-        curves = []
+        """Return an IndentationGroup with all curves selected by the user"""
+        curves = nanite.IndentationGroup()
         for ar in self.data_set:
             idx = self.data_set.index(ar)
             item = self.list_curves.topLevelItem(idx)

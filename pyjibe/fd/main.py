@@ -330,35 +330,19 @@ class UiForceDistance(UiForceDistanceBase):
 
     def mpl_qmap_update(self):
         fdist = self.current_curve
-        # Only update if we have fit properties
+        # Only update if we are on the right tab
         if self.tabs.currentWidget() == self.tab_qmap:
             # Build list of possible selections
-            selist = []
-            name2prop = {}
-            if fdist.fit_properties:
-                model = fdist.fit_properties["model_key"]
-                # Add all fit parameters
-                for parm in fdist.fit_properties["params_initial"]:
-                    parm_name = nmodel.get_parm_name(
-                        fdist.fit_properties["model_key"], parm)
-                    parm_unit = units.hrscname(parm_name)
-                    if fdist.fit_properties["params_initial"][parm].vary:
-                        name = "Fit: {}".format(parm_unit)
-                        selist.append(name)
-                        name2prop[name] = parm
-            # Add custom parameters
-            selist.append("Data: min height (measured) [µm]")
-            selist.append("Meta: rating")
-            selist.append("Meta: scan order")
+            selist = nanite.qmap.available_features
 
             # Get plotting parameter and check if it makes sense
-            plotname = self.qmap_data_cb.currentText()
-            if not plotname or plotname not in selist:
+            feature = self.qmap_data_cb.currentText()
+            if not feature or feature not in selist:
                 # Use a default plotting map
-                plotname = "Data: min height (measured) [µm]"
+                feature = "data min height"
 
             # Make sure that we have a valid property to plot
-            assert plotname in selist
+            assert feature in selist
 
             # Update dropdown menu with possible selections
             # disable signals while updating the combobox
@@ -369,83 +353,24 @@ class UiForceDistance(UiForceDistanceBase):
             # add new items
             for item in selist:
                 self.qmap_data_cb.addItem(item)
-            self.qmap_data_cb.setCurrentIndex(selist.index(plotname))
+            self.qmap_data_cb.setCurrentIndex(selist.index(feature))
             self.qmap_data_cb.blockSignals(False)
 
             # Get all selected curves with the same path
-            selcurves = self.selected_curves
-            curves = [ar for ar in selcurves if ar.path == fdist.path]
+            curves = self.selected_curves.subgroup_with_path(fdist.path)
 
             if len(curves) > 1:
-                map_data = []
-                coords_px = []
-                coords_um = []
-
-                for cc in curves:
-                    value = np.nan
-                    if plotname.startswith("Fit:"):
-                        prop = name2prop[plotname]
-                        if (cc.fit_properties and  # is fitted?
-                                # fit successful?
-                                cc.fit_properties["success"] and
-                                # matches model?
-                                cc.fit_properties["model_key"] == model):
-                            pfitted = cc.fit_properties["params_fitted"]
-                            raw = pfitted[prop].value
-                            name = nmodel.get_parm_name(model, prop)
-                            value = raw * units.hrscale(name)
-                    elif plotname.startswith("Data:"):
-                        prop = plotname.split(":")[1].strip()
-                        if prop == "min height (measured) [µm]":
-                            height = np.min(cc.data["height (measured)"])
-                            value = height / units.scales["µ"]
-                    elif plotname.startswith("Meta:"):
-                        prop = plotname.split(":")[1].strip()
-                        if prop == "scan order":
-                            value = cc.enum
-                        elif prop == "rating":
-                            value = self.rate_data(cc)
-                    map_data.append(value)
-
-                    # Add x-y data
-                    if ("position x [px]" in cc.metadata and
-                            "position y [px]" in cc.metadata):
-                        coords_px.append((cc.metadata["position x [px]"],
-                                          cc.metadata["position y [px]"]))
-                    else:
-                        coords_px.append((np.nan, np.nan))
-
-                    if ("position x [µm]" in cc.metadata and
-                            "position y [µm]" in cc.metadata):
-                        coords_um.append((cc.metadata["position x [µm]"],
-                                          cc.metadata["position y [µm]"]))
-                    else:
-                        coords_px.append((np.nan, np.nan))
-
-                # Get vmin and vmax
-                vmin = self.qmap_sp_range1.value()
-                vmax = self.qmap_sp_range2.value()
-                if vmin == vmax:
-                    vmin = vmax = None
-
-                shape = (fdist.metadata["grid size x [px]"],
-                         fdist.metadata["grid size y [px]"]
-                         )
-                sx = fdist.metadata["grid size x [µm]"]
-                sy = fdist.metadata["grid size y [µm]"]
-                cx = fdist.metadata["grid center x [µm]"]
-                cy = fdist.metadata["grid center y [µm]"]
-                extent = (cx - sx/2, cx + sx/2,
-                          cy - sy/2, cy + sy/2,
-
-                          )
-
-                cmap = self.qmpa_cmap_cb.currentText()
-                self.mpl_qmap.update(coords_px, map_data, cmap=cmap,
-                                     coords_um=coords_um,
-                                     shape=shape, extent=extent,
-                                     vmin=vmin, vmax=vmax,
-                                     label=plotname)
+                # Get map data
+                qm = nanite.QMap(curves)
+                qmap_data = qm.get_qmap(feature=feature, qmap_only=True)
+                # update plot
+                self.mpl_qmap.update(qmap_data=qmap_data,
+                                     coords_um=qm.get_coords(which="um"),
+                                     extent=qm.extent,
+                                     cmap=self.qmpa_cmap_cb.currentText(),
+                                     vmin=self.qmap_sp_range1.value(),
+                                     vmax=self.qmap_sp_range2.value(),
+                                     label=feature)
                 self.mpl_qmap.set_selection_by_index(curves.index(fdist))
             else:
                 self.mpl_qmap.reset()

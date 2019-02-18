@@ -109,7 +109,7 @@ class MPLQMap(object):
     def save_data_callback(self, filename):
         """Save current image as tsv"""
         with io.open(filename, "wb") as fd:
-            np.savetxt(fd, self.plot_data, delimiter="\t")
+            np.savetxt(fd, self.qmap_data, delimiter="\t")
 
     def set_selection_by_coord(self, x, y):
         """Set the position of the red selection frame with coordinates
@@ -172,18 +172,18 @@ class MPLQMap(object):
             self.select_rect.set_height(self.dy)
             self.canvas.draw()
 
-    def update(self, coords, qmap_data, shape, extent, coords_um,
+    def update(self, qmap_data, coords_um, extent,
                cmap="viridis", vmin=None, vmax=None, label=None):
         """Update the map tab plot data
 
         Parameters
         ----------
-        coords: list-like (length N) with tuple of floats
-            The x- and y-coordinates.
+        coords_um: list-like (length N) with tuple of floats
+            The x- and y-coordinates [µm]
         qmap_data: list-like (length N)
             The data to be mapped.
         vmin, vmax: float
-            Data range for plotting.
+            Data range for plotting
         label: str
             QMap colorbar data label
 
@@ -197,6 +197,9 @@ class MPLQMap(object):
         # TODO:
         # - only update the plot if vmin/vmax or qmap_data as changed
 
+        if vmin == vmax:
+            vmin = vmax = None
+
         if vmin is None:
             vmin = np.nanmin(qmap_data)
         if vmax is None:
@@ -205,22 +208,16 @@ class MPLQMap(object):
 
         self.plot.set_cmap(cmap)
 
-        if len(coords) == 1 or np.all(np.isnan(coords)):
-            # There is nothing to show.
-            self.reset()
-
-        elif qmap_data != prevmap:
+        if qmap_data is not None and not np.all(qmap_data == prevmap):
             self.colorbar.ax.set_visible(True)
             self.toolbar.setVisible(True)
             self.plot.axes.set_visible(True)
             self.no_data_text.set_visible(False)
 
-            x, y, map2d = map_grid(coords, qmap_data,
-                                   shape=shape, extent=extent)
-            self.qmap_shape = map2d.shape
+            shape = qmap_data.shape
             self.dx = (extent[1] - extent[0])/shape[0]
             self.dy = (extent[3] - extent[2])/shape[1]
-            self.plot.set_data(map2d)
+            self.plot.set_data(qmap_data)
             self.plot.set_extent(extent)
 
             if label is None:
@@ -228,60 +225,7 @@ class MPLQMap(object):
             self.colorbar.set_label(label)
 
             # Update user-stored variable
-            self.plot_data = map2d
             self.qmap_data = qmap_data
             self.qmap_coords = np.array(coords_um)
 
         self.canvas.draw()
-
-
-def map_grid(coords, map_data, shape, extent):
-    """Create a 2D map from 1D coordinates and data
-
-    The .jpk-force-map file format stores the map data in a
-    seemingly arbitrary way. This method converts a set of
-    coordinates and map data values to a 2D map.
-
-    Parameters
-    ----------
-    coords: list-like (length N) with tuple of ints
-        The x- and y-coordinates [px].
-    map_data: list-like (length N)
-        The data to be mapped.
-    shape: (int, int)
-        The shape of the map [px]
-    extent: (float, float)
-        The extent of the map [µm]
-
-    Returns
-    -------
-    x, y: 1d ndarrays
-        The x- and y-values that label the axes of the map
-    map2d: 2d ndarray
-        The ordered map data.
-
-    Notes
-    -----
-    If the map data is not on a regular grid, then interpolation
-    is performed.
-    """
-    coords = np.array(coords)
-    map_data = np.array(map_data)
-
-    xn, yn = int(shape[0]), int(shape[1])
-
-    # Axes labels
-    x, dx = np.linspace(extent[0], extent[1], xn, endpoint=False, retstep=True)
-    y, dy = np.linspace(extent[2], extent[3], yn, endpoint=False, retstep=True)
-    x += dx/2
-    y += dy/2
-
-    # Output map
-    map2d = np.zeros((yn, xn), dtype=float)*np.nan
-    for ii in range(map_data.shape[0]):
-        # Determine the coordinate in the output array
-        xi, yi = coords[ii]
-        # Write to the output array
-        map2d[yi, xi] = map_data[ii]
-
-    return x, y, map2d
