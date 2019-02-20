@@ -7,13 +7,57 @@
     <x>0</x>
     <y>0</y>
     <width>416</width>
-    <height>628</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Curve rater</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Please give each curve a rating between 0 (poor) and 10 (good). You can switch between the curves by pressing ALT+Left (previous) and ALT+Right (next). If you think you need to justify your rating you may leave a comment.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="btn_save">
+     <property name="text">
+      <string>Save Rating</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="bottomMargin">
+      <number>10</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="btn_prev">
+       <property name="text">
+        <string>Previous</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+Left</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_next">
+       <property name="text">
+        <string>Next</string>
+       </property>
+       <property name="shortcut">
+        <string>Alt+Right</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="1" column="0">
@@ -81,59 +125,6 @@
       <widget class="QPlainTextEdit" name="text_comment"/>
      </item>
     </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="bottomMargin">
-      <number>10</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btn_prev">
-       <property name="text">
-        <string>&amp;Previous</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_next">
-       <property name="text">
-        <string>&amp;Next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="btn_save">
-     <property name="text">
-      <string>Save Rating</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QPlainTextEdit" name="plainTextEdit_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="lineWidth">
-      <number>0</number>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-     <property name="plainText">
-      <string>Please give each curve a rating between 0 (worst) and 10 (best). You can switch between the curves by pressing ALT+P (previous) and ALT+N (next). If you think you need to justify your rating you may leave a comment. After you are finished, please save your rating and copy it to group_guck\Members\paulm\data_AFM\ratings.</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

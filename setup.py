@@ -25,7 +25,6 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["appdirs",
-                      "h5py>=2.8.0",
                       "nanite>=1.1.0",
                       "matplotlib",
                       "pyqt5"],
