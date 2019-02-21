@@ -14,6 +14,7 @@ from .. import units
 
 from .base import UiForceDistanceBase, DlgAutosave
 from . import export
+from . import user_rating
 
 
 class UiForceDistance(UiForceDistanceBase):
@@ -459,9 +460,19 @@ class UiForceDistance(UiForceDistanceBase):
         self.user_tab_selected = curtab
 
     def on_user_rate(self):
-        from .user_rating import Rater
-        self.user_rater = Rater(self)
-        self.user_rater.show()
+        cont = QtWidgets.QFileDialog.getSaveFileName(
+            parent=None,
+            caption="Please select a rating container",
+            directory="",
+            filter="Rating containers (*.h5)",
+            options=QtWidgets.QFileDialog.DontConfirmOverwrite
+                    |QtWidgets.QFileDialog.DontUseNativeDialog)
+
+        path = cont[0]
+        if path:
+            rt = user_rating.Rater(fdui=self, path=path)
+            self.curve_rater = rt
+            rt.show()
 
 
 class AbortProgress(BaseException):
