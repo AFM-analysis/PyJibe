@@ -1,4 +1,6 @@
 0.4.2
+- enh: merge training set and regressor selection into scheme selection
+  (prevents confusion for users that are unsure what to choose)
 - enh: user rating is saved during rating, not afterwards
 - enh: rating containers for user rating can be reused explicitly
 - ref: migrate user rating output to nanite

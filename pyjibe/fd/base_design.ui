@@ -145,8 +145,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>196</width>
-               <height>409</height>
+               <width>502</width>
+               <height>410</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1510,108 +1510,39 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_20">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>Training set</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="cb_rating_ts_label">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>zef18</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
               <property name="topMargin">
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="label_19">
+               <widget class="QLabel" name="label_21">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>Regressor</string>
-                </property>
-                <property name="whatsThis">
-                 <string/>
-                </property>
                 <property name="text">
-                 <string>REG</string>
+                 <string>Scheme</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QComboBox" name="cb_rating_method">
+               <widget class="QComboBox" name="cb_rating_scheme">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <property name="toolTip">
-                 <string/>
-                </property>
                 <item>
                  <property name="text">
-                  <string>Extra Trees</string>
+                  <string>Default (zef18 &amp; Extra Trees)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Random Forest</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Gradient Tree Boosting</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>None</string>
+                  <string>Disabled</string>
                  </property>
                 </item>
                </widget>
@@ -1642,7 +1573,7 @@
               <item>
                <widget class="QPushButton" name="btn_rating_filter">
                 <property name="text">
-                 <string>Threshold</string>
+                 <string>Apply Threshold</string>
                 </property>
                </widget>
               </item>
@@ -1684,7 +1615,7 @@
          <item>
           <widget class="QPushButton" name="btn_rater">
            <property name="text">
-            <string>Start curve rater</string>
+            <string>Start Curve Rater</string>
            </property>
           </widget>
          </item>

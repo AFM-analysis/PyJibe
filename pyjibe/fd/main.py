@@ -466,7 +466,7 @@ class UiForceDistance(UiForceDistanceBase):
             directory="",
             filter="Rating containers (*.h5)",
             options=QtWidgets.QFileDialog.DontConfirmOverwrite
-                    |QtWidgets.QFileDialog.DontUseNativeDialog)
+                    | QtWidgets.QFileDialog.DontUseNativeDialog)
 
         path = cont[0]
         if path:

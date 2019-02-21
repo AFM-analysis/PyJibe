@@ -1,3 +1,4 @@
+import collections
 import inspect
 import io
 import pkg_resources
@@ -17,6 +18,11 @@ from . import export
 from .mpl_indent import MPLIndentation
 from .mpl_edelta import MPLEDelta
 from .mpl_qmap import MPLQMap
+
+
+RATING_SCHEMES = collections.OrderedDict()
+RATING_SCHEMES["Default (zef18 & Extra Trees)"] = ["zef18", "Extra Trees"]
+RATING_SCHEMES["Disabled"] = ["none", "none"]
 
 
 # load QWidget from ui file
@@ -690,8 +696,9 @@ class UiForceDistanceBase(UiForceDistanceCore):
         else:
             return_single = False
 
-        regressor = self.cb_rating_method.currentText()
-        training_set = self.cb_rating_ts_label.currentText().lower()
+        scheme_id = self.cb_rating_scheme.currentIndex()
+        scheme_key = list(RATING_SCHEMES.keys())[scheme_id]
+        training_set, regressor = RATING_SCHEMES[scheme_key]
         rates = []
         for fdist in data:
             rt = fdist.rate_quality(regressor=regressor,
@@ -737,6 +744,8 @@ class UiForceDistanceBase(UiForceDistanceCore):
             # number of samples for Edelta plot
             [self.sp_delta_num_samples.valueChanged, self.on_params_init],
             [self.sp_delta_num_samples.valueChanged, self.mpl_edelta_update],
+            # rating scheme dropdown
+            [self.cb_rating_scheme.currentTextChanged, self.on_params_init],
         ]
 
         for signal, slot in cn:
