@@ -3,6 +3,8 @@
   (prevents confusion for users that are unsure what to choose)
 - enh: user rating is saved during rating, not afterwards
 - enh: rating containers for user rating can be reused explicitly
+- enh: qmap plot now better distinguishes between unavailable and
+  invalid data
 - ref: migrate user rating output to nanite
 0.4.1
 - fix: autoscaling according to fitting range did not work

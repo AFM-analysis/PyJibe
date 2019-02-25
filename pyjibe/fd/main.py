@@ -368,16 +368,13 @@ class UiForceDistance(UiForceDistanceBase):
 
             if len(curves) > 1:
                 # Get map data
-                qm = nanite.QMap(curves)
-                qmap_data = qm.get_qmap(feature=feature, qmap_only=True)
+                qmap = nanite.QMap(curves)
                 # update plot
-                self.mpl_qmap.update(qmap_data=qmap_data,
-                                     coords_um=qm.get_coords(which="um"),
-                                     extent=qm.extent,
+                self.mpl_qmap.update(qmap=qmap,
+                                     feature=feature,
                                      cmap=self.qmpa_cmap_cb.currentText(),
                                      vmin=self.qmap_sp_range1.value(),
-                                     vmax=self.qmap_sp_range2.value(),
-                                     label=feature)
+                                     vmax=self.qmap_sp_range2.value())
                 self.mpl_qmap.set_selection_by_index(curves.index(fdist))
             else:
                 self.mpl_qmap.reset()

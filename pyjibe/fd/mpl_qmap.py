@@ -59,6 +59,8 @@ class MPLQMap(object):
         acbar.ax.yaxis.set_label_position("right")
         self.colorbar = acbar
 
+        self.lines = []
+
         # mouse click event
         self.click_callback = None
         self.canvas.mpl_connect('button_press_event', self.on_click)
@@ -100,11 +102,17 @@ class MPLQMap(object):
         self.toolbar.setVisible(False)
         self.plot.axes.set_visible(False)
         self.no_data_text.set_visible(True)
-        self.qmap_data = np.nan
+        self.qmap = None
         self.qmap_coords = None
+        self.qmap_data = None
         self.qmap_shape = (np.nan, np.nan)
         self.dx = 1
         self.dy = 1
+        self.reset_lines()
+
+    def reset_lines(self):
+        for _ in range(len(self.lines)):
+            self.lines.pop(0).remove()
 
     def save_data_callback(self, filename):
         """Save current image as tsv"""
@@ -172,16 +180,13 @@ class MPLQMap(object):
             self.select_rect.set_height(self.dy)
             self.canvas.draw()
 
-    def update(self, qmap_data, coords_um, extent,
-               cmap="viridis", vmin=None, vmax=None, label=None):
+    def update(self, qmap, feature, cmap="viridis", vmin=None, vmax=None):
         """Update the map tab plot data
 
         Parameters
         ----------
-        coords_um: list-like (length N) with tuple of floats
-            The x- and y-coordinates [µm]
-        qmap_data: list-like (length N)
-            The data to be mapped.
+        qmap: nanite.QMap
+            Qmap data
         vmin, vmax: float
             Data range for plotting
         label: str
@@ -192,7 +197,15 @@ class MPLQMap(object):
         If `coords` or `qmap_data` is set to none, then a message will
         be displayed in the plot stating that no map data is available.
         """
-        prevmap = self.qmap_data
+        prev_data = self.qmap_data
+
+        qmap_data = qmap.get_qmap(feature=feature, qmap_only=True)
+        qmap_coords = qmap.get_coords(which="um")
+        qmap_coords_px = qmap.get_coords(which="px")
+        shape = qmap_data.shape
+        extent = qmap.extent
+        dx = (extent[1] - extent[0])/shape[0]
+        dy = (extent[3] - extent[2])/shape[1]
 
         # TODO:
         # - only update the plot if vmin/vmax or qmap_data as changed
@@ -208,24 +221,44 @@ class MPLQMap(object):
 
         self.plot.set_cmap(cmap)
 
-        if qmap_data is not None and not np.all(qmap_data == prevmap):
+        if (prev_data is None
+                or not np.allclose(qmap_data, prev_data, equal_nan=True)):
+            # visibility of plot elements
             self.colorbar.ax.set_visible(True)
             self.toolbar.setVisible(True)
             self.plot.axes.set_visible(True)
             self.no_data_text.set_visible(False)
 
-            shape = qmap_data.shape
-            self.dx = (extent[1] - extent[0])/shape[0]
-            self.dy = (extent[3] - extent[2])/shape[1]
+            # set plot data
             self.plot.set_data(qmap_data)
             self.plot.set_extent(extent)
+            self.colorbar.set_label(feature)
 
-            if label is None:
-                label = "Data"
-            self.colorbar.set_label(label)
+            # set invalid elements
+            self.reset_lines()
+            xm, ym = np.meshgrid(range(shape[0]),
+                                 range(shape[1]))
+            for xi, yi in zip(xm.flat, ym.flat):
+                if np.isnan(qmap_data[yi, xi]):
+                    xv = qmap_coords[0][0] + xi * dx
+                    yv = qmap_coords[0][1] + yi * dy
+                    if (np.sum(np.all(np.array([xi, yi]) == p)
+                               for p in qmap_coords_px)):
+                        color = "#14571A"
+                    else:
+                        color = "#571714"
+                    self.lines.append(
+                        self.axis_main.plot([xv-dx*.4, xv+dx*.4],
+                                            [yv-dy*.4, yv+dy*.4],
+                                            color=color,
+                                            lw=1)[0]
+                        )
 
-            # Update user-stored variable
+            # common variables
+            self.dx = dx
+            self.dy = dy
+            self.qmap = qmap
+            self.qmap_coords = qmap_coords
             self.qmap_data = qmap_data
-            self.qmap_coords = np.array(coords_um)
 
         self.canvas.draw()
