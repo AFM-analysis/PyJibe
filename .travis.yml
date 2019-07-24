@@ -3,6 +3,7 @@ notifications:
 sudo: required
 services:
   - xvfb
+  - docker
 matrix:
  include:
  - os: osx
