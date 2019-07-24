@@ -25,11 +25,10 @@ install:
   # Check that we have the expected version and architecture for Python
   - "python --version"
   # Install pyjibe and its dependencies
-  - "pip install -e ."
-  # PyInstaller install fails with pip 19.0.1
-  - "appveyor-retry pip install pip==19.0.2"  
+  - "appveyor-retry python -m pip install --upgrade pip"
+  - "appveyor-retry pip install -e ."
   # Install pyinstaller (includes dependency for pywin32)
-  - "pip install pyinstaller==3.4"
+  - "appveyor-retry pip install pyinstaller==3.4"
   # Show the installed packages
   - "pip freeze"
 
@@ -39,7 +38,7 @@ test_script:
   - 'python -c "import pyjibe; print pyjibe.__version__"'
   - "pip install coverage"
   - "pip install codecov"
-  - "coverage run --source=shapeout ./setup.py test"
+  - "coverage run --source=pyjibe ./setup.py test"
   - "coverage report -m"
   # Allow codecov to fail
   - "codecov || exit 0"
@@ -66,7 +65,7 @@ artifacts:
 deploy:
   provider: GitHub
   auth_token:
-    secure: /TODO
+    secure: /b5SfmYssAfLaWi0qkPhxR5CruSVBZUurSQLEL3RAaRlHn6HTPrkIqvrLDk/8JxB
   artifact: /.*\.exe/
   draft: true
   prerelease: true
