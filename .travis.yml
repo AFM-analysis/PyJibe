@@ -3,14 +3,13 @@ notifications:
 sudo: required
 services:
   - xvfb
-  - docker
 matrix:
  include:
  - os: osx
    language: generic
    env: MAC_PYTHON_VERSION=3.6
  - os: linux
-   dist: trusty
+   dist: xenial
    language: python
    python: 3.6
 before_install:
