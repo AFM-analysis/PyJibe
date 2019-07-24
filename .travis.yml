@@ -25,6 +25,7 @@ install:
 - travis_retry pip install codecov coverage flake8
 - pip freeze
 script:
+- python setup.py test
 - coverage run --source=pyjibe setup.py test
 - coverage report -m
 - flake8 pyjibe

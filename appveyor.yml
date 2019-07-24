@@ -26,6 +26,7 @@ install:
   - "python --version"
   # Install pyjibe and its dependencies
   - "appveyor-retry python -m pip install --upgrade pip"
+  - "appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git"
   - "appveyor-retry pip install -e ."
   # Install pyinstaller (includes dependency for pywin32)
   - "appveyor-retry pip install pyinstaller==3.4"
