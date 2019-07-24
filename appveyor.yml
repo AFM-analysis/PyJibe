@@ -35,7 +35,7 @@ install:
 build: off
 
 test_script:
-  - 'python -c "import pyjibe; print pyjibe.__version__"'
+  - 'python -c "import pyjibe; print(pyjibe.__version__)"'
   - "pip install coverage"
   - "pip install codecov"
   - "coverage run --source=pyjibe ./setup.py test"
