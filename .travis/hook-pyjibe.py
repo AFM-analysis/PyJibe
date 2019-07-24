@@ -11,6 +11,6 @@
 from PyInstaller.utils.hooks import collect_data_files
 
 # Data files
-datas = collect_data_files("shapeout2", include_py_files=True)
-datas += collect_data_files("shapeout2", subdir="img")
+datas = collect_data_files("pyjibe", include_py_files=True)
+datas += collect_data_files("pyjibe", subdir="img")
 
