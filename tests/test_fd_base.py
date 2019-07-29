@@ -18,7 +18,7 @@ def cleanup_autosave(jpkfile):
     [f.unlink() for f in files]
 
 
-def test_clear_and_verify_data(qtbot):
+def ttest_clear_and_verify_data(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile])
@@ -52,7 +52,7 @@ def test_clear_and_verify_data(qtbot):
     cleanup_autosave(jpkfile)
 
 
-def test_fit_all(qtbot):
+def ttest_fit_all(qtbot):
     """Perform a simple fit with the standard parameters"""
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
