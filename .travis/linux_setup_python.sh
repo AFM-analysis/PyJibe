@@ -1,2 +1,5 @@
 #!/bin/bash
-# nothing to do
+
+mkdir $HOME/.matplotlib
+echo "backend: Qt5Agg" >> $HOME/.matplotlib/matplotlibrc
+
