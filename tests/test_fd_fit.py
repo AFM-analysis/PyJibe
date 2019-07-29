@@ -19,7 +19,7 @@ def cleanup_autosave(jpkfile):
     [f.unlink() for f in files]
 
 
-def test_remember_initial_params(qtbot):
+def ttest_remember_initial_params(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile, jpkfile])
