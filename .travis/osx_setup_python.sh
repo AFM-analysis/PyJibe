@@ -44,7 +44,7 @@ pip install certifi
 # Use TkAgg to avoid
 # "ImportError: Python is not installed as a framework"
 mkdir ~/.matplotlib
-echo "backend: TkAgg" >> ~/.matplotlib/matplotlibrc
+echo "backend: Qt5Agg" >> ~/.matplotlib/matplotlibrc
 
 # go back
 cd $OLD
