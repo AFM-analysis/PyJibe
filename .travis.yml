@@ -16,6 +16,8 @@ matrix:
  - os: osx
    language: generic
    env: MAC_PYTHON_VERSION=3.6
+ - os: linux
+   language: python
 before_install:
 # install other dependencies
 - source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
