@@ -1,23 +1,21 @@
 notifications:
   email: false
+os: linux
+language: python
+python: 3.6
 sudo: required
+dist: bionic
 addons:
- apt:
-   packages:
-   - x11-utils
-   - libxkbcommon-x11-0
+  apt:
+    packages:
+    - x11-utils
+    - libxkbcommon-x11-0
+services: xvfb
 matrix:
  include:
  - os: osx
    language: generic
    env: MAC_PYTHON_VERSION=3.6
- - os: linux
-   dist: bionic
-   language: python
-   python: 3.6
-   env: QT_DEBUG_PLUGINS=1
-   services:
-   - xvfb
 before_install:
 # install other dependencies
 - source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
