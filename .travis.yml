@@ -1,6 +1,11 @@
 notifications:
   email: false
 sudo: required
+addons:
+ apt:
+   packages:
+   - x11-utils
+   - libxkbcommon-x11-0
 matrix:
  include:
  - os: osx
@@ -11,11 +16,6 @@ matrix:
    language: python
    python: 3.6
    env: QT_DEBUG_PLUGINS=1
-   addons:
-     apt:
-       packages:
-       - x11-utils
-       - libxkbcommon-x11-0
    services:
    - xvfb
 before_install:
