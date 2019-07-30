@@ -3,6 +3,7 @@ notifications:
 addons:
   apt:
     packages:
+    # These packages are required for testing PyQT5 applications on linux
     - x11-utils
     - libxkbcommon-x11-0
 matrix:
@@ -27,8 +28,6 @@ install:
 - travis_retry pip install codecov coverage flake8
 - pip freeze
 script:
-- pip install pytest pytest-qt
-- py.test -sv tests
 - coverage run --source=pyjibe setup.py test
 - coverage report -m
 - flake8 pyjibe
