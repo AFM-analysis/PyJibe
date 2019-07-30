@@ -5,7 +5,6 @@ addons:
     packages:
     - x11-utils
     - libxkbcommon-x11-0
-services: xvfb
 matrix:
  include:
  - os: osx
@@ -15,6 +14,7 @@ matrix:
  - os: linux
    language: python
    python: 3.6
+   services: xvfb
 install:
 # install other dependencies
 - source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
