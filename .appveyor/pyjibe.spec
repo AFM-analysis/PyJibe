@@ -22,7 +22,7 @@ a = Analysis([script],
              pathex=[cdir],
              hookspath=[pyinstdir],
              runtime_hooks=None)
-             
+
 options = [ ('u', None, 'OPTION'), ('W ignore', None, 'OPTION') ]
 
 pyz = PYZ(a.pure)
@@ -35,7 +35,7 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           icon=icofile,
-          console=True)
+          console=False)
 
 coll = COLLECT(exe,
                a.binaries,
