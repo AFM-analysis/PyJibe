@@ -1,3 +1,6 @@
+0.4.3
+ - maintenance release (migrate to GitHub infrastructure)
+ - experimental macOS builds
 0.4.2
  - enh: merge training set and regressor selection into scheme selection
    (prevents confusion for users that are unsure what to choose)

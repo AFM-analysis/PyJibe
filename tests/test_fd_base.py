@@ -18,6 +18,12 @@ def cleanup_autosave(jpkfile):
     [f.unlink() for f in files]
 
 
+def test_simple(qtbot):
+    """Open the main window and close it again"""
+    main_window = pyjibe.head.PyJibe()
+    main_window.close()
+
+
 def test_clear_and_verify_data(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()

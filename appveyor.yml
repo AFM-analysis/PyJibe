@@ -9,8 +9,8 @@ notifications:
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python36"
     - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python36"
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
@@ -23,32 +23,34 @@ install:
   # the parent CMD process).
   - "set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   # Check that we have the expected version and architecture for Python
-  - "python --version"
+  - python --version
   # Install pyjibe and its dependencies
-  - "pip install -e ."
-  # PyInstaller install fails with pip 19.0.1
-  - "appveyor-retry pip install pip==19.0.2"  
+  - appveyor-retry python -m pip install --upgrade pip
+  # install older version of numpy (numpy.random.common - pyinstaller 3.4)
+  - appveyor-retry pip install "numpy<1.17.0"
+  - appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git
+  - appveyor-retry pip install -e .
   # Install pyinstaller (includes dependency for pywin32)
-  - "pip install pyinstaller==3.4"
+  - appveyor-retry pip install pyinstaller==3.4
   # Show the installed packages
-  - "pip freeze"
+  - pip freeze
 
 build: off
 
 test_script:
-  - 'python -c "import pyjibe; print pyjibe.__version__"'
-  - "pip install coverage"
-  - "pip install codecov"
-  - "coverage run --source=shapeout ./setup.py test"
-  - "coverage report -m"
+  - python -c "import pyjibe; print(pyjibe.__version__)"
+  - pip install coverage
+  - pip install codecov
+  - coverage run --source=pyjibe ./setup.py test
+  - coverage report -m
   # Allow codecov to fail
-  - "codecov || exit 0"
+  - codecov || exit 0
 
 after_test:
-  - "appveyor-retry pip install twine wheel"
+  - appveyor-retry pip install twine wheel
   # If tests are successful, create a whl package for the project.
-  - "python setup.py bdist_wheel"
-  - "python setup.py sdist"
+  - python setup.py bdist_wheel
+  - python setup.py sdist
   - ps: "ls dist"
   # Run pyinstaller
   - "pyinstaller -y --log-level=WARN .appveyor\\pyjibe.spec"
@@ -66,7 +68,7 @@ artifacts:
 deploy:
   provider: GitHub
   auth_token:
-    secure: /TODO
+    secure: /b5SfmYssAfLaWi0qkPhxR5CruSVBZUurSQLEL3RAaRlHn6HTPrkIqvrLDk/8JxB
   artifact: /.*\.exe/
   draft: true
   prerelease: true

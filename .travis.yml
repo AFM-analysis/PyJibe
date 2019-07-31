@@ -1,0 +1,60 @@
+notifications:
+  email: false
+addons:
+  apt:
+    packages:
+    # These packages are required for testing PyQT5 applications on linux
+    - x11-utils
+    - libxkbcommon-x11-0
+matrix:
+ include:
+ - os: osx
+   language: generic
+   env: MAC_PYTHON_VERSION=3.6
+   sudo: required
+ - os: linux
+   language: python
+   python: 3.6
+   services: xvfb
+install:
+# install other dependencies
+- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
+# install binary packages
+- travis_retry pip install --upgrade pip
+- travis_retry pip install setuptools wheel
+# install older version of numpy (numpy.random.common - pyinstaller 3.4) 
+- travis_retry pip install 'numpy<1.17.0'
+- travis_retry pip install git+git://github.com/AFM-analysis/nanite.git
+- travis_retry pip install -e .
+# for tests:
+- travis_retry pip install codecov coverage flake8
+- pip freeze
+script:
+- coverage run --source=pyjibe setup.py test
+- coverage report -m
+- flake8 pyjibe
+- flake8 examples
+- flake8 tests
+after_success:
+- codecov
+- python setup.py sdist bdist_wheel
+- bash ./.travis/${TRAVIS_OS_NAME}_build_app.sh PyJibeApp $TRAVIS_TAG
+deploy:
+  - provider: pypi
+    user: "ci_afm"
+    password:
+      secure: "MJUxxYX/3HsTswtrrYfD0pphn1Ucoj3W6yHrBrytMh1Ofx6bmyd1Tvqf1MDvehxoV0FcJX708SQJZns9T8RIVmDBy5TStJjtooqz6Jnavi7VMDZ8qezocjp/1MSVOEbaJjl027o6++n20xZDpWAvIn/aE1e+9adlkk07QzBx+wban0BX67OV5L6TOy7m/LFARcklXMW9Cv+Vbr2K+YfuFE15xKzQSTfbYEO4mvUBGTPvu9c5vl0sEUY94aUkX8+DBFbilXBuyPVBoAkysY5UakIDM0t6YznVPwAvlCSxzYzjTnqZ1Mq0A3FxgvtBLXUF80/rUchQlg8JJI4df9Xn82b8xKV6yiCBU12XXmmaJ8S1LVqxZQWW9DCXMeyAH0NvSmR2Ipo1A+Z+yeOCwr/cdP8Jxf1iKFJkNpVfaoeiFiY2f6mq2bVR9L1sKDbVRIGtbj2DAZwPmqEdTne17vwXuwnuTMBLIQ/MyLUIjOJKwOzi1xoXHBUK/h2cu/RirjRixAgoMoJUc9F0Q9kOUk5n/Sd9Effvpi5/cX9/4+R6a3IKf9tPvn0C4tJ0zvF6KAdOLE74pHu0mngBm4o+KL6CxTN6WyBxhG9rMcRhZvMtP8AWH+Xbt0iJgrd5Cxkkn/PgflcckudClSnPClYKQFmzWxtTcknvN8hQQn2qORwkJ+U="
+    on:
+      tags: true
+    skip_cleanup: true
+    skip_existing: true
+  - provider: releases
+    api_key:
+      secure: "ooZKCydvb4CjYlPGvyT2xIRmGpofc+8MvCYIqzsMeMxbrytAWw1h0fAdTVo9GP5zkZCB4sQpibSa21pDt8DLqaFVIAqtci2qygcukOcSV/ToD+KdEDE0ag5CcJYOJpFQBHfmN9LEz+JHcb7HSCdd6SVfzlxB7tNORinib3oTNV/0FHqnheozbYhysQDF+D0EyweR3lY5KlkQvxshQWmNV90v+supsS/ckh1SpskvWjTbYFxv8pLMPpAKbV2J3Y63kWHItpUFU1BlxhEXIKvU3s0y/+38FR19Urosyg8X37EQsknS9rtj50T0Fw3btMm6o/fQKkS1bqCz02VjohWMy983Yh7cEUl2mq8aZP5DeMknrRBcjI4ps8z7heoqPHxYpaJDLKj2cgNStarlGHUGjZs0ihYKoOIT/VTNSq26JrZtGc1ybLWLXcHL8iXNjYpUf6k47OC1khUqGM/n+wL9O5sWv5Cq7/SjKqmxgg5lTkSPLj8ZMxhNIoU9s9Ww2iIL5tJNuinn540m7Qc14D0eEeRMKhmdbYLx6ybQPLxpF7qKUT/q8iJUXnPMLf0Fwf3rRT55s2XTfag9n4nqFFd1b+FVopAvh0S/CoKRKHZ2XD9b2Daih18v0SIDplBk71SVNGugjOrSuLEQd/lGpHFN8aKL096XgtIGNUpOKQWHQ8o="
+    file_glob: true
+    file: "dist_app/*.dmg"
+    skip_cleanup: true
+    draft: true
+    on:
+      tags: true
+
