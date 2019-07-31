@@ -27,7 +27,7 @@ install:
   # Install pyjibe and its dependencies
   - "appveyor-retry python -m pip install --upgrade pip"
   # install older version of numpy (numpy.random.common - pyinstaller 3.4)
-  - "appveyor-retry pip install numpy<1.17.0"
+  - "appveyor-retry pip install 'numpy<1.17.0'"
   - "appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git"
   - "appveyor-retry pip install -e ."
   # Install pyinstaller (includes dependency for pywin32)

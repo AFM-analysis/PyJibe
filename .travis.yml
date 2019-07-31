@@ -22,8 +22,8 @@ install:
 # install binary packages
 - travis_retry pip install --upgrade pip
 - travis_retry pip install setuptools wheel
-# install older version of numpy (issues with Pyinstaller 3.4)
-- travis_retry pip install numpy<1.17.0
+# install older version of numpy (numpy.random.common - pyinstaller 3.4) 
+- travis_retry pip install 'numpy<1.17.0'
 - travis_retry pip install git+git://github.com/AFM-analysis/nanite.git
 - travis_retry pip install -e .
 # for tests:
