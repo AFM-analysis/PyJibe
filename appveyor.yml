@@ -9,8 +9,8 @@ notifications:
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python36"
     - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python36"
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
@@ -26,6 +26,8 @@ install:
   - "python --version"
   # Install pyjibe and its dependencies
   - "appveyor-retry python -m pip install --upgrade pip"
+  # install older version of numpy (numpy.random.common - pyinstaller 3.4)
+  - "appveyor-retry pip install numpy<1.17.0"
   - "appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git"
   - "appveyor-retry pip install -e ."
   # Install pyinstaller (includes dependency for pywin32)
