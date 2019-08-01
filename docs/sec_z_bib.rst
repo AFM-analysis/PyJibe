@@ -1,0 +1,5 @@
+=============
+Bilbliography
+=============
+
+.. bibliography:: pyjibe.bib

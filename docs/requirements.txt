@@ -1,0 +1,9 @@
+nanite
+h5py
+matplotlib
+numpy
+pyqt5
+scipy
+sphinx>=1.6.4
+sphinxcontrib.bibtex
+sphinx_rtd_theme
