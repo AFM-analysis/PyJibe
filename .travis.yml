@@ -56,6 +56,7 @@ deploy:
     file_glob: true
     file: "dist_app/*.dmg"
     skip_cleanup: true
+    draft: true
     on:
       tags: true
 
