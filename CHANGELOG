@@ -1,3 +1,6 @@
+0.4.4
+ - ci: pin 'joblib==0.11.0' on travis-CI (workaround for infinite loop
+   in macOS build, https://github.com/pyinstaller/pyinstaller/issues/4067)
 0.4.3
  - maintenance release (migrate to GitHub infrastructure)
  - experimental macOS builds
