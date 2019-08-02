@@ -12,7 +12,7 @@ PyJibe can be installed via multiple channels:
    `release page <https://github.com/AFM-analysis/PyJibe/releases/latest>`__. 
 
 2. **macOS:** Download the latest version
-   (e.g. ``PyJibeApp_X.Y.Z.dmg``) from the official
+   (``PyJibeApp_X.Y.Z.dmg``) from the official
    `release page <https://github.com/AFM-analysis/PyJibe/releases/latest>`__. 
 
 3. **Python 3.6 with pip:** PyJibe can easily be installed with
