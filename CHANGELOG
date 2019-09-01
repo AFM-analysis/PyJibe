@@ -1,3 +1,5 @@
+0.5.0
+ - feat: allow to import training sets produced with nanite
 0.4.4
  - ci: pin 'joblib==0.11.0' on travis-CI (workaround for infinite loop
    in macOS build, https://github.com/pyinstaller/pyinstaller/issues/4067)

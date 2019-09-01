@@ -252,7 +252,7 @@ class MPLQMap(object):
                                             [yv-dy*.4, yv+dy*.4],
                                             color=color,
                                             lw=1)[0]
-                        )
+                    )
 
             # common variables
             self.dx = dx

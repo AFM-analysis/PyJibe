@@ -1,4 +1,3 @@
-import collections
 import inspect
 import io
 import pkg_resources
@@ -18,11 +17,7 @@ from . import export
 from .mpl_indent import MPLIndentation
 from .mpl_edelta import MPLEDelta
 from .mpl_qmap import MPLQMap
-
-
-RATING_SCHEMES = collections.OrderedDict()
-RATING_SCHEMES["Default (zef18 & Extra Trees)"] = ["zef18", "Extra Trees"]
-RATING_SCHEMES["Disabled"] = ["none", "none"]
+from . import rating_scheme
 
 
 # load QWidget from ui file
@@ -70,6 +65,9 @@ class UiForceDistanceBase(UiForceDistanceCore):
 
         # fitting setup
         self.fit_setup()
+
+        # rating scheme
+        self.rating_scheme_setup()
 
         self.tabs.currentChanged.connect(self.on_tab_changed)
         self.signal_slot(True)
@@ -327,6 +325,24 @@ class UiForceDistanceBase(UiForceDistanceCore):
         self.qmap_sp_range1.valueChanged.connect(self.on_qmap_min_max_changed)
         self.qmap_sp_range2.valueChanged.connect(self.on_qmap_min_max_changed)
         self.mpl_qmap.connect_curve_selection_event(self.on_qmap_selection)
+
+    def on_cb_rating_scheme(self):
+        scheme_id = self.cb_rating_scheme.currentIndex()
+        schemes = rating_scheme.get_rating_schemes()
+        if len(schemes) == scheme_id:
+            search_dir = ""
+            exts_str = "Training set zip file (*.zip)"
+            tsz, _e = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent_widget, "Import a training set",
+                search_dir, exts_str)
+            if tsz:
+                idx = rating_scheme.import_training_set(tsz)
+                self.rating_scheme_setup()
+                self.cb_rating_scheme.setCurrentIndex(idx)
+            else:
+                self.cb_rating_scheme.setCurrentIndex(0)
+        else:
+            self.on_params_init()
 
     def on_mpl_curve_update(self):
         fdist = self.current_curve
@@ -697,8 +713,9 @@ class UiForceDistanceBase(UiForceDistanceCore):
             return_single = False
 
         scheme_id = self.cb_rating_scheme.currentIndex()
-        scheme_key = list(RATING_SCHEMES.keys())[scheme_id]
-        training_set, regressor = RATING_SCHEMES[scheme_key]
+        schemes = rating_scheme.get_rating_schemes()
+        scheme_key = list(schemes.keys())[scheme_id]
+        training_set, regressor = schemes[scheme_key]
         rates = []
         for fdist in data:
             rt = fdist.rate_quality(regressor=regressor,
@@ -709,6 +726,12 @@ class UiForceDistanceBase(UiForceDistanceCore):
             return rates[0]
         else:
             return rates
+
+    def rating_scheme_setup(self):
+        self.cb_rating_scheme.clear()
+        schemes = rating_scheme.get_rating_schemes()
+        self.cb_rating_scheme.addItems(list(schemes.keys()))
+        self.cb_rating_scheme.addItem("Import...")
 
     @property
     def selected_curves(self):
@@ -745,7 +768,8 @@ class UiForceDistanceBase(UiForceDistanceCore):
             [self.sp_delta_num_samples.valueChanged, self.on_params_init],
             [self.sp_delta_num_samples.valueChanged, self.mpl_edelta_update],
             # rating scheme dropdown
-            [self.cb_rating_scheme.currentTextChanged, self.on_params_init],
+            [self.cb_rating_scheme.currentTextChanged,
+             self.on_cb_rating_scheme],
         ]
 
         for signal, slot in cn:
