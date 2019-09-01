@@ -7,10 +7,6 @@ import zipfile
 import nanite.rate.rater
 
 
-RATING_SCHEMES = collections.OrderedDict()
-RATING_SCHEMES["Default (zef18 & Extra Trees)"] = ["zef18", "Extra Trees"]
-RATING_SCHEMES["Disabled"] = ["none", "none"]
-
 #: Rating configuration directory
 CFG_DIR = pathlib.Path(appdirs.user_config_dir(appname="PyJibe")) / "rating"
 #: Path to main rating configuration file

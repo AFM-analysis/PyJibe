@@ -25,12 +25,13 @@ def test_remember_initial_params(qtbot):
     main_window.load_data(files=[jpkfile, jpkfile])
     war = main_window.subwindow_data[0]
     # clear data
-    war.list_preproc_applied.clear()
+    tpp = war.tab_preprocess
+    tpp.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
     item = QtWidgets.QListWidgetItem()
     item.setText("compute_tip_position")
-    war.list_preproc_applied.addItem(item)
+    tpp.list_preproc_applied.addItem(item)
     # perform fitting with standard parameters
     # set initial parameters in user interface
     itab = war.table_parameters_initial
@@ -56,12 +57,13 @@ def test_change_model_keep_parms(qtbot):
     main_window.load_data(files=[jpkfile, jpkfile])
     war = main_window.subwindow_data[0]
     # clear data
-    war.list_preproc_applied.clear()
+    tpp = war.tab_preprocess
+    tpp.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
     item = QtWidgets.QListWidgetItem()
     item.setText("compute_tip_position")
-    war.list_preproc_applied.addItem(item)
+    tpp.list_preproc_applied.addItem(item)
     # perform fitting with standard parameters
     # set initial parameters in user interface
     itab = war.table_parameters_initial

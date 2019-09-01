@@ -183,10 +183,10 @@ class UiForceDistance(UiForceDistanceBase):
         # Note: Preprocessing is cached once in `fdist`.
         # Thus calling this method a second time without any
         # change in the GUI is free.
-        num = self.list_preproc_applied.count()
+        num = self.tab_preprocess.list_preproc_applied.count()
         preprocessing = []
         for ii in range(num):
-            item = self.list_preproc_applied.item(ii)
+            item = self.tab_preprocess.list_preproc_applied.item(ii)
             preprocessing.append(item.text())
         # Perform preprocessing
         fdist.apply_preprocessing(preprocessing)
