@@ -23,7 +23,7 @@ def test_remember_initial_params(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile, jpkfile])
-    war = main_window.subwindow_data[0]
+    war = main_window.subwindows[0].widget()
     # clear data
     tpp = war.tab_preprocess
     tpp.list_preproc_applied.clear()
@@ -55,7 +55,7 @@ def test_change_model_keep_parms(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile, jpkfile])
-    war = main_window.subwindow_data[0]
+    war = main_window.subwindows[0].widget()
     # clear data
     tpp = war.tab_preprocess
     tpp.list_preproc_applied.clear()

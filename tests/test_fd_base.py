@@ -28,7 +28,7 @@ def test_clear_and_verify_data(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile])
-    war = main_window.subwindow_data[0]
+    war = main_window.subwindows[0].widget()
     # clear data
     tpp = war.tab_preprocess
     tpp.list_preproc_applied.clear()
@@ -64,7 +64,7 @@ def test_fit_all(qtbot):
     cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile, jpkfile])
-    war = main_window.subwindow_data[0]
+    war = main_window.subwindows[0].widget()
     war.cb_autosave.setChecked(0)
     war.on_fit_all()
     a1 = war.data_set[0]
