@@ -336,48 +336,12 @@ class UiForceDistance(UiForceDistanceBase):
             self.mpl_edelta.update(fdist, delta_opt)
 
     def mpl_qmap_update(self):
-        fdist = self.current_curve
         # Only update if we are on the right tab
         if self.tabs.currentWidget() == self.tab_qmap:
-            # Build list of possible selections
-            selist = nanite.qmap.available_features
-
-            # Get plotting parameter and check if it makes sense
-            feature = self.qmap_data_cb.currentText()
-            if not feature or feature not in selist:
-                # Use a default plotting map
-                feature = "data min height"
-
-            # Make sure that we have a valid property to plot
-            assert feature in selist
-
-            # Update dropdown menu with possible selections
-            # disable signals while updating the combobox
-            self.qmap_data_cb.blockSignals(True)
-            # remove all items
-            for _i in range(self.qmap_data_cb.count()):
-                self.qmap_data_cb.removeItem(0)
-            # add new items
-            for item in selist:
-                self.qmap_data_cb.addItem(item)
-            self.qmap_data_cb.setCurrentIndex(selist.index(feature))
-            self.qmap_data_cb.blockSignals(False)
-
+            fdist = self.current_curve
             # Get all selected curves with the same path
-            curves = self.selected_curves.subgroup_with_path(fdist.path)
-
-            if len(curves) > 1:
-                # Get map data
-                qmap = nanite.QMap(curves)
-                # update plot
-                self.mpl_qmap.update(qmap=qmap,
-                                     feature=feature,
-                                     cmap=self.qmpa_cmap_cb.currentText(),
-                                     vmin=self.qmap_sp_range1.value(),
-                                     vmax=self.qmap_sp_range2.value())
-                self.mpl_qmap.set_selection_by_index(curves.index(fdist))
-            else:
-                self.mpl_qmap.reset()
+            fdist_map = self.selected_curves.subgroup_with_path(fdist.path)
+            self.tab_qmap.update_qmap(fdist_map, fdist_map.index(fdist))
 
     def on_curve_list(self):
         """Called when a new curve is selected"""

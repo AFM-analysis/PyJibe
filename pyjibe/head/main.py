@@ -45,28 +45,28 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
         self.mdiArea.cascadeSubWindows()
         self.showMaximized()
 
-    def add_subwindow(self, widget, obj):
+    def add_subwindow(self, aclass, flist):
         """Add a subwindow, register data set and add to menu"""
         sub = PyJibeQMdiSubWindow()
-        sub.setWidget(widget)
+        inst = aclass(sub)
+        sub.setWidget(inst)
+        inst.add_files(flist)
         self.mdiArea.addSubWindow(sub)
         sub.show()
         self.subwindows.append(sub)
-        self.subwindow_data.append(obj)
         # Add export choices
-        if hasattr(obj, "get_export_choices"):
-            choices = obj.get_export_choices()
-            menobj = self.menuExport.addMenu(widget.windowTitle())
+        if hasattr(inst, "get_export_choices"):
+            choices = inst.get_export_choices()
+            menobj = self.menuExport.addMenu(inst.windowTitle())
             for choice in choices:
                 action = menobj.addAction(choice[0])
-                action.triggered.connect(getattr(obj, choice[1]))
+                action.triggered.connect(getattr(inst, choice[1]))
 
     def rem_subwindow(self, title):
         """De-register a data set and remove from the menu"""
         for ii, sub in enumerate(self.subwindows):
             if sub.windowTitle() == title:
                 self.subwindows.pop(ii)
-                self.subwindow_data.pop(ii)
                 break
 
         for action in self.menuExport.actions():
@@ -139,13 +139,8 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
             else:
                 supfiles = [supfiles]
             for flist in supfiles:
-                widget = QtWidgets.QWidget()
-                fdist = registry.fd.UiForceDistance(widget)
-                fdist.add_files(flist)
-                self.add_subwindow(widget, fdist)
-                # Add to self, otherwise events will not be triggered!
-                setattr(self, "subwindow_{}".format(
-                    len(self.subwindows)), fdist)
+                aclass = registry.fd.UiForceDistance
+                self.add_subwindow(aclass, flist)
 
 
 def excepthook(etype, value, trace):

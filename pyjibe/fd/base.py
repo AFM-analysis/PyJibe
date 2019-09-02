@@ -14,24 +14,20 @@ from .. import units
 from . import export
 from .mpl_indent import MPLIndentation
 from .mpl_edelta import MPLEDelta
-from .mpl_qmap import MPLQMap
+
 from . import rating_scheme
 
 
 # load QWidget from ui file
-ui_path = pkg_resources.resource_filename("pyjibe.fd",
-                                          "base_design.ui")
-UiForceDistanceCore = uic.loadUiType(ui_path)[0]
-
 dlg_autosave_path = pkg_resources.resource_filename("pyjibe.fd",
                                                     "dlg_autosave_design.ui")
 DlgAutosave = uic.loadUiType(dlg_autosave_path)[0]
 
 
-class UiForceDistanceBase(UiForceDistanceCore):
+class UiForceDistanceBase(QtWidgets.QWidget):
     _instance_counter = 0
 
-    def __init__(self, parent_widget):
+    def __init__(self, *args, **kwargs):
         """Base class derived from Qt designer
 
         To reduce the number of lines in a file, the UI for
@@ -41,18 +37,17 @@ class UiForceDistanceBase(UiForceDistanceCore):
         - `UiIndentation` contains logic parts of the code that are not
           part of the UI.
         """
-        super(UiForceDistanceCore, self).__init__()
-        self.setupUi(parent_widget)
-        self.parent_widget = parent_widget
-
+        super(UiForceDistanceBase, self).__init__(*args, **kwargs)
+        path_ui = pkg_resources.resource_filename("pyjibe.fd",
+                                                  "base_design.ui")
+        uic.loadUi(path_ui, self)
         UiForceDistanceBase._instance_counter += 1
-        title = "{} #{}".format(self.parent_widget.windowTitle(),
+        title = "{} #{}".format(self.parent().windowTitle(),
                                 self._instance_counter)
-        self.parent_widget.setWindowTitle(title)
+        self.parent().setWindowTitle(title)
 
         self.mpl_curve_setup()
         self.mpl_edelta_setup()
-        self.mpl_qmap_setup()
         self.data_set = nanite.IndentationGroup()
 
         # initial values, sources, drains for indentation depth
@@ -302,25 +297,6 @@ class UiForceDistanceBase(UiForceDistanceCore):
         self.edelta_mpllayout.addWidget(self.mpl_edelta.canvas)
         self.edelta_mpllayout.addWidget(self.mpl_edelta.toolbar)
 
-    def mpl_qmap_setup(self):
-        """Setup the matplotlib interface for 2D map plotting"""
-        self.mpl_qmap = MPLQMap()
-        self.mpl_qmap.add_toolbar(self.qmap_mplwidget)
-        self.qmap_mpllayout.addWidget(self.mpl_qmap.canvas)
-        self.qmap_mpllayout.addWidget(self.mpl_qmap.toolbar)
-        # set colormaps
-        cmaps = ["viridis", "plasma", "afmhot", "seismic"]
-        for cm in cmaps:
-            self.qmpa_cmap_cb.addItem(cm)
-        self.qmpa_cmap_cb.setCurrentIndex(0)
-        self.qmap_data_cb.currentIndexChanged.connect(
-            self.on_qmap_data_changed)
-        self.qmpa_cmap_cb.currentIndexChanged.connect(
-            self.on_qmap_cmap_changed)
-        self.qmap_sp_range1.valueChanged.connect(self.on_qmap_min_max_changed)
-        self.qmap_sp_range2.valueChanged.connect(self.on_qmap_min_max_changed)
-        self.mpl_qmap.connect_curve_selection_event(self.on_qmap_selection)
-
     def on_cb_rating_scheme(self):
         scheme_id = self.cb_rating_scheme.currentIndex()
         schemes = rating_scheme.get_rating_schemes()
@@ -328,7 +304,7 @@ class UiForceDistanceBase(UiForceDistanceCore):
             search_dir = ""
             exts_str = "Training set zip file (*.zip)"
             tsz, _e = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent_widget, "Import a training set",
+                self.parent(), "Import a training set",
                 search_dir, exts_str)
             if tsz:
                 idx = rating_scheme.import_training_set(tsz)
@@ -342,49 +318,6 @@ class UiForceDistanceBase(UiForceDistanceCore):
     def on_mpl_curve_update(self):
         fdist = self.current_curve
         self.mpl_curve_update(fdist)
-
-    def on_qmap_cmap_changed(self):
-        """colormap selection changed"""
-        self.mpl_qmap_update()
-
-    def on_qmap_data_changed(self):
-        """data column selection changed"""
-        # set previous spin control values if existent
-        self.qmap_sp_range1.blockSignals(True)
-        self.qmap_sp_range2.blockSignals(True)
-        if hasattr(self, "_cache_qmap_spin_ctl"):
-            data = self.qmap_data_cb.currentIndex()
-            if data in self._cache_qmap_spin_ctl:
-                vmin, vmax = self._cache_qmap_spin_ctl[data]
-            else:
-                vmin = vmax = 0
-            self.qmap_sp_range1.setValue(vmin)
-            self.qmap_sp_range2.setValue(vmax)
-        self.qmap_sp_range1.blockSignals(False)
-        self.qmap_sp_range2.blockSignals(False)
-        self.mpl_qmap_update()
-
-    def on_qmap_min_max_changed(self):
-        """min or max spin controls changed"""
-        # store spin control values for data column
-        vmin = self.qmap_sp_range1.value()
-        vmax = self.qmap_sp_range2.value()
-        data = self.qmap_data_cb.currentIndex()
-        if not hasattr(self, "_cache_qmap_spin_ctl"):
-            self._cache_qmap_spin_ctl = {}
-        self._cache_qmap_spin_ctl[data] = (vmin, vmax)
-        self.mpl_qmap_update()
-
-    def on_qmap_selection(self, idx):
-        """Show the curve indexed in the current qmap"""
-        # Get the qmap name
-        cc = self.current_curve
-        # idx is `enum` and curves are sorted
-        curves = [ci for ci in self.data_set if ci.path == cc.path]
-        fdist = curves[idx]
-        idcurve = self.data_set.index(fdist)
-        item = self.list_curves.topLevelItem(idcurve)
-        self.list_curves.setCurrentItem(item)
 
     def on_delta_guess(self):
         """Guess the optimal indentation depth for the current curve"""
@@ -475,7 +408,7 @@ class UiForceDistanceBase(UiForceDistanceCore):
     def on_export_fit_results(self):
         """Saves all fit results"""
         fname, _e = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent_widget,
+            self.parent(),
             "Save fit results",
             "fit_results_{:03d}.tsv".format(
                 self._instance_counter),
@@ -494,7 +427,7 @@ class UiForceDistanceBase(UiForceDistanceCore):
     def on_export_edelta(self):
         """Saves all edelta curves"""
         fname, _e = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent_widget,
+            self.parent(),
             "Save E(δ) curves",
             "",
             "Tab Separated Values (*.tsv)"
