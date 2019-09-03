@@ -6,16 +6,15 @@ import time
 
 import nanite
 import nanite.fit as nfit
-import nanite.indent as nindent
 import nanite.read as nread
 import numpy as np
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
 
-from . import user_rating
+from . import rating_base
+from . import rating_iface
 from . import export
-from . import rating_scheme
 
 
 # load QWidget from ui file
@@ -299,8 +298,9 @@ class UiForceDistance(QtWidgets.QWidget):
         self.info_text.setPlainText(textstring)
 
     def on_cb_rating_scheme(self):
+        """Switch rating scheme or import a new one"""
         scheme_id = self.cb_rating_scheme.currentIndex()
-        schemes = rating_scheme.get_rating_schemes()
+        schemes = rating_base.get_rating_schemes()
         if len(schemes) == scheme_id:
             search_dir = ""
             exts_str = "Training set zip file (*.zip)"
@@ -308,7 +308,7 @@ class UiForceDistance(QtWidgets.QWidget):
                 self.parent(), "Import a training set",
                 search_dir, exts_str)
             if tsz:
-                idx = rating_scheme.import_training_set(tsz)
+                idx = rating_base.import_training_set(tsz)
                 self.rating_scheme_setup()
                 self.cb_rating_scheme.setCurrentIndex(idx)
             else:
@@ -497,6 +497,7 @@ class UiForceDistance(QtWidgets.QWidget):
         self.user_tab_selected = curtab
 
     def on_user_rate(self):
+        """Start the curve rater"""
         cont = QtWidgets.QFileDialog.getSaveFileName(
             parent=None,
             caption="Please select a rating container",
@@ -507,42 +508,18 @@ class UiForceDistance(QtWidgets.QWidget):
 
         path = cont[0]
         if path:
-            rt = user_rating.Rater(fdui=self, path=path)
+            rt = rating_iface.Rater(fdui=self, path=path)
             self.curve_rater = rt
             rt.show()
 
     def rate_data(self, data):
-        """Apply rating to curves
-
-        Parameters
-        ----------
-        data: list, afmlib.indentaion.Indentation, afmlib.AFM_DataSet
-           The data to be rated
-        """
-        if isinstance(data, nindent.Indentation):
-            data = [data]
-            return_single = True
-        else:
-            return_single = False
-
+        """Apply rating to a force-distance curves (or a list of curves)"""
         scheme_id = self.cb_rating_scheme.currentIndex()
-        schemes = rating_scheme.get_rating_schemes()
-        scheme_key = list(schemes.keys())[scheme_id]
-        training_set, regressor = schemes[scheme_key]
-        rates = []
-        for fdist in data:
-            rt = fdist.rate_quality(regressor=regressor,
-                                    training_set=training_set)
-            rates.append(rt)
-
-        if return_single:
-            return rates[0]
-        else:
-            return rates
+        return rating_base.rate_fdist(data, scheme_id)
 
     def rating_scheme_setup(self):
         self.cb_rating_scheme.clear()
-        schemes = rating_scheme.get_rating_schemes()
+        schemes = rating_base.get_rating_schemes()
         self.cb_rating_scheme.addItems(list(schemes.keys()))
         self.cb_rating_scheme.addItem("Import...")
 

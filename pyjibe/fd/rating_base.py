@@ -4,6 +4,7 @@ import pathlib
 import shutil
 import zipfile
 
+import nanite.indent as nindent
 import nanite.rate.rater
 
 
@@ -65,3 +66,31 @@ def import_training_set(ts_zip, override=False):
         if ts[key] == pout:
             break
     return idx
+
+
+def rate_fdist(data, scheme_id):
+    """Rate one or a list of force-distance curves
+
+    Parameters
+    ----------
+    data: nanite.Indentation or a list of those
+    """
+    if isinstance(data, nindent.Indentation):
+        data = [data]
+        return_single = True
+    else:
+        return_single = False
+
+    schemes = get_rating_schemes()
+    scheme_key = list(schemes.keys())[scheme_id]
+    training_set, regressor = schemes[scheme_key]
+    rates = []
+    for fdist in data:
+        rt = fdist.rate_quality(regressor=regressor,
+                                training_set=training_set)
+        rates.append(rt)
+
+    if return_single:
+        return rates[0]
+    else:
+        return rates

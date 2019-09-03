@@ -7,7 +7,7 @@ from PyQt5 import uic, QtWidgets
 
 # load QWidget from ui file
 ui_path = pkg_resources.resource_filename("pyjibe.fd",
-                                          "user_rating_design.ui")
+                                          "rating_iface.ui")
 UiUserRatingBase = uic.loadUiType(ui_path)[0]
 
 
