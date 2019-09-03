@@ -15,7 +15,6 @@ from .. import colormap
 
 from . import user_rating
 from . import export
-from .mpl_indent import MPLIndentation
 from . import rating_scheme
 
 
@@ -38,8 +37,6 @@ class UiForceDistance(QtWidgets.QWidget):
         title = "{} #{}".format(self.parent().windowTitle(),
                                 self._instance_counter)
         self.parent().setWindowTitle(title)
-
-        self.mpl_curve_setup()
 
         self.data_set = nanite.IndentationGroup()
 
@@ -65,6 +62,19 @@ class UiForceDistance(QtWidgets.QWidget):
         self.cb_rating_scheme.currentTextChanged.connect(
             self.on_cb_rating_scheme)
         self.btn_rater.clicked.connect(self.on_user_rate)
+        # plotting parameters
+        self.cb_mpl_rescale_plot_x.stateChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_x_min.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_x_max.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y.stateChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y_min.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y_max.valueChanged.connect(
+            self.on_mpl_curve_update)
 
         # Random string for identification of autosaved results
         self._autosave_randstr = hashlib.md5(time.ctime().encode("utf-8")
@@ -89,6 +99,17 @@ class UiForceDistance(QtWidgets.QWidget):
         item = self.list_curves.currentItem()
         idx = self.list_curves.indexOfTopLevelItem(item)
         return idx
+
+    @property
+    def selected_curves(self):
+        """Return an IndentationGroup with all curves selected by the user"""
+        curves = nanite.IndentationGroup()
+        for ar in self.data_set:
+            idx = self.data_set.index(ar)
+            item = self.list_curves.topLevelItem(idx)
+            if item.checkState(3) == 2:
+                curves.append(ar)
+        return curves
 
     def add_files(self, files):
         """ Populate self.data_set and display the first curve """
@@ -176,7 +197,7 @@ class UiForceDistance(QtWidgets.QWidget):
                     oride = self._autosave_override
                     if oride == -1:
                         # Ask user what to do
-                        dlgwin = QtWidgets.QDialog()
+                        dlgwin = QtWidgets.QDialog(self)
                         dlgwin.setWindowModality(QtCore.Qt.ApplicationModal)
                         dlgui = DlgAutosave()
                         dlgui.setupUi(dlgwin)
@@ -277,45 +298,6 @@ class UiForceDistance(QtWidgets.QWidget):
         textstring = "\n".join(text)
         self.info_text.setPlainText(textstring)
 
-    def mpl_curve_setup(self):
-        """Setup the matplotlib interface for approach retract plotting"""
-        self.mpl_curve = MPLIndentation()
-        self.mpl_curve.add_toolbar(self.mplwindow)
-        self.mplvl.addWidget(self.mpl_curve.canvas)
-        self.mplvl.addWidget(self.mpl_curve.toolbar)
-        self.cb_mpl_rescale_plot_x.stateChanged.connect(
-            self.on_mpl_curve_update)
-        self.cb_mpl_rescale_plot_x_min.valueChanged.connect(
-            self.on_mpl_curve_update)
-        self.cb_mpl_rescale_plot_x_max.valueChanged.connect(
-            self.on_mpl_curve_update)
-        self.cb_mpl_rescale_plot_y.stateChanged.connect(
-            self.on_mpl_curve_update)
-        self.cb_mpl_rescale_plot_y_min.valueChanged.connect(
-            self.on_mpl_curve_update)
-        self.cb_mpl_rescale_plot_y_max.valueChanged.connect(
-            self.on_mpl_curve_update)
-
-    def mpl_curve_update(self, fdist):
-        """Update the force-indentation curve"""
-        autoscale_x = self.cb_mpl_rescale_plot_x.checkState() == 2
-        autoscale_y = self.cb_mpl_rescale_plot_y.checkState() == 2
-        if autoscale_x:
-            rescale_x = None
-        else:
-            rescale_x = (self.cb_mpl_rescale_plot_x_min.value(),
-                         self.cb_mpl_rescale_plot_x_max.value())
-
-        if autoscale_y:
-            rescale_y = None
-        else:
-            rescale_y = (self.cb_mpl_rescale_plot_y_min.value(),
-                         self.cb_mpl_rescale_plot_y_max.value())
-
-        self.mpl_curve.update(fdist,
-                              rescale_x=rescale_x,
-                              rescale_y=rescale_y)
-
     def on_cb_rating_scheme(self):
         scheme_id = self.cb_rating_scheme.currentIndex()
         schemes = rating_scheme.get_rating_schemes()
@@ -345,7 +327,7 @@ class UiForceDistance(QtWidgets.QWidget):
         # fit data
         self.tab_fit.fit_approach_retract(fdist)
         # set plot data (time consuming)
-        self.mpl_curve_update(fdist)
+        self.widget_fdist.mpl_curve_update(fdist)
         # update info
         self.info_update(fdist)
         # Display new rating
@@ -461,13 +443,13 @@ class UiForceDistance(QtWidgets.QWidget):
         self.tab_preprocess.fit_apply_preprocessing(fdist)
         self.tab_fit.fit_update_parameters(fdist)
         self.tab_fit.fit_approach_retract(fdist)
-        self.mpl_curve_update(fdist)
+        self.widget_fdist.mpl_curve_update(fdist)
         self.curve_list_update()
         self.tab_qmap.mpl_qmap_update()
 
     def on_mpl_curve_update(self):
         fdist = self.current_curve
-        self.mpl_curve_update(fdist)
+        self.widget_fdist.mpl_curve_update(fdist)
 
     def on_params_init(self):
         """Called when the initial parameters are changed"""
@@ -475,7 +457,7 @@ class UiForceDistance(QtWidgets.QWidget):
         idx = self.current_index
         self.tab_preprocess.fit_apply_preprocessing(fdist)
         self.tab_fit.fit_approach_retract(fdist)
-        self.mpl_curve_update(fdist)
+        self.widget_fdist.mpl_curve_update(fdist)
         self.curve_list_update(item=idx)
         self.tab_qmap.mpl_qmap_update()
 
@@ -563,17 +545,6 @@ class UiForceDistance(QtWidgets.QWidget):
         schemes = rating_scheme.get_rating_schemes()
         self.cb_rating_scheme.addItems(list(schemes.keys()))
         self.cb_rating_scheme.addItem("Import...")
-
-    @property
-    def selected_curves(self):
-        """Return an IndentationGroup with all curves selected by the user"""
-        curves = nanite.IndentationGroup()
-        for ar in self.data_set:
-            idx = self.data_set.index(ar)
-            item = self.list_curves.topLevelItem(idx)
-            if item.checkState(3) == 2:
-                curves.append(ar)
-        return curves
 
 
 class AbortProgress(BaseException):

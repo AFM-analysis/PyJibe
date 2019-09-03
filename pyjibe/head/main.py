@@ -75,7 +75,7 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
                 break
 
     def on_open_bulk(self, evt=None):
-        dlg = custom_widgets.FileDialog()
+        dlg = custom_widgets.FileDialog(self)
         search_dir = self.settings.get_path("load data")
         dlg.setDirectory(search_dir)
         if dlg.exec_():
@@ -87,7 +87,7 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
                 self.settings.set_path(dlg.getDirectory(), name="load data")
 
     def on_open_multiple(self, evt=None):
-        dlg = custom_widgets.FileDialog()
+        dlg = custom_widgets.FileDialog(self)
         search_dir = self.settings.get_path("load data")
         dlg.setDirectory(search_dir)
 

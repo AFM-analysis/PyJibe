@@ -60,24 +60,10 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QWidget" name="mplwindow" native="true">
+       <widget class="WidgetFDist" name="widget_fdist" native="true">
         <property name="enabled">
          <bool>true</bool>
         </property>
-        <layout class="QVBoxLayout" name="mplvl">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-        </layout>
        </widget>
       </item>
       <item>
@@ -113,24 +99,10 @@
          <attribute name="toolTip">
           <string>curve preprocessing</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_7">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
         </widget>
         <widget class="TabFit" name="tab_fit">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -147,26 +119,6 @@
          <attribute name="toolTip">
           <string>fitting parameters</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <property name="spacing">
-           <number>7</number>
-          </property>
-          <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
         </widget>
         <widget class="TabEdelta" name="tab_edelta">
          <attribute name="title">
@@ -175,7 +127,6 @@
          <attribute name="toolTip">
           <string>elastic modulus vs. indentation depth</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_6"/>
         </widget>
         <widget class="QWidget" name="tab_plot">
          <attribute name="title">
@@ -383,7 +334,6 @@
          <attribute name="toolTip">
           <string>quantitative imaging</string>
          </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_10"/>
         </widget>
        </widget>
       </item>
@@ -604,6 +554,12 @@
    <class>TabEdelta</class>
    <extends>QWidget</extends>
    <header>pyjibe.fd.tab_edelta</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WidgetFDist</class>
+   <extends>QWidget</extends>
+   <header>pyjibe.fd.widget_fdist</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

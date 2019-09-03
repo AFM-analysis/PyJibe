@@ -9,7 +9,7 @@ from .. import units
 from ..head import custom_widgets
 
 
-class MPLIndentation():
+class MPLIndentation(object):
     def __init__(self):
         """Matplotlib plot for force-indentation data"""
         # Add matplotlib figure
