@@ -173,7 +173,8 @@ class UiForceDistance(QtWidgets.QWidget):
             exp_curv = []
             for ii, ar in enumerate(self.data_set):
                 it = self.list_curves.topLevelItem(ii)
-                if (  # same directory
+                if (
+                    # same directory
                     os.path.dirname(ar.path) == adir and
                     # fdist was fitted
                     ar.fit_properties and
