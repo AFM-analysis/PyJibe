@@ -31,9 +31,25 @@ class TabQMap(QtWidgets.QWidget):
         self.qmap_sp_range2.valueChanged.connect(self.on_qmap_min_max_changed)
         self.mpl_qmap.connect_curve_selection_event(self.on_qmap_selection)
 
+    @property
+    def current_curve(self):
+        return self.fd.current_curve
+
+    @property
+    def fd(self):
+        return self.parent().parent().parent().parent()
+
+    def mpl_qmap_update(self):
+        # Only update if we are on the right tab
+        if self.fd.tabs.currentWidget() == self:
+            fdist = self.current_curve
+            # Get all selected curves with the same path
+            fdist_map = self.fd.selected_curves.subgroup_with_path(fdist.path)
+            self.update_qmap(fdist_map, fdist_map.index(fdist))
+
     def on_qmap_cmap_changed(self):
         """colormap selection changed"""
-        self.update_qmap()
+        self.mpl_qmap_update()
 
     def on_qmap_data_changed(self):
         """data column selection changed"""
@@ -50,7 +66,7 @@ class TabQMap(QtWidgets.QWidget):
             self.qmap_sp_range2.setValue(vmax)
         self.qmap_sp_range1.blockSignals(False)
         self.qmap_sp_range2.blockSignals(False)
-        self.update_qmap()
+        self.mpl_qmap_update()
 
     def on_qmap_min_max_changed(self):
         """min or max spin controls changed"""
@@ -61,7 +77,7 @@ class TabQMap(QtWidgets.QWidget):
         if not hasattr(self, "_cache_qmap_spin_ctl"):
             self._cache_qmap_spin_ctl = {}
         self._cache_qmap_spin_ctl[data] = (vmin, vmax)
-        self.update_qmap()
+        self.mpl_qmap_update()
 
     def on_qmap_selection(self, idx):
         """Show the curve indexed in the current qmap"""

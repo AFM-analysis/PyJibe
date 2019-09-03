@@ -1,34 +1,71 @@
 import hashlib
+import io
 import os
+import pkg_resources
 import time
 
-import numpy as np
-from PyQt5 import QtCore, QtWidgets, QtGui
-
 import nanite
-import nanite.model as nmodel
+import nanite.fit as nfit
+import nanite.indent as nindent
 import nanite.read as nread
+import numpy as np
+from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
-from .. import units
 
-from .base import UiForceDistanceBase, DlgAutosave
-from . import export
 from . import user_rating
+from . import export
+from .mpl_indent import MPLIndentation
+from . import rating_scheme
 
 
-class UiForceDistance(UiForceDistanceBase):
-    def __init__(self, parent_widget):
-        """Base class derived from Qt designer
+# load QWidget from ui file
+dlg_autosave_path = pkg_resources.resource_filename("pyjibe.fd",
+                                                    "dlg_autosave_design.ui")
+DlgAutosave = uic.loadUiType(dlg_autosave_path)[0]
 
-        To reduce the number of lines in a file, the UI for
-        force-indentation measurements is split into two classes:
-        - `UiIndentationBase` completes the (dynamic) design of the UI and
-          provides convenience properties.
-        - `UiIndentation` contains logic parts of the code that are not
-          part of the UI.
-        """
-        super(UiForceDistance, self).__init__(parent_widget)
+
+class UiForceDistance(QtWidgets.QWidget):
+    _instance_counter = 0
+
+    def __init__(self, *args, **kwargs):
+        """Base class for force-indentation analysis"""
+        super(UiForceDistance, self).__init__(*args, **kwargs)
+        path_ui = pkg_resources.resource_filename("pyjibe.fd", "main.ui")
+        uic.loadUi(path_ui, self)
+
+        UiForceDistance._instance_counter += 1
+        title = "{} #{}".format(self.parent().windowTitle(),
+                                self._instance_counter)
+        self.parent().setWindowTitle(title)
+
+        self.mpl_curve_setup()
+
+        self.data_set = nanite.IndentationGroup()
+
+        # rating scheme
+        self.rating_scheme_setup()
+
+        # Signals
+        # tabs
+        self.tabs.currentChanged.connect(self.on_tab_changed)
+        # fitting / parameters
+        self.tab_edelta.sp_delta_num_samples.valueChanged.connect(
+            self.on_params_init)
+        self.btn_fitall.clicked.connect(self.on_fit_all)
+        self.tab_fit.cb_delta_select.currentIndexChanged.connect(
+            self.tab_edelta.cb_delta_select.setCurrentIndex)
+        self.tab_edelta.cb_delta_select.currentIndexChanged.connect(
+            self.tab_fit.cb_delta_select.setCurrentIndex)
+        self.tab_fit.sp_range_1.valueChanged["double"].connect(
+            self.tab_edelta.on_delta_change_spin)
+        self.tab_fit.sp_range_2.valueChanged.connect(self.on_params_init)
+        # rating
+        self.btn_rating_filter.clicked.connect(self.on_rating_threshold)
+        self.cb_rating_scheme.currentTextChanged.connect(
+            self.on_cb_rating_scheme)
+        self.btn_rater.clicked.connect(self.on_user_rate)
+
         # Random string for identification of autosaved results
         self._autosave_randstr = hashlib.md5(time.ctime().encode("utf-8")
                                              ).hexdigest()[:5]
@@ -40,6 +77,18 @@ class UiForceDistance(UiForceDistanceBase):
         self._autosave_override = -1
         # Filenames that were created by this instance
         self._autosave_original_files = []
+
+    @property
+    def current_curve(self):
+        idx = self.current_index
+        fdist = self.data_set[idx]
+        return fdist
+
+    @property
+    def current_index(self):
+        item = self.list_curves.currentItem()
+        idx = self.list_curves.indexOfTopLevelItem(item)
+        return idx
 
     def add_files(self, files):
         """ Populate self.data_set and display the first curve """
@@ -163,6 +212,27 @@ class UiForceDistance(UiForceDistanceBase):
                                                  ratings=ratings)
                 self._autosave_original_files.append(fname)
 
+    def curve_list_setup(self):
+        """Add items to the tree widget"""
+        header = self.list_curves.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        self.list_curves.setColumnWidth(1, 70)
+        self.list_curves.setColumnWidth(2, 70)
+        self.list_curves.setColumnWidth(3, 40)
+        for ar in self.data_set:
+            it = QtWidgets.QTreeWidgetItem(self.list_curves,
+                                           ["..."+str(ar.path)[-62:],
+                                            str(ar.enum),
+                                            "{:.1f}".format(-1)])
+            self.list_curves.addTopLevelItem(it)
+            it.setCheckState(3, QtCore.Qt.Checked)
+        # Connect signals:
+        # Selection of curves
+        self.list_curves.itemSelectionChanged.connect(self.on_curve_list)
+        self.list_curves.model().dataChanged.connect(
+            self.on_curve_list_item_changed)
+
     def curve_list_update(self, item=None):
         """Update the curve list display with all ratings"""
         if item is None:
@@ -178,108 +248,21 @@ class UiForceDistance(UiForceDistanceBase):
             color = np.array(cm(rating/10))*255
             it.setBackground(2, QtGui.QColor(*color))
 
-    def fit_apply_preprocessing(self, fdist):
-        """Apply the preprocessing steps if required"""
-        # Note: Preprocessing is cached once in `fdist`.
-        # Thus calling this method a second time without any
-        # change in the GUI is free.
-        num = self.tab_preprocess.list_preproc_applied.count()
-        preprocessing = []
-        for ii in range(num):
-            item = self.tab_preprocess.list_preproc_applied.item(ii)
-            preprocessing.append(item.text())
-        # Perform preprocessing
-        fdist.apply_preprocessing(preprocessing)
+    @staticmethod
+    def get_export_choices():
+        """Choices for file menu export
 
-    def fit_approach_retract(self, fdist, update_ui=True):
-        """Perform preprocessing and fit data
-
-        Parameters
-        ----------
-        fdist: afmlib.indentaion.Indentaion
-            Indentation curve to fit.
-        update_ui: bool
-            Update the user interface after fitting,
-            i.e. displaying the results in
-            `self.table_parameters_fitted`.
+        Returns
+        -------
+        choices: list
+            [[menu label 1, method name 1],
+             ...
+             ]
         """
-        # segment
-        segment = self.cb_segment.currentText().lower()
-        # x axis
-        x_axis = self.cb_xaxis.currentText()
-        # y axis
-        y_axis = self.cb_yaxis.currentText()
-        # Get model key from dropdown list
-        model = nmodel.get_model_by_name(self.cb_model.currentText())
-        model_key = model.model_key
-        # Determine range type
-        if self.cb_range_type.currentText() == "absolute":
-            range_type = "absolute"
-        else:
-            range_type = "relative cp"
-        # Determine range
-        range_x = [self.sp_range_1.value() * units.scales["µ"],
-                   self.sp_range_2.value() * units.scales["µ"]]
-        # Determine if we want to weight the contact point
-        self.on_update_weights(on_params_init=False)
-        if self.cb_weight_cp.checkState() == 2:
-            weight_cp = self.sp_weight_cp_um.value() * units.scales["µ"]
-        else:
-            weight_cp = False
-        # Determine if we want to autodetect the optimal indentation depth
-        if self.cb_delta_select_1.currentIndex() == 2:
-            optimal_fit_edelta = True
-        else:
-            optimal_fit_edelta = False
-        # number of samples for edelta plot
-        optimal_fit_num_samples = self.sp_delta_num_samples.value()
-        # fit parameters
-        params = self.fit_parameters()
-        # Perform fitting
-        fdist.fit_model(model_key=model_key,
-                        params_initial=params,
-                        range_x=range_x,
-                        range_type=range_type,
-                        x_axis=x_axis,
-                        y_axis=y_axis,
-                        weight_cp=weight_cp,
-                        segment=segment,
-                        optimal_fit_edelta=optimal_fit_edelta,
-                        optimal_fit_num_samples=optimal_fit_num_samples,
-                        )
-        ftab = self.table_parameters_fitted
-        if fdist.fit_properties["success"]:
-            # Perform automatic saving of results
-            self.autosave(fdist)
-            # Display automatically detected optimal indentation depth
-            if optimal_fit_edelta:
-                # Set guessed indentation depth in GUI
-                val = fdist.fit_properties["optimal_fit_delta"]
-                self.sp_range_1.setValue(val/units.scales["µ"])
-            if update_ui:
-                # Display results in `self.table_parameters_fitted`
-                fitpar = fdist.fit_properties["params_fitted"]
-                varps = [p[1] for p in fitpar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps))
-                for ii, p in enumerate(varps):
-                    # Get the human readable name of the parameter
-                    name = model.parameter_keys.index(p.name)
-                    hrnam = model.parameter_names[name]
-                    # Determine unit scale, e.g. 1e6 [sic] for µm
-                    scale = units.hrscale(hrnam)
-                    ftab.verticalHeaderItem(ii).setText(units.hrscname(hrnam))
-                    ftab.item(ii, 0).setText("{:.3f}".format(p.value*scale))
-        else:
-            if update_ui:
-                inipar = fdist.fit_properties["params_initial"]
-                varps = [p[1] for p in inipar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps))
-                for ii, p in enumerate(varps):
-                    # Get the human readable name of the parameter
-                    name = model.parameter_keys.index(p.name)
-                    hrnam = model.parameter_names[name]
-                    ftab.verticalHeaderItem(ii).setText(units.hrscname(hrnam))
-                    ftab.item(ii, 0).setText("nan")
+        choices = [["fit results", "on_export_fit_results"],
+                   ["E(δ) curves", "on_export_edelta"]
+                   ]
+        return choices
 
     def info_update(self, fdist):
         """Updates the info tab"""
@@ -293,6 +276,25 @@ class UiForceDistance(UiForceDistanceBase):
             text.append("{}: {}".format(k, fdist.metadata[k]))
         textstring = "\n".join(text)
         self.info_text.setPlainText(textstring)
+
+    def mpl_curve_setup(self):
+        """Setup the matplotlib interface for approach retract plotting"""
+        self.mpl_curve = MPLIndentation()
+        self.mpl_curve.add_toolbar(self.mplwindow)
+        self.mplvl.addWidget(self.mpl_curve.canvas)
+        self.mplvl.addWidget(self.mpl_curve.toolbar)
+        self.cb_mpl_rescale_plot_x.stateChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_x_min.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_x_max.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y.stateChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y_min.valueChanged.connect(
+            self.on_mpl_curve_update)
+        self.cb_mpl_rescale_plot_y_max.valueChanged.connect(
+            self.on_mpl_curve_update)
 
     def mpl_curve_update(self, fdist):
         """Update the force-indentation curve"""
@@ -314,45 +316,34 @@ class UiForceDistance(UiForceDistanceBase):
                               rescale_x=rescale_x,
                               rescale_y=rescale_y)
 
-    def mpl_edelta_update(self):
-        """Update the E(delta) plot"""
-        if self.tabs.currentWidget() == self.tab_edelta:
-            fdist = self.current_curve
-            delta_opt = self.sp_range_1.value()
-            # Update slider range
-            xaxis = self.cb_xaxis.currentText()
-            segment = self.cb_segment.currentText().lower()
-            segment_bool = segment == "retract"
-            segid = (fdist["segment"] == segment_bool).as_matrix()
-            xdata = fdist[xaxis].as_matrix()
-            xscale = units.hrscale(xaxis)
-            minx = np.min(xdata[segid])*xscale
-            self.delta_slider.blockSignals(True)
-            self.delta_slider.setMinimum(minx)
-            self.delta_slider.setValue(delta_opt)
-            self.delta_slider.blockSignals(False)
-            # Update E(delta) plot
-            self.fit_approach_retract(fdist)
-            self.mpl_edelta.update(fdist, delta_opt)
-
-    def mpl_qmap_update(self):
-        # Only update if we are on the right tab
-        if self.tabs.currentWidget() == self.tab_qmap:
-            fdist = self.current_curve
-            # Get all selected curves with the same path
-            fdist_map = self.selected_curves.subgroup_with_path(fdist.path)
-            self.tab_qmap.update_qmap(fdist_map, fdist_map.index(fdist))
+    def on_cb_rating_scheme(self):
+        scheme_id = self.cb_rating_scheme.currentIndex()
+        schemes = rating_scheme.get_rating_schemes()
+        if len(schemes) == scheme_id:
+            search_dir = ""
+            exts_str = "Training set zip file (*.zip)"
+            tsz, _e = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent(), "Import a training set",
+                search_dir, exts_str)
+            if tsz:
+                idx = rating_scheme.import_training_set(tsz)
+                self.rating_scheme_setup()
+                self.cb_rating_scheme.setCurrentIndex(idx)
+            else:
+                self.cb_rating_scheme.setCurrentIndex(0)
+        else:
+            self.on_params_init()
 
     def on_curve_list(self):
         """Called when a new curve is selected"""
         fdist = self.current_curve
         idx = self.current_index
         # perform preprocessing
-        self.fit_apply_preprocessing(fdist)
+        self.tab_preprocess.fit_apply_preprocessing(fdist)
         # update user interface with initial parameters
-        self.fit_update_parameters(fdist)
+        self.tab_fit.fit_update_parameters(fdist)
         # fit data
-        self.fit_approach_retract(fdist)
+        self.tab_fit.fit_approach_retract(fdist)
         # set plot data (time consuming)
         self.mpl_curve_update(fdist)
         # update info
@@ -360,9 +351,9 @@ class UiForceDistance(UiForceDistanceBase):
         # Display new rating
         self.curve_list_update(item=idx)
         # Display map
-        self.mpl_qmap_update()
+        self.tab_qmap.mpl_qmap_update()
         # Display edelta
-        self.mpl_edelta_update()
+        self.tab_edelta.mpl_edelta_update()
 
     def on_curve_list_item_changed(self, item):
         """An item in the curve list was changed
@@ -375,8 +366,91 @@ class UiForceDistance(UiForceDistanceBase):
         fdist = self.data_set[idx]
         if item.column() == 3:
             # The checkbox has been changed
-            self.mpl_qmap_update()
+            self.tab_qmap.mpl_qmap_update()
             self.autosave(fdist)
+
+    def on_export_edelta(self):
+        """Saves all edelta curves"""
+        fname, _e = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent(),
+            "Save E(δ) curves",
+            "",
+            "Tab Separated Values (*.tsv)"
+        )
+        if fname:
+            if not fname.endswith(".tsv"):
+                fname += ".tsv"
+            # Make sure all curves have correct fit properties
+            self.on_fit_all()
+            # Proceed computing edelta curves with progress bar
+            curves = self.selected_curves
+            bar = QtWidgets.QProgressDialog("Computing  E(δ) curves...",
+                                            "Stop", 1, len(curves))
+            bar.setWindowTitle("Please wait...")
+            bar.setMinimumDuration(1000)
+
+            res = []
+            for ii, ar in enumerate(curves):
+                if bar.wasCanceled():
+                    return
+                # TODO:
+                # - Use the callback method in `compute_emodulus_mindelta`
+                #   to prevent "freezing" of the GUI?
+                try:
+                    e, d = ar.compute_emodulus_mindelta()
+                except nfit.FitDataError:
+                    pass
+                else:
+                    res += [d, e]
+                QtCore.QCoreApplication.instance().processEvents()
+                bar.setValue(ii+1)
+
+            # export curves with numpy
+            with io.open(fname, "w") as fd:
+                header = ["# Indentation [m] and elastic modulus [Pa]\n",
+                          "# are stored as alternating rows.\n",
+                          ]
+                fd.writelines(header)
+
+            with io.open(fname, "ab") as fd:
+                np.savetxt(fd, np.array(res))
+
+    def on_export_fit_results(self):
+        """Saves all fit results"""
+        fname, _e = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent(),
+            "Save fit results",
+            "fit_results_{:03d}.tsv".format(
+                self._instance_counter),
+            "Tab Separated Values (*.tsv)"
+        )
+        if fname:
+            if not fname.endswith(".tsv"):
+                fname += ".tsv"
+            self.on_fit_all()
+            exp_curv = [fdist for fdist in self.selected_curves]
+            ratings = self.rate_data(exp_curv)
+            export.save_tsv_approach_retract(filename=fname,
+                                             fdist_list=exp_curv,
+                                             ratings=ratings)
+
+    def on_fit_all(self):
+        """Apply initial parameters to all curves and fit"""
+        # We will fit all curves with the currently visible settings
+        bar = QtWidgets.QProgressDialog("Fitting all curves...",
+                                        "Stop", 1, len(self.data_set))
+        bar.setWindowTitle("Loading data files")
+        bar.setMinimumDuration(1000)
+        for ii, fdist in enumerate(self.data_set):
+            QtCore.QCoreApplication.instance().processEvents()
+            if bar.wasCanceled():
+                break
+            self.tab_preprocess.fit_apply_preprocessing(fdist)
+            self.tab_fit.fit_approach_retract(fdist, update_ui=False)
+            bar.setValue(ii+1)
+            self.curve_list_update(item=ii)
+        # Display map
+        self.tab_qmap.mpl_qmap_update()
 
     def on_model(self):
         """Called when the fitting model is changed"""
@@ -384,22 +458,42 @@ class UiForceDistance(UiForceDistanceBase):
         # have to `fit_update_parameters` in order to display
         # potential new parameter names of the new model.
         fdist = self.current_curve
-        self.fit_apply_preprocessing(fdist)
-        self.fit_update_parameters(fdist)
-        self.fit_approach_retract(fdist)
+        self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_fit.fit_update_parameters(fdist)
+        self.tab_fit.fit_approach_retract(fdist)
         self.mpl_curve_update(fdist)
         self.curve_list_update()
-        self.mpl_qmap_update()
+        self.tab_qmap.mpl_qmap_update()
+
+    def on_mpl_curve_update(self):
+        fdist = self.current_curve
+        self.mpl_curve_update(fdist)
 
     def on_params_init(self):
         """Called when the initial parameters are changed"""
         fdist = self.current_curve
         idx = self.current_index
-        self.fit_apply_preprocessing(fdist)
-        self.fit_approach_retract(fdist)
+        self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_fit.fit_approach_retract(fdist)
         self.mpl_curve_update(fdist)
         self.curve_list_update(item=idx)
-        self.mpl_qmap_update()
+        self.tab_qmap.mpl_qmap_update()
+
+    def on_rating_threshold(self):
+        """(De)select curves according to threshold rating"""
+        thresh = self.sp_rating_thresh.value()
+        self.curve_list_update()
+        for ii, ar in enumerate(self.data_set):
+            rating = self.rate_data(ar)
+            it = self.list_curves.topLevelItem(ii)
+            if rating >= thresh:
+                it.setCheckState(3, 2)
+            else:
+                it.setCheckState(3, 0)
+        # TODO:
+        # -make this more efficient. There is a lot written to disk here.
+        for fdist in self.data_set:
+            self.autosave(fdist)
 
     def on_tab_changed(self, index):
         """Called when the tab on the right hand is changed"""
@@ -413,10 +507,10 @@ class UiForceDistance(UiForceDistanceBase):
             self.on_params_init()
         elif curtab == self.tab_qmap:
             # Redraw the current map
-            self.mpl_qmap_update()
+            self.tab_qmap.mpl_qmap_update()
         elif curtab == self.tab_edelta:
             # Compute edelta plot
-            self.mpl_edelta_update()
+            self.tab_edelta.mpl_edelta_update()
 
         self.user_tab_selected = curtab
 
@@ -434,6 +528,52 @@ class UiForceDistance(UiForceDistanceBase):
             rt = user_rating.Rater(fdui=self, path=path)
             self.curve_rater = rt
             rt.show()
+
+    def rate_data(self, data):
+        """Apply rating to curves
+
+        Parameters
+        ----------
+        data: list, afmlib.indentaion.Indentation, afmlib.AFM_DataSet
+           The data to be rated
+        """
+        if isinstance(data, nindent.Indentation):
+            data = [data]
+            return_single = True
+        else:
+            return_single = False
+
+        scheme_id = self.cb_rating_scheme.currentIndex()
+        schemes = rating_scheme.get_rating_schemes()
+        scheme_key = list(schemes.keys())[scheme_id]
+        training_set, regressor = schemes[scheme_key]
+        rates = []
+        for fdist in data:
+            rt = fdist.rate_quality(regressor=regressor,
+                                    training_set=training_set)
+            rates.append(rt)
+
+        if return_single:
+            return rates[0]
+        else:
+            return rates
+
+    def rating_scheme_setup(self):
+        self.cb_rating_scheme.clear()
+        schemes = rating_scheme.get_rating_schemes()
+        self.cb_rating_scheme.addItems(list(schemes.keys()))
+        self.cb_rating_scheme.addItem("Import...")
+
+    @property
+    def selected_curves(self):
+        """Return an IndentationGroup with all curves selected by the user"""
+        curves = nanite.IndentationGroup()
+        for ar in self.data_set:
+            idx = self.data_set.index(ar)
+            item = self.list_curves.topLevelItem(idx)
+            if item.checkState(3) == 2:
+                curves.append(ar)
+        return curves
 
 
 class AbortProgress(BaseException):

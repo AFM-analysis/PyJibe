@@ -42,6 +42,19 @@ class TabPreprocess(QtWidgets.QWidget):
         # Apply recommended defaults
         self.cb_preproc_presel.setCurrentIndex(1)
 
+    def fit_apply_preprocessing(self, fdist):
+        """Apply the preprocessing steps if required"""
+        # Note: Preprocessing is cached once in `fdist`.
+        # Thus calling this method a second time without any
+        # change in the GUI is free.
+        num = self.list_preproc_applied.count()
+        preprocessing = []
+        for ii in range(num):
+            item = self.list_preproc_applied.item(ii)
+            preprocessing.append(item.text())
+        # Perform preprocessing
+        fdist.apply_preprocessing(preprocessing)
+
     def on_preset_changed(self):
         """Update preselection"""
         text = self.cb_preproc_presel.currentText()
