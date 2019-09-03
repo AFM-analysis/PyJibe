@@ -25,18 +25,17 @@ def test_remember_initial_params(qtbot):
     main_window.load_data(files=[jpkfile, jpkfile])
     war = main_window.subwindows[0].widget()
     # clear data
-    tpp = war.tab_preprocess
-    tpp.list_preproc_applied.clear()
+    war.tab_preprocess.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
     item = QtWidgets.QListWidgetItem()
     item.setText("compute_tip_position")
-    tpp.list_preproc_applied.addItem(item)
+    war.tab_preprocess.list_preproc_applied.addItem(item)
     # perform fitting with standard parameters
     # set initial parameters in user interface
-    itab = war.table_parameters_initial
+    itab = war.tab_fit.table_parameters_initial
     # disable weighting
-    war.cb_weight_cp.setCheckState(0)
+    war.tab_fit.cb_weight_cp.setCheckState(0)
     # enable fitting of force offset
     itab.item(4, 0).setCheckState(0)
     # set better value for contact point
@@ -57,22 +56,21 @@ def test_change_model_keep_parms(qtbot):
     main_window.load_data(files=[jpkfile, jpkfile])
     war = main_window.subwindows[0].widget()
     # clear data
-    tpp = war.tab_preprocess
-    tpp.list_preproc_applied.clear()
+    war.tab_preprocess.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
     item = QtWidgets.QListWidgetItem()
     item.setText("compute_tip_position")
-    tpp.list_preproc_applied.addItem(item)
+    war.tab_preprocess.list_preproc_applied.addItem(item)
     # perform fitting with standard parameters
     # set initial parameters in user interface
-    itab = war.table_parameters_initial
+    itab = war.tab_fit.table_parameters_initial
     # set value for contact point
     itab.item(3, 1).setText(str(12345))
     # change the model to pyramidal
     pyr_name = nmodel.model_hertz_three_sided_pyramid.model_name
-    pyr_idx = war.cb_model.findText(pyr_name)
-    war.cb_model.setCurrentIndex(pyr_idx)
+    pyr_idx = war.tab_fit.cb_model.findText(pyr_name)
+    war.tab_fit.cb_model.setCurrentIndex(pyr_idx)
     # check that contact point is still the same
     assert float(itab.item(3, 1).text()) == 12345
     cleanup_autosave(jpkfile)

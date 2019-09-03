@@ -39,17 +39,17 @@ def test_clear_and_verify_data(qtbot):
     tpp.list_preproc_applied.addItem(item)
     # perform fitting with standard parameters
     # set initial parameters in user interface
-    itab = war.table_parameters_initial
+    itab = war.tab_fit.table_parameters_initial
     # disable weighting
-    war.cb_weight_cp.setCheckState(0)
+    war.tab_fit.cb_weight_cp.setCheckState(0)
     # enable fitting of force offset
     itab.item(4, 0).setCheckState(0)
     # set better value for contact point
     itab.item(3, 1).setText(str(18000))
     apret = war.data_set[0]
-    war.fit_approach_retract(apret)
+    war.tab_fit.fit_approach_retract(apret)
     # Now check something
-    ftab = war.table_parameters_fitted
+    ftab = war.tab_fit.table_parameters_fitted
     # E
     assert float(ftab.item(0, 0).text()) == 14741.958
     # contact_point
