@@ -3,18 +3,25 @@ import pkg_resources
 import signal
 import sys
 import traceback
+import webbrowser
 
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtCore, QtWidgets
+
+import appdirs
+import h5py
+import lmfit
+import matplotlib
+import nanite
+import numpy
+import scipy
+import sklearn
+
 
 from . import custom_widgets
 
 from .. import registry
 from ..settings import SettingsFile
 from .._version import version as __version__
-
-# load QMainWindow from ui file
-ui_path = pkg_resources.resource_filename("pyjibe.head", "main_design.ui")
-MainBase = uic.loadUiType(ui_path)[0]
 
 
 class PyJibeQMdiSubWindow(QtWidgets.QMdiSubWindow):
@@ -25,18 +32,24 @@ class PyJibeQMdiSubWindow(QtWidgets.QMdiSubWindow):
         super(PyJibeQMdiSubWindow, self).closeEvent(QCloseEvent)
 
 
-class PyJibe(QtWidgets.QMainWindow, MainBase):
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
-        MainBase.__init__(self)
-        self.setupUi(self)
+class PyJibe(QtWidgets.QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super(PyJibe, self).__init__(*args, **kwargs)
+        path_ui = pkg_resources.resource_filename("pyjibe.head", "main.ui")
+        uic.loadUi(path_ui, self)
+
         self.setWindowTitle("PyJibe {}".format(__version__))
         # Disable native menubar (e.g. on Mac)
         self.menubar.setNativeMenuBar(False)
         # Connect menu entries
+        # File menu
         self.action_open_bulk.triggered.connect(self.on_open_bulk)
         self.action_open_single.triggered.connect(self.on_open_single)
         self.action_open_multiple.triggered.connect(self.on_open_multiple)
+        # Help menu
+        self.actionDocumentation.triggered.connect(self.on_documentation)
+        self.actionSoftware.triggered.connect(self.on_software)
+        self.actionAbout.triggered.connect(self.on_about)
         # Add settings
         self.settings = SettingsFile()
 
@@ -74,6 +87,20 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
                 self.menuExport.removeAction(action)
                 break
 
+    def on_about(self):
+        about_text = "PyJibe is a user interface for data analysis in " \
+            + "atomic force microscopy with an emphasis on biological " \
+            + "specimens, such as tissue sections or single cells.\n\n" \
+            + "Author: Paul Müller\n" \
+            + "Repository: https://github.com/AFM-analysis/PyJibe\n" \
+            + "Documentation: https://pyjibe.readthedocs.io"
+        QtWidgets.QMessageBox.about(self,
+                                    "PyJibe {}".format(__version__),
+                                    about_text)
+
+    def on_documentation(self):
+        webbrowser.open("https://pyjibe.readthedocs.io")
+
     def on_open_bulk(self, evt=None):
         dlg = custom_widgets.FileDialog(self)
         search_dir = self.settings.get_path("load data")
@@ -110,6 +137,28 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
             # user did not press cancel
             self.load_data(files=[n], retry_open=self.on_open_single)
             self.settings.set_path(pathlib.Path(n).parent, name="load data")
+
+    def on_software(self):
+        libs = [appdirs,
+                h5py,
+                lmfit,
+                matplotlib,
+                nanite,
+                numpy,
+                sklearn,
+                scipy,
+                ]
+        sw_text = "PyJibe {}\n\n".format(__version__)
+        sw_text += "Python {}\n\n".format(sys.version)
+        sw_text += "Modules:\n"
+        for lib in libs:
+            sw_text += "- {} {}\n".format(lib.__name__, lib.__version__)
+        sw_text += "- PyQt5 {}\n".format(QtCore.QT_VERSION_STR)
+        if hasattr(sys, 'frozen'):
+            sw_text += "\nThis executable has been created using PyInstaller."
+        QtWidgets.QMessageBox.information(self,
+                                          "Software",
+                                          sw_text)
 
     def load_data(self, files, retry_open=None, separate_analysis=False):
         # approach-retract data files
