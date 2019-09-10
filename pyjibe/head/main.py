@@ -57,7 +57,7 @@ class PyJibe(QtWidgets.QMainWindow, MainBase):
         # Add export choices
         if hasattr(inst, "get_export_choices"):
             choices = inst.get_export_choices()
-            menobj = self.menuExport.addMenu(inst.windowTitle())
+            menobj = self.menuExport.addMenu(sub.windowTitle())
             for choice in choices:
                 action = menobj.addAction(choice[0])
                 action.triggered.connect(getattr(inst, choice[1]))

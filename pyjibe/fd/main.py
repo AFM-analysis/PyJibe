@@ -33,8 +33,7 @@ class UiForceDistance(QtWidgets.QWidget):
         uic.loadUi(path_ui, self)
 
         UiForceDistance._instance_counter += 1
-        title = "{} #{}".format(self.parent().windowTitle(),
-                                self._instance_counter)
+        title = "Force-Distance #{}".format(self._instance_counter)
         self.parent().setWindowTitle(title)
 
         self.data_set = nanite.IndentationGroup()
@@ -522,7 +521,7 @@ class UiForceDistance(QtWidgets.QWidget):
         self.cb_rating_scheme.clear()
         schemes = rating_base.get_rating_schemes()
         self.cb_rating_scheme.addItems(list(schemes.keys()))
-        self.cb_rating_scheme.addItem("Import...")
+        self.cb_rating_scheme.addItem("Add...")
 
 
 class AbortProgress(BaseException):

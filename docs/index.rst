@@ -1,7 +1,7 @@
 .. _index:
 
 
-.. image:: logo/PyJibe.png
+.. image:: logo/PyJibe_bw.png
 
 |
 
@@ -19,6 +19,7 @@ Documentation
    :maxdepth: 2
 
    sec_getting_started
+   sec_quick_guides
 
 .. toctree::
    :maxdepth: 1
