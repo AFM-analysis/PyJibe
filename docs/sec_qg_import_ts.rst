@@ -6,8 +6,8 @@ Importing a pre-computed training set
 
 A training set is a set of text files containing rating features
 and manual user ratings. Training sets are the basis of the rating
-scheme employed in PyJibe (and nanite). By default, PyJibe
-comes with the *zef18* training set :cite:`zef18`. For general information
+scheme employed in PyJibe (and nanite) :cite:`Mueller19nanite`. By default,
+PyJibe comes with the *zef18* training set :cite:`zef18`. For general information
 about how manual rating and generation of the training set works, please
 refer to the :ref:`nanite rating workflow <nanite:sec_rating>`.
 

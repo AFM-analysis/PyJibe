@@ -36,3 +36,9 @@ If you installed pyjibe with ``pip``, you may upgrade it with:
 .. code:: bash
 
     pip install --upgrade pyjibe
+
+
+How to cite
+-----------
+If you use PyJibe in a scientific publication, please consider citing
+Müller et al., *BMC Bioinformatics* (2019) :cite:`Mueller19nanite`.
