@@ -111,7 +111,7 @@ class MPLIndentation(object):
     def update_plot(self, rescale_x=None, rescale_y=None):
         """Update plot data range"""
         if rescale_x is None:
-            fit_range = self.fdist["fit range"].values
+            fit_range = self.fdist["fit range"]
             xmin = np.min(self.plots["fit"].get_data()[0][fit_range])
             xmax = np.max(self.plots["fit"].get_data()[0][fit_range])
             xmargin = np.abs(xmax - xmin) * .05
@@ -124,7 +124,7 @@ class MPLIndentation(object):
             xmin = xmax = np.nan
 
         if rescale_y is None:
-            fit_range = self.fdist["fit range"].values
+            fit_range = self.fdist["fit range"]
             ymin = np.min(self.plots["fit"].get_data()[1][fit_range])
             ymax = np.max(self.plots["fit"].get_data()[1][fit_range])
             ymargin = np.abs(ymax - ymin) * .05

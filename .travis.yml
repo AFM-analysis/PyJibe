@@ -26,6 +26,7 @@ install:
 - travis_retry pip install 'numpy<1.17.0'
 # https://github.com/pyinstaller/pyinstaller/issues/4067
 - travis_retry pip install 'joblib==0.11'
+- travis_retry pip install git+git://github.com/AFM-analysis/afmformats.git
 - travis_retry pip install git+git://github.com/AFM-analysis/nanite.git
 - travis_retry pip install -e .
 # for tests:

@@ -53,8 +53,8 @@ class TabEdelta(QtWidgets.QWidget):
             xaxis = self.fd.tab_fit.cb_xaxis.currentText()
             segment = self.fd.tab_fit.cb_segment.currentText().lower()
             segment_bool = segment == "retract"
-            segid = (fdist["segment"] == segment_bool).values
-            xdata = fdist[xaxis].values
+            segid = fdist["segment"] == segment_bool
+            xdata = fdist[xaxis]
             xscale = units.hrscale(xaxis)
             minx = np.min(xdata[segid])*xscale
             self.delta_slider.blockSignals(True)
