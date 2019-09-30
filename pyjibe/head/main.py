@@ -7,6 +7,7 @@ import webbrowser
 
 from PyQt5 import uic, QtCore, QtWidgets
 
+import afmformats
 import appdirs
 import h5py
 import lmfit
@@ -127,7 +128,7 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.settings.set_path(dlg.getDirectory(), name="load data")
 
     def on_open_single(self, evt=None):
-        exts = ["*"+e for e in registry.file_extensions]
+        exts = ["*"+e for e in registry.known_suffixes]
         exts_str = "Supported file types ({})".format(" ".join(exts))
         search_dir = self.settings.get_path("load data")
 
@@ -139,7 +140,8 @@ class PyJibe(QtWidgets.QMainWindow):
             self.settings.set_path(pathlib.Path(n).parent, name="load data")
 
     def on_software(self):
-        libs = [appdirs,
+        libs = [afmformats,
+                appdirs,
                 h5py,
                 lmfit,
                 matplotlib,
@@ -165,7 +167,7 @@ class PyJibe(QtWidgets.QMainWindow):
         supfiles = []
         for ff in files:
             path = pathlib.Path(ff)
-            if path.suffix in registry.file_extensions:
+            if path.suffix in registry.known_suffixes:
                 supfiles.append(ff)
 
         # check if AFM files were found

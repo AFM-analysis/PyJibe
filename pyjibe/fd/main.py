@@ -4,9 +4,9 @@ import os
 import pkg_resources
 import time
 
+import afmformats
 import nanite
 import nanite.fit as nfit
-import nanite.read as nread
 import numpy as np
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
@@ -144,8 +144,8 @@ class UiForceDistance(QtWidgets.QWidget):
             try:
                 grp = nanite.IndentationGroup(f, callback=callback)
                 callback(1)
-            except nread.read_jpk_meta.ReadJPKMetaKeyError:
-                # ignore callibration curves
+            except afmformats.errors.FileFormatMetaDataError:
+                # ignore e.g. JPK callibration curves
                 callback(1)
                 continue
             except AbortProgress:
@@ -473,7 +473,7 @@ class UiForceDistance(QtWidgets.QWidget):
             else:
                 it.setCheckState(3, 0)
         # TODO:
-        # -make this more efficient. There is a lot written to disk here.
+        # - make this more efficient. There is a lot written to disk here.
         for fdist in self.data_set:
             self.autosave(fdist)
 

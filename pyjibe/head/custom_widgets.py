@@ -68,14 +68,14 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
 
     def save_data(self, *args):
         fname, _e = QtWidgets.QFileDialog.getSaveFileName(
-            self, "Save raw data", "", "Tab Separated Values (*.tsv)")
+            self, "Save raw data", "", "Tab Separated Values (*.tab)")
         if fname:
-            if not fname.endswith(".tsv"):
-                fname += ".tsv"
+            if not fname.endswith(".tab"):
+                fname += ".tab"
             self.save_data_callback(fname)
 
     def save_data_callback(self, filename):
-        """Save the plot data to a tsv file
+        """Save the plot data to a tab file
         """
         raise ValueError("This Method must be overridden!")
 

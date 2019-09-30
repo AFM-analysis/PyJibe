@@ -8,7 +8,7 @@ from .. import units
 
 
 def save_tsv_approach_retract(filename, fdist_list, ratings=[]):
-    """Export a list of afmlib.ApproachRetract instances"""
+    """Export fitting results for a list of nanite.Indentation"""
 
     columns = []
 

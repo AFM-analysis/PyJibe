@@ -1,11 +1,15 @@
+from afmformats.formats import formats_by_mode
+
 from . import fd
 
 
-analysis_types = {"fd":
-                  {"file extensions": [".jpk", ".jpk-force", ".jpk-force-map"],
-                   "gui": fd.UiForceDistance,
-                   }}
+analysis_types = {
+    "fd": {
+        "suffixes": [f["suffix"] for f in formats_by_mode["force-distance"]],
+        "gui": fd.UiForceDistance,
+        }
+    }
 
-file_extensions = []
+known_suffixes = []
 for _item in analysis_types.values():
-    file_extensions += _item["file extensions"]
+    known_suffixes += _item["suffixes"]

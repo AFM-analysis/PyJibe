@@ -1,5 +1,6 @@
 0.5.2
- - ref: bump nanite to 1.2.0 (afmformats)
+ - ref: bump nanite to 1.2.0
+ - ref: migrate to afmformats (0.3.0)
 0.5.1
  - fix: missing title in FD window and missing FD number in export menu
  - enh: add help menu with link to docs, about, and software used (#1)
