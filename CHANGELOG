@@ -1,3 +1,6 @@
+0.5.3
+ - setup: bump afmformats from 0.3.0 to 0.4.0
+ - setup: bump nanite from 1.2.0 to 1.2.2
 0.5.2
  - ref: bump nanite to 1.2.0
  - ref: migrate to afmformats (0.3.0)
