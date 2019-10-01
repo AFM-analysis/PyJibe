@@ -310,22 +310,13 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_info">
+        <widget class="TabInfo" name="tab_info">
          <attribute name="title">
           <string>Info</string>
          </attribute>
          <attribute name="toolTip">
           <string>cuve information</string>
          </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <item>
-           <widget class="QPlainTextEdit" name="info_text">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
         <widget class="TabQMap" name="tab_qmap">
          <attribute name="title">
@@ -560,6 +551,12 @@
    <class>WidgetFDist</class>
    <extends>QWidget</extends>
    <header>pyjibe.fd.widget_fdist</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TabInfo</class>
+   <extends>QWidget</extends>
+   <header>pyjibe.fd.tab_info</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

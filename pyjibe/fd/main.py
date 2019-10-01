@@ -286,16 +286,7 @@ class UiForceDistance(QtWidgets.QWidget):
 
     def info_update(self, fdist):
         """Updates the info tab"""
-        text = []
-        text.append("filename: {}".format(fdist.path))
-        text.append("position index/enum: {}".format(fdist.enum))
-        text.append("")
-        keys = list(fdist.metadata.keys())
-        keys.sort()
-        for k in keys:
-            text.append("{}: {}".format(k, fdist.metadata[k]))
-        textstring = "\n".join(text)
-        self.info_text.setPlainText(textstring)
+        self.tab_info.update_info(fdist)
 
     def on_cb_rating_scheme(self):
         """Switch rating scheme or import a new one"""
