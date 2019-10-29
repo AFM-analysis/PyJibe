@@ -1,3 +1,7 @@
+0.5.4
+ - enh: write maximum indentation to statistics file (#3)
+ - fix: unicode characters were not read correctly from statistics
+   file by libre office (added UTF-8 BOM)
 0.5.3
  - enh: improved visualization of meta data parameters in the Info tab
  - setup: bump afmformats from 0.3.0 to 0.4.1

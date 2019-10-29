@@ -20,6 +20,18 @@ def save_tsv_approach_retract(filename, fdist_list, ratings=[]):
                     [np.nan]*len(fdist_list)])
     columns.append(["Y Position",
                     [np.nan]*len(fdist_list)])
+    # Add maximum indentation
+    maxindent = []
+    for fd in fdist_list:
+        if "tip position" in fd:
+            cp = fd.fit_properties["params_fitted"]["contact_point"].value
+            idmax = fd.data.appr["fit"].argmax()
+            mi = fd.data.appr["tip position"][idmax]
+            mival = (cp-mi)*1e6
+        else:
+            mival = np.nan
+        maxindent.append(mival)
+    columns.append(["Maximum indentation [µm]", maxindent])
     # Add fit parameters
     model_key = fdist_list[0].fit_properties["model_key"]
     model = nmodel.models_available[model_key]
@@ -53,7 +65,9 @@ def save_tsv(filename, column_lists):
         E.g.: ["Column One", [1.1, 2.2, 3.3, 4.4],
                "Column Two", [nan, 2.0, 4.0, 1.0]]
     """
-    with codecs.open(filename, "w", encoding="utf-8") as fd:
+    with codecs.open(filename, "wb") as fd:
+        fd.write(codecs.BOM_UTF8)
+    with codecs.open(filename, "a", encoding="utf-8") as fd:
         # Write header:
         header = "\t".join([d[0] for d in column_lists])
         fd.write(header+"\r\n")
