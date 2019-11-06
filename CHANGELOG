@@ -1,3 +1,5 @@
+0.5.5
+ - maintenance release
 0.5.4
  - enh: write maximum indentation to statistics file (#3)
  - fix: unicode characters were not read correctly from statistics
