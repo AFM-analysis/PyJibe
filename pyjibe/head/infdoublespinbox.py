@@ -56,7 +56,7 @@ def convert_string_to_float(string):
         val = float(string)
     except ValueError:
         string = string.strip()
-        if string[0] == "-":
+        if string.startswith("-"):
             asign = -1
         else:
             asign = 1
