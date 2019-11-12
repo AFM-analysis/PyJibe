@@ -26,7 +26,7 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["afmformats>=0.4.0",
                       "appdirs",
-                      "nanite>=1.2.2",
+                      "nanite>=1.2.3",
                       "matplotlib",
                       "pyqt5"],
     python_requires='>=3.6, <4',

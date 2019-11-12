@@ -33,6 +33,11 @@ class TabFit(QtWidgets.QWidget):
         # initial values, sources, drains for indentation depth
         self.indentation_depth_setup()
 
+        # hide option to set right part of fitting range individually
+        # (will be displayed when indentation depth is set individually,
+        # i.e. `self.cb_delta_select.currentIndex == 1`)
+        self.cb_right_individ.setVisible(False)
+
         # signals
         self.cb_segment.currentTextChanged.connect(self.on_params_init)
         self.cb_xaxis.currentTextChanged.connect(self.on_params_init)
@@ -107,6 +112,10 @@ class TabFit(QtWidgets.QWidget):
         # Determine range
         range_x = [self.sp_range_1.value() * units.scales["µ"],
                    self.sp_range_2.value() * units.scales["µ"]]
+        # Remember range if applicable
+        if self.cb_delta_select.currentIndex() == 1:
+            self._indentation_depth_individual[fdist] = (
+                self.sp_range_1.value(), self.sp_range_2.value())
         # Determine if we want to weight the contact point
         self.on_update_weights(on_params_init=False)
         if self.cb_weight_cp.checkState() == 2:
@@ -253,11 +262,10 @@ class TabFit(QtWidgets.QWidget):
         if self.cb_delta_select.currentIndex() == 1:
             # Set indentation depth individually
             if fdist in self._indentation_depth_individual:
-                value = self._indentation_depth_individual[fdist]
-                self.fd.tab_edelta.delta_spin.setValue(value)
-            else:
-                value = self.fd.tab_edelta.delta_spin.value()
-                self._indentation_depth_individual[fdist] = value
+                left, right = self._indentation_depth_individual[fdist]
+                self.fd.tab_edelta.delta_spin.setValue(left)
+                if self.cb_right_individ.isChecked() and right is not None:
+                    self.sp_range_2.setValue(right)
 
     def indentation_depth_setup(self):
         """Initiate ranges (spin/slider) that allow inf values"""
@@ -277,7 +285,7 @@ class TabFit(QtWidgets.QWidget):
     def on_params_init(self):
         self.fd.on_params_init()
 
-    def on_delta_select(self, value):
+    def on_delta_select(self, index):
         """The user selected a method for indentation depth determination
 
         This method is called when `tab_fit.cb_delta_select` or (indirectly)
@@ -289,7 +297,7 @@ class TabFit(QtWidgets.QWidget):
 
         Parameters
         ----------
-        value: int
+        index: int
             The selected index of the dropdown widget:
             - 0: Set indentation depth globally
             - 1: Set indentation depth individually
@@ -305,12 +313,12 @@ class TabFit(QtWidgets.QWidget):
                         self.fd.tab_edelta.delta_slider,
                         self.fd.tab_edelta.delta_btn_guess]
 
-        if value == 0:
+        if index == 0:
             # Set indentation depth globally
             [item.setEnabled(True) for item in global_disable]
             [item.setEnabled(False) for item in local_enable]
             self.cb_range_type.setEnabled(True)
-        elif value == 1:
+        elif index == 1:
             # Set indentation depth individually
             [item.setEnabled(True) for item in global_disable]
             [item.setEnabled(True) for item in local_enable]
@@ -319,18 +327,25 @@ class TabFit(QtWidgets.QWidget):
             # Set/get indentation depth individually
             fdist = self.current_curve
             if fdist in self._indentation_depth_individual:
-                value = self._indentation_depth_individual[fdist]
+                left = self._indentation_depth_individual[fdist][0]
             else:
-                value = self.fd.tab_edelta.delta_spin.value()
-            self.fd.tab_edelta.delta_spin.setValue(value)
-
-        elif value == 2:
+                left = self.fd.tab_edelta.delta_spin.value()
+            self.fd.tab_edelta.delta_spin.setValue(left)
+        elif index == 2:
             # Guess optimal indentation depth
             [item.setEnabled(False) for item in global_disable]
             [item.setEnabled(False) for item in local_enable]
             self.cb_range_type.setEnabled(False)
             self.cb_range_type.setCurrentText("absolute")
+        else:
+            raise ValueError("Invalid index '{}'!".format(index))
 
+        # enable checkbox for right range
+        if index == 1:
+            self.cb_right_individ.setVisible(True)
+        else:
+            self.cb_right_individ.setVisible(False)
+            self.cb_right_individ.setChecked(False)
         self.on_params_init()
 
     def on_update_weights(self, on_params_init=True):

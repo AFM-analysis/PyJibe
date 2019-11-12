@@ -1,4 +1,9 @@
+0.5.7
+ - enh: allow to also set right part of fitting range individually
+ - fix: improve layout of FD fitting panel
 0.5.6
+ - setup: bump nanite from 1.2.2 to 1.2.3 (fixes issue with fits not
+   being redone when the user changes an initial parameter)
  - fix: IndexError when editing the fitting range
 0.5.5
  - maintenance release

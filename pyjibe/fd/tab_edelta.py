@@ -88,9 +88,3 @@ class TabEdelta(QtWidgets.QWidget):
         self.fd.tab_fit.sp_range_1.blockSignals(False)
         self.delta_spin.blockSignals(False)
         self.delta_slider.blockSignals(False)
-
-        # Update stored indentation depth
-        if self.fd.tab_fit.cb_delta_select.currentIndex() == 1:
-            # Set indentation depth individually
-            fdist = self.current_curve
-            self.fd.tab_fit._indentation_depth_individual[fdist] = value
