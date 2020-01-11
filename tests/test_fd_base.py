@@ -1,7 +1,9 @@
 """Test of data set functionalities"""
 import pathlib
 
+import numpy as np
 from PyQt5 import QtWidgets
+import pytest
 
 import pyjibe.head
 
@@ -18,6 +20,16 @@ def cleanup_autosave(jpkfile):
     [f.unlink() for f in files]
 
 
+@pytest.fixture(autouse=True)
+def run_around_tests():
+    # Code that will run before your test, for example:
+    cleanup_autosave(jpkfile)
+    # A test function will be run at this point
+    yield
+    # Code that will run after your test, for example:
+    cleanup_autosave(jpkfile)
+
+
 def test_simple(qtbot):
     """Open the main window and close it again"""
     main_window = pyjibe.head.PyJibe()
@@ -25,7 +37,6 @@ def test_simple(qtbot):
 
 
 def test_clear_and_verify_data(qtbot):
-    cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile])
     war = main_window.subwindows[0].widget()
@@ -51,17 +62,19 @@ def test_clear_and_verify_data(qtbot):
     # Now check something
     ftab = war.tab_fit.table_parameters_fitted
     # E
-    assert float(ftab.item(0, 0).text()) == 14741.958
+    assert np.allclose(apret.fit_properties["params_fitted"]["E"].value,
+                       14741.958242422093,
+                       atol=1e-4,
+                       rtol=0)
+    assert float(ftab.item(0, 0).text()) == 14742
     # contact_point
-    assert float(ftab.item(1, 0).text()) == 18029.310
+    assert float(ftab.item(1, 0).text()) == 18029
     # baseline_offset
-    assert float(ftab.item(2, 0).text()) == -480.669
-    cleanup_autosave(jpkfile)
+    assert float(ftab.item(2, 0).text()) == -480.67
 
 
 def test_fit_all(qtbot):
     """Perform a simple fit with the standard parameters"""
-    cleanup_autosave(jpkfile)
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=[jpkfile, jpkfile])
     war = main_window.subwindows[0].widget()
@@ -70,4 +83,3 @@ def test_fit_all(qtbot):
     a1 = war.data_set[0]
     a2 = war.data_set[1]
     assert a1.fit_properties == a2.fit_properties
-    cleanup_autosave(jpkfile)
