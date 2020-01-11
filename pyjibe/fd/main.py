@@ -447,6 +447,7 @@ class UiForceDistance(QtWidgets.QWidget):
         fdist = self.current_curve
         idx = self.current_index
         self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_fit.anc_update_parameters(fdist)
         self.tab_fit.fit_approach_retract(fdist)
         self.widget_fdist.mpl_curve_update(fdist)
         self.curve_list_update(item=idx)

@@ -21,7 +21,7 @@ class TabFit(QtWidgets.QWidget):
         models_av.sort(key=lambda x: nmodel.models_available[x].model_name)
         for ii, key in enumerate(models_av):
             model = nmodel.models_available[key]
-            self.cb_model.addItem(model.model_name)
+            self.cb_model.addItem(model.model_name, key)
             if key == "hertz_para":
                 id_para = ii
         # Setz Hertz Parabolic as default
@@ -39,10 +39,10 @@ class TabFit(QtWidgets.QWidget):
         self.cb_right_individ.setVisible(False)
 
         # signals
-        self.cb_segment.currentTextChanged.connect(self.on_params_init)
-        self.cb_xaxis.currentTextChanged.connect(self.on_params_init)
-        self.cb_yaxis.currentTextChanged.connect(self.on_params_init)
-        self.cb_model.currentTextChanged.connect(self.on_model)
+        self.cb_segment.currentIndexChanged.connect(self.on_params_init)
+        self.cb_xaxis.currentIndexChanged.connect(self.on_params_init)
+        self.cb_yaxis.currentIndexChanged.connect(self.on_params_init)
+        self.cb_model.currentIndexChanged.connect(self.on_model)
         self.cb_range_type.currentTextChanged.connect(self.on_params_init)
         self.table_parameters_anc.itemChanged.connect(self.on_params_anc)
         self.table_parameters_initial.itemChanged.connect(self.on_params_init)
@@ -60,7 +60,48 @@ class TabFit(QtWidgets.QWidget):
 
     @property
     def fit_model(self):
-        return nmodel.get_model_by_name(self.cb_model.currentText())
+        return nmodel.models_available[self.cb_model.currentData()]
+
+    def anc_update_parameters(self, fdist):
+        model_key = self.fit_model.model_key
+        # ancillaries
+        anc = fdist.get_ancillary_parameters(model_key=model_key)
+        anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
+        if anc_used:
+            self.widget_anc.setVisible(True)
+            itab = self.table_parameters_initial
+            atab = self.table_parameters_anc
+            atab.blockSignals(True)
+            rows_changed = self.assert_parameter_table_rows(atab,
+                                                            len(anc_used),
+                                                            cb_first=True,
+                                                            read_only=True)
+            row = 0
+            for ii, ak in enumerate(list(anc.keys())):
+                if ak not in anc_used:
+                    continue
+                # Get the human readable name of the parameter
+                hrname = self.fit_model.parameter_anc_names[ii]
+                # Determine unit scale, e.g. 1e6 [sic] for µm
+                si_unit = self.fit_model.parameter_anc_units[ii]
+                # Determine unit scale, e.g. 1e6 [sic] for µm
+                scale = units.hrscale(hrname, si_unit=si_unit)
+                label = units.hrscname(hrname, si_unit=si_unit)
+                atab.verticalHeaderItem(row).setText(label)
+                if rows_changed:
+                    atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
+                atab.item(row, 1).setText("{:.5g}".format(anc[ak]*scale))
+                # updates initial parameters if "use" is checked
+                if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
+                    # update initial parameters
+                    idx = self.fit_model.parameter_keys.index(ak)
+                    text = atab.item(row, 1).text()
+                    if text != "nan":
+                        itab.item(idx, 1).setText(text)
+                row += 1
+            atab.blockSignals(False)
+        else:
+            self.widget_anc.setVisible(False)
 
     def assert_parameter_table_rows(self, table, rows, cb_first=False,
                                     read_only=False):
@@ -294,36 +335,7 @@ class TabFit(QtWidgets.QWidget):
                     self.sp_range_2.setValue(right)
 
         # ancillaries
-        anc = fdist.get_ancillary_parameters(model_key=model_key)
-        anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
-        if anc_used:
-            self.widget_anc.setVisible(True)
-            atab = self.table_parameters_anc
-            atab.blockSignals(True)
-            rows_changed = self.assert_parameter_table_rows(atab,
-                                                            len(anc_used),
-                                                            cb_first=True,
-                                                            read_only=True)
-            row = 0
-            for ii, ak in enumerate(list(anc.keys())):
-                if ak not in anc_used:
-                    continue
-                # Get the human readable name of the parameter
-                hrname = self.fit_model.parameter_anc_names[ii]
-                # Determine unit scale, e.g. 1e6 [sic] for µm
-                si_unit = self.fit_model.parameter_anc_units[ii]
-                # Determine unit scale, e.g. 1e6 [sic] for µm
-                scale = units.hrscale(hrname, si_unit=si_unit)
-                label = units.hrscname(hrname, si_unit=si_unit)
-                atab.verticalHeaderItem(row).setText(label)
-                if rows_changed:
-                    atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
-                atab.item(row, 1).setText("{:.5g}".format(anc[ak]*scale))
-                row += 1
-            atab.blockSignals(False)
-            self.on_params_anc()  # updates initial parameters if necessary
-        else:
-            self.widget_anc.setVisible(False)
+        self.anc_update_parameters(fdist)
 
     def indentation_depth_setup(self):
         """Initiate ranges (spin/slider) that allow inf values"""
@@ -341,17 +353,7 @@ class TabFit(QtWidgets.QWidget):
         self.fd.on_model()
 
     def on_params_anc(self):
-        """Updates initial parameters if the "use" is checked"""
-        atab = self.table_parameters_anc
-        itab = self.table_parameters_initial
-        anc = self.fit_model.parameter_anc_keys
-        anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
-        for row, ak in enumerate(anc_used):
-            if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
-                # update initial parameters
-                idx = self.fit_model.parameter_keys.index(ak)
-                itab.item(idx, 1).setText(atab.item(row, 1).text())
-        self.on_params_init()
+        self.fd.on_params_init()
 
     def on_params_init(self):
         self.fd.on_params_init()
