@@ -1,7 +1,7 @@
 """Helper methods for handling units in PyJibe"""
 
 
-def si2hr(name, value):
+def si2hr(name, value, si_unit=None):
     """Convert an SI unit to a human readable unit
 
     Parameters
@@ -24,38 +24,53 @@ def si2hr(name, value):
         scalename, unit = human_units[name]
         scale = scales[scalename]
         hr_value = value/scale
-        scaleunit = scalename+unit
+        scaleunit = scalename + unit
+    elif si_unit in default_scales:
+        scalename = default_scales[si_unit]
+        scale = scales[scalename]
+        hr_value = value/scale
+        scaleunit = scalename + si_unit
+    elif si_unit is not None:
+        hr_value = value
+        scaleunit = si_unit
     else:
         hr_value = value
         scaleunit = ""
     return hr_value, scaleunit
 
 
-def hrscale(name):
+def hrscale(name, si_unit=None):
     """Returns the multiplier for unit scale conversion, e.g. 1e6 for µm"""
     name = name.lower()
     if name in human_units:
         scalename, _unit = human_units[name]
+        scale = 1/scales[scalename]
+    elif si_unit in default_scales:
+        scalename = default_scales[si_unit]
         scale = 1/scales[scalename]
     else:
         scale = 1
     return scale
 
 
-def hrunit(name):
+def hrunit(name, si_unit=None):
     """Returns the unit name for scale conversion, e.g. µm"""
     name = name.lower()
     if name in human_units:
         scalename, unit = human_units[name]
-        scaleunit = scalename+unit
+        scaleunit = scalename + unit
+    elif si_unit in default_scales:
+        scaleunit = default_scales[si_unit] + si_unit
+    elif si_unit is not None:
+        scaleunit = si_unit
     else:
         scaleunit = ""
     return scaleunit
 
 
-def hrscname(name):
+def hrscname(name, si_unit=None):
     """Returns the name with human readable units, e.g. Force [nN]"""
-    unit = hrunit(name)
+    unit = hrunit(name, si_unit=si_unit)
     if unit == "":
         hrscname = name
     else:
@@ -65,15 +80,22 @@ def hrscname(name):
 
 # TODO:
 # - make the scales user-editable
+default_scales = {"deg": "",
+                  "m": "µ",
+                  "m/s": "µ",
+                  "N": "n",
+                  "Pa": "",
+                  "Pa·s": "",
+                  }
+
 human_units = {}
-human_units["young's modulus"] = ["", "Pa"]
+human_units["young's modulus"] = [default_scales["Pa"], "Pa"]
 human_units["tip radius"] = ["µ", "m"]
 human_units["contact point"] = ["n", "m"]
-human_units["force"] = ["n", "N"]
+human_units["force"] = [default_scales["N"], "N"]
 human_units["force baseline"] = ["p", "N"]
-human_units["tip position"] = ["µ", "m"]
+human_units["tip position"] = [default_scales["m"], "m"]
 human_units["half cone angle"] = ["", "deg"]
-
 
 scales = {}
 scales["k"] = 1e3

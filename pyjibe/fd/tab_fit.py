@@ -57,6 +57,10 @@ class TabFit(QtWidgets.QWidget):
     def fd(self):
         return self.parent().parent().parent().parent()
 
+    @property
+    def fit_model(self):
+        return nmodel.get_model_by_name(self.cb_model.currentText())
+
     def assert_parameter_table_rows(self, table, rows, cb_first=False):
         """Make sure a QTableWidget has enough rows
 
@@ -69,7 +73,13 @@ class TabFit(QtWidgets.QWidget):
         cb_first: bool
             Set first column values as check-boxes.
             (This is used for fixing fit parameters in PyJibe)
+
+        Returns
+        -------
+        rows_changed: bool
+            Whether or not the number of rows changed
         """
+        rows_changed = (table.rowCount() - rows) != 0
         table.setRowCount(rows)
         cols = table.columnCount()
         for rr in range(rows):
@@ -80,8 +90,8 @@ class TabFit(QtWidgets.QWidget):
                 if cc == 0 and cb_first:
                     item.setFlags(QtCore.Qt.ItemIsUserCheckable |
                                   QtCore.Qt.ItemIsEnabled)
-                    item.setCheckState(QtCore.Qt.Unchecked)
                 table.setItem(rr, cc, item)
+        return rows_changed
 
     def fit_approach_retract(self, fdist, update_ui=True):
         """Perform preprocessing and fit data
@@ -102,8 +112,7 @@ class TabFit(QtWidgets.QWidget):
         # y axis
         y_axis = self.cb_yaxis.currentText()
         # Get model key from dropdown list
-        model = nmodel.get_model_by_name(self.cb_model.currentText())
-        model_key = model.model_key
+        model_key = self.fit_model.model_key
         # Determine range type
         if self.cb_range_type.currentText() == "absolute":
             range_type = "absolute"
@@ -160,12 +169,15 @@ class TabFit(QtWidgets.QWidget):
                 self.assert_parameter_table_rows(ftab, len(varps))
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
-                    name = model.parameter_keys.index(p.name)
-                    hrnam = model.parameter_names[name]
+                    name = self.fit_model.parameter_keys.index(p.name)
+                    hrname = self.fit_model.parameter_names[name]
+                    # SI unit
+                    si_unit = self.fit_model.parameter_units[ii]
                     # Determine unit scale, e.g. 1e6 [sic] for µm
-                    scale = units.hrscale(hrnam)
-                    ftab.verticalHeaderItem(ii).setText(units.hrscname(hrnam))
-                    ftab.item(ii, 0).setText("{:.3f}".format(p.value*scale))
+                    scale = units.hrscale(hrname, si_unit=si_unit)
+                    label = units.hrscname(hrname, si_unit=si_unit)
+                    ftab.verticalHeaderItem(ii).setText(label)
+                    ftab.item(ii, 0).setText("{:.5g}".format(p.value*scale))
         else:
             if update_ui:
                 inipar = fdist.fit_properties["params_initial"]
@@ -173,9 +185,11 @@ class TabFit(QtWidgets.QWidget):
                 self.assert_parameter_table_rows(ftab, len(varps))
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
-                    name = model.parameter_keys.index(p.name)
-                    hrnam = model.parameter_names[name]
-                    ftab.verticalHeaderItem(ii).setText(units.hrscname(hrnam))
+                    name = self.fit_model.parameter_keys.index(p.name)
+                    hrname = self.fit_model.parameter_names[name]
+                    si_unit = self.fit_model.parameter_units[ii]
+                    label = units.hrscname(hrname, si_unit=si_unit)
+                    ftab.verticalHeaderItem(ii).setText(label)
                     ftab.item(ii, 0).setText("nan")
 
     def fit_parameters(self):
@@ -188,8 +202,7 @@ class TabFit(QtWidgets.QWidget):
         updated.
         """
         # Get model key from dropdown list
-        model = nmodel.get_model_by_name(self.cb_model.currentText())
-        model_key = model.model_key
+        model_key = self.fit_model.model_key
         # Get parameters from `self.table_parameters_initial`
         model = nmodel.models_available[model_key]
         params = model.get_parameter_defaults()
@@ -219,12 +232,13 @@ class TabFit(QtWidgets.QWidget):
         return params
 
     def fit_update_parameters(self, fdist):
-        """Update the initial and fitting parameters"""
-        model = nmodel.get_model_by_name(self.cb_model.currentText())
-        model_key = model.model_key
-        if ("params_initial" in fdist.fit_properties and
-            "model_key" in fdist.fit_properties and
-                fdist.fit_properties["model_key"] == model_key):
+        """Update the ancillary and initial parameters"""
+        model_key = self.fit_model.model_key
+        # set the model
+        # - resets params_initial if model changed
+        # - important for computing ancillary parameters
+        fdist.fit_properties["model_key"] = model_key
+        if fdist.fit_properties.get("params_initial", False):
             # set the parameters of the previous fit
             params = fdist.fit_properties["params_initial"]
         else:
@@ -243,16 +257,19 @@ class TabFit(QtWidgets.QWidget):
         for ii, key in enumerate(list(params.keys())):
             p = params[key]
             # Get the human readable name of the parameter
-            hrname = model.parameter_names[ii]
+            hrname = self.fit_model.parameter_names[ii]
+            # SI unit
+            si_unit = self.fit_model.parameter_units[ii]
             # Determine unit scale, e.g. 1e6 [sic] for µm
-            scale = units.hrscale(hrname)
-            itab.verticalHeaderItem(ii).setText(units.hrscname(hrname))
+            scale = units.hrscale(hrname, si_unit=si_unit)
+            label = units.hrscname(hrname, si_unit=si_unit)
+            itab.verticalHeaderItem(ii).setText(label)
             if p.vary:
                 state = QtCore.Qt.Unchecked
             else:
                 state = QtCore.Qt.Checked
             itab.item(ii, 0).setCheckState(state)
-            itab.item(ii, 1).setText("{:.2f}".format(p.value*scale))
+            itab.item(ii, 1).setText("{:.5g}".format(p.value*scale))
             itab.item(ii, 2).setText(str(p.min*scale))
             itab.item(ii, 3).setText(str(p.max*scale))
 
@@ -266,6 +283,40 @@ class TabFit(QtWidgets.QWidget):
                 self.fd.tab_edelta.delta_spin.setValue(left)
                 if self.cb_right_individ.isChecked() and right is not None:
                     self.sp_range_2.setValue(right)
+
+        # ancillaries
+        anc = fdist.get_ancillary_parameters(model_key=model_key)
+        anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
+        if anc_used:
+            self.widget_anc.setVisible(True)
+            atab = self.table_parameters_anc
+            atab.blockSignals(True)
+            rows_changed = self.assert_parameter_table_rows(atab,
+                                                            len(anc_used),
+                                                            cb_first=True)
+            row = 0
+            for ii, ak in enumerate(list(anc.keys())):
+                if ak not in anc_used:
+                    continue
+                # Get the human readable name of the parameter
+                hrname = self.fit_model.parameter_anc_names[ii]
+                # Determine unit scale, e.g. 1e6 [sic] for µm
+                si_unit = self.fit_model.parameter_anc_units[ii]
+                # Determine unit scale, e.g. 1e6 [sic] for µm
+                scale = units.hrscale(hrname, si_unit=si_unit)
+                label = units.hrscname(hrname, si_unit=si_unit)
+                atab.verticalHeaderItem(row).setText(label)
+                if rows_changed:
+                    atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
+                atab.item(row, 1).setText("{:.5g}".format(anc[ak]*scale))
+                if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
+                    # update initial parameters
+                    idx = self.fit_model.parameter_keys.index(ak)
+                    itab.item(idx, 1).setText("{:.5g}".format(anc[ak]*scale))
+                row += 1
+            atab.blockSignals(False)
+        else:
+            self.widget_anc.setVisible(False)
 
     def indentation_depth_setup(self):
         """Initiate ranges (spin/slider) that allow inf values"""
@@ -365,8 +416,7 @@ class TabFit(QtWidgets.QWidget):
         radio button.
         """
         # First get the tip radius
-        model = nmodel.get_model_by_name(self.cb_model.currentText())
-        params = model.get_parameter_defaults()
+        params = self.fit_model.get_parameter_defaults()
         itab = self.table_parameters_initial
         for ii, key in enumerate(list(params.keys())):
             if key == "R":
