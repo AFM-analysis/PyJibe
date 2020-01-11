@@ -1,6 +1,7 @@
 0.6.0
  - feat: initial support for ancillary parameters
  - fix: always display parameter units
+ - fix: other minor UI bugs
 0.5.7
  - enh: allow to also set right part of fitting range individually
  - fix: improve layout of FD fitting panel

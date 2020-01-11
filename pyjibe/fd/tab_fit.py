@@ -61,7 +61,8 @@ class TabFit(QtWidgets.QWidget):
     def fit_model(self):
         return nmodel.get_model_by_name(self.cb_model.currentText())
 
-    def assert_parameter_table_rows(self, table, rows, cb_first=False):
+    def assert_parameter_table_rows(self, table, rows, cb_first=False,
+                                    read_only=False):
         """Make sure a QTableWidget has enough rows
 
         Parameters
@@ -88,8 +89,10 @@ class TabFit(QtWidgets.QWidget):
             for cc in range(cols):
                 item = QtWidgets.QTableWidgetItem()
                 if cc == 0 and cb_first:
-                    item.setFlags(QtCore.Qt.ItemIsUserCheckable |
-                                  QtCore.Qt.ItemIsEnabled)
+                    item.setFlags(QtCore.Qt.ItemIsUserCheckable
+                                  | QtCore.Qt.ItemIsEnabled)
+                elif read_only:
+                    item.setFlags(QtCore.Qt.ItemIsEnabled)
                 table.setItem(rr, cc, item)
         return rows_changed
 
@@ -166,7 +169,8 @@ class TabFit(QtWidgets.QWidget):
                 # Display results in `self.table_parameters_fitted`
                 fitpar = fdist.fit_properties["params_fitted"]
                 varps = [p[1] for p in fitpar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps))
+                self.assert_parameter_table_rows(ftab, len(varps),
+                                                 read_only=True)
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
                     name = self.fit_model.parameter_keys.index(p.name)
@@ -182,7 +186,8 @@ class TabFit(QtWidgets.QWidget):
             if update_ui:
                 inipar = fdist.fit_properties["params_initial"]
                 varps = [p[1] for p in inipar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps))
+                self.assert_parameter_table_rows(ftab, len(varps),
+                                                 read_only=True)
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
                     name = self.fit_model.parameter_keys.index(p.name)
@@ -293,7 +298,8 @@ class TabFit(QtWidgets.QWidget):
             atab.blockSignals(True)
             rows_changed = self.assert_parameter_table_rows(atab,
                                                             len(anc_used),
-                                                            cb_first=True)
+                                                            cb_first=True,
+                                                            read_only=True)
             row = 0
             for ii, ak in enumerate(list(anc.keys())):
                 if ak not in anc_used:
