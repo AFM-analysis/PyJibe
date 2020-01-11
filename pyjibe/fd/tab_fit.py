@@ -44,6 +44,7 @@ class TabFit(QtWidgets.QWidget):
         self.cb_yaxis.currentTextChanged.connect(self.on_params_init)
         self.cb_model.currentTextChanged.connect(self.on_model)
         self.cb_range_type.currentTextChanged.connect(self.on_params_init)
+        self.table_parameters_anc.itemChanged.connect(self.on_params_anc)
         self.table_parameters_initial.itemChanged.connect(self.on_params_init)
         self.cb_weight_cp.stateChanged.connect(self.on_params_init)
         self.sp_weight_cp_um.valueChanged.connect(self.on_update_weights)
@@ -87,13 +88,15 @@ class TabFit(QtWidgets.QWidget):
             hitem = QtWidgets.QTableWidgetItem()
             table.setVerticalHeaderItem(rr, hitem)
             for cc in range(cols):
-                item = QtWidgets.QTableWidgetItem()
-                if cc == 0 and cb_first:
-                    item.setFlags(QtCore.Qt.ItemIsUserCheckable
-                                  | QtCore.Qt.ItemIsEnabled)
-                elif read_only:
-                    item.setFlags(QtCore.Qt.ItemIsEnabled)
-                table.setItem(rr, cc, item)
+                if table.item(rr, cc) is None:
+                    item = QtWidgets.QTableWidgetItem()
+                    table.setItem(rr, cc, item)
+                    if cc == 0 and cb_first:
+                        item.setFlags(QtCore.Qt.ItemIsUserCheckable
+                                      | QtCore.Qt.ItemIsEnabled)
+                    elif read_only:
+                        item.setFlags(QtCore.Qt.ItemIsEnabled)
+
         return rows_changed
 
     def fit_approach_retract(self, fdist, update_ui=True):
@@ -220,7 +223,8 @@ class TabFit(QtWidgets.QWidget):
                 # the multiplications.
                 # performed in `fit_update_parameters`.
                 hrname = model.parameter_names[ii]
-                scale = units.hrscale(hrname)
+                si_unit = model.parameter_units[ii]
+                scale = units.hrscale(hrname, si_unit=si_unit)
                 for rr in range(itab.rowCount()):
                     # search for a row matching the parameter `p`
                     if itab.verticalHeaderItem(rr).text().startswith(hrname):
@@ -315,12 +319,9 @@ class TabFit(QtWidgets.QWidget):
                 if rows_changed:
                     atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
                 atab.item(row, 1).setText("{:.5g}".format(anc[ak]*scale))
-                if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
-                    # update initial parameters
-                    idx = self.fit_model.parameter_keys.index(ak)
-                    itab.item(idx, 1).setText("{:.5g}".format(anc[ak]*scale))
                 row += 1
             atab.blockSignals(False)
+            self.on_params_anc()  # updates initial parameters if necessary
         else:
             self.widget_anc.setVisible(False)
 
@@ -338,6 +339,19 @@ class TabFit(QtWidgets.QWidget):
 
     def on_model(self):
         self.fd.on_model()
+
+    def on_params_anc(self):
+        """Updates initial parameters if the "use" is checked"""
+        atab = self.table_parameters_anc
+        itab = self.table_parameters_initial
+        anc = self.fit_model.parameter_anc_keys
+        anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
+        for row, ak in enumerate(anc_used):
+            if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
+                # update initial parameters
+                idx = self.fit_model.parameter_keys.index(ak)
+                itab.item(idx, 1).setText(atab.item(row, 1).text())
+        self.on_params_init()
 
     def on_params_init(self):
         self.fd.on_params_init()
