@@ -3,7 +3,10 @@ import pkg_resources
 
 from afmformats import meta
 from nanite import model
+import numpy as np
 from PyQt5 import uic, QtWidgets
+
+from .. import units
 
 
 class TabInfo(QtWidgets.QWidget):
@@ -14,47 +17,40 @@ class TabInfo(QtWidgets.QWidget):
         uic.loadUi(path_ui, self)
 
     def update_info(self, fdist):
+        msum = fdist.metadata.get_summary()
+
         text = []
-        keys = list(fdist.metadata.keys())
 
         # Dataset
         text.append("<b>Dataset</b>")
-        data_keys = ["path", "enum"]
-        for kk in data_keys:
-            text.append(get_string_rep(kk, fdist.metadata))
-        for kk in keys:
-            if kk in meta.DEF_DATA and kk not in data_keys:
-                text.append(get_string_rep(kk, fdist.metadata))
+        for kk in msum["dataset"]:
+            text.append(get_string_rep_meta(kk, msum["dataset"][kk]))
 
         # Experiment
-        if set(keys) & set(meta.DEF_EXPERIMENT.keys()):
-            text.append("")
-            text.append("<b>Experiment:</b>")
-            text_meta = []
-            for kk in keys:
-                if kk in meta.DEF_EXPERIMENT:
-                    text_meta.append(get_string_rep(kk, fdist.metadata))
-            text += sorted(text_meta)
+        text.append("")
+        text.append("<b>Experiment:</b>")
+        texte = []
+        for kk in msum["experiment"]:
+            texte.append(get_string_rep_meta(kk, msum["experiment"][kk]))
+        text += sorted(texte)
 
         # QMap
-        if set(keys) & set(meta.DEF_QMAP.keys()):
+        if msum["qmap"] and not has_all_nans(msum["qmap"]):
             text.append("")
             text.append("<b>QMap:</b>")
-            text_meta = []
-            for kk in keys:
-                if kk in meta.DEF_QMAP:
-                    text_meta.append(get_string_rep(kk, fdist.metadata))
-            text += sorted(text_meta)
+            textq = []
+            for kk in msum["qmap"]:
+                textq.append(get_string_rep_meta(kk, msum["qmap"][kk]))
+            text += sorted(textq)
 
         # Analysis
-        if set(keys) & set(meta.DEF_ANALYSIS.keys()):
+        if msum["analysis"] and not has_all_nans(msum["analysis"]):
             text.append("")
             text.append("<b>Analysis:</b>")
-            text_meta = []
-            for kk in keys:
-                if kk in meta.DEF_ANALYSIS:
-                    text_meta.append(get_string_rep(kk, fdist.metadata))
-            text += sorted(text_meta)
+            texta = []
+            for kk in msum["analysis"]:
+                texta.append(get_string_rep_meta(kk, msum["analysis"][kk]))
+            text += sorted(texta)
 
         # Ancillaries
         anc_dict = fdist.get_ancillary_parameters()
@@ -65,10 +61,10 @@ class TabInfo(QtWidgets.QWidget):
             md = model.models_available[fdist.fit_properties["model_key"]]
             for kk in anc_dict:
                 idk = md.parameter_anc_keys.index(kk)
-                text_meta.append("{}: {:.5g} {}".format(
-                    md.parameter_anc_names[idk],
-                    anc_dict[kk],
-                    md.parameter_anc_units[idk]))
+                text_meta.append(
+                    get_string_rep(name=md.parameter_anc_names[idk],
+                                   value=anc_dict[kk],
+                                   unit=md.parameter_anc_units[idk]))
             text += sorted(text_meta)
 
         textstring = "<br>".join(text)
@@ -76,28 +72,42 @@ class TabInfo(QtWidgets.QWidget):
         self.info_text.setText(textstring)
 
 
-def get_string_rep(key, metadata):
+def get_string_rep_meta(key, value):
     """Return a nice string representation for a key in metadata"""
-    value = metadata[key]
-    desc, unit, validator = meta.DEF_ALL[key]
+    name, unit, validator = meta.DEF_ALL[key]
+    if isinstance(value, numbers.Number):
+        if not np.isnan(value):
+            value = validator(value)
+    else:
+        value = validator(value)
+    return get_string_rep(name, value, unit)
 
-    value = validator(value)
 
-    if unit == "m":
-        unit = "µm"
-        value *= 1e6
+def get_string_rep(name, value, unit):
+    """Return pretty-formatted string for key, value, and unit"""
 
-    if isinstance(value, numbers.Integral):
-        pass
-    elif isinstance(value, numbers.Real):
-        if abs(value) > 1:
-            value = "{:.2f}".format(value)
-        elif abs(value) > 1e-2:
-            value = "{:.5f}".format(value)
-        else:
-            value = "{:.3e}".format(value)
+    if isinstance(value, numbers.Number):
+        hrvalue, scunit = units.si2hr(name=name, value=value, si_unit=unit)
+        rep = "{}: {:.5g}{}".format(name,
+                                    hrvalue,
+                                    " " + scunit if scunit else "",
+                                    )
+    else:
+        rep = "{}: {}".format(name, value)
 
-    rep = "{}: {}".format(desc, value)
-    if unit:
-        rep += " {}".format(unit)
     return rep
+
+
+def has_all_nans(adict):
+    """Check whether a dictionary as all-nan values"""
+    for value in adict.values():
+        if isinstance(value, numbers.Number):
+            if not np.isnan(value):
+                notallnan = True
+                break
+        else:
+            notallnan = True
+            break
+    else:
+        notallnan = False
+    return notallnan

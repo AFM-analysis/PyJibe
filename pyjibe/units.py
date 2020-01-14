@@ -83,6 +83,7 @@ def hrscname(name, si_unit=None):
 default_scales = {"deg": "",
                   "m": "µ",
                   "m/s": "µ",
+                  "m/V": "n",
                   "N": "n",
                   "Pa": "",
                   "Pa·s": "",

@@ -284,8 +284,10 @@ class UiForceDistance(QtWidgets.QWidget):
                    ]
         return choices
 
-    def info_update(self, fdist):
+    def info_update(self, fdist=None):
         """Updates the info tab"""
+        if fdist is None:
+            fdist = self.current_curve
         self.tab_info.update_info(fdist)
 
     def on_cb_rating_scheme(self):
@@ -485,6 +487,9 @@ class UiForceDistance(QtWidgets.QWidget):
         elif curtab == self.tab_edelta:
             # Compute edelta plot
             self.tab_edelta.mpl_edelta_update()
+        elif curtab == self.tab_info:
+            # Updat info (e.g. ancillaries)
+            self.info_update()
 
         self.user_tab_selected = curtab
 
