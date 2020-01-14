@@ -10,7 +10,7 @@ name = 'pyjibe'
 year = "2019"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+from _version import version  # noqa: E402
 
 setup(
     name=name,
@@ -30,11 +30,11 @@ setup(
                       "matplotlib",
                       "pyqt5"],
     python_requires='>=3.6, <4',
-    entry_points={"gui_scripts" : ['pyjibe = pyjibe.__main__:main']},
+    entry_points={"gui_scripts": ['pyjibe = pyjibe.__main__:main']},
     keywords=["atomic force microscopy", "biomechanics"],
     setup_requires=['pytest-runner'],
     tests_require=["pytest", "pytest-qt"],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Visualization',
