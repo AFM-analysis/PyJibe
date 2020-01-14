@@ -1,3 +1,5 @@
+0.6.1
+ - build: workaround for Pyinstaller issue 4626
 0.6.0
  - feat: initial support for ancillary parameters
  - fix: always display parameter units

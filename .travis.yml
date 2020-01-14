@@ -41,6 +41,8 @@ script:
 after_success:
 - codecov
 - python setup.py sdist bdist_wheel
+# https://github.com/pyinstaller/pyinstaller/issues/4626
+- pip install pyinstaller==3.5
 - bash ./.travis/${TRAVIS_OS_NAME}_build_app.sh PyJibeApp $TRAVIS_TAG
 deploy:
   - provider: pypi
