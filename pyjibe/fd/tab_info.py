@@ -58,13 +58,12 @@ class TabInfo(QtWidgets.QWidget):
             text.append("")
             text.append("<b>Ancillaries:</b>")
             text_meta = []
-            md = model.models_available[fdist.fit_properties["model_key"]]
+            model_key = fdist.fit_properties["model_key"]
             for kk in anc_dict:
-                idk = md.parameter_anc_keys.index(kk)
                 text_meta.append(
-                    get_string_rep(name=md.parameter_anc_names[idk],
+                    get_string_rep(name=model.get_parm_name(model_key, kk),
                                    value=anc_dict[kk],
-                                   unit=md.parameter_anc_units[idk]))
+                                   unit=model.get_parm_unit(model_key, kk)))
             text += sorted(text_meta)
 
         textstring = "<br>".join(text)

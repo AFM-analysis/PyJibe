@@ -12,9 +12,10 @@ from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
 
+from . import dlg_export_vals
+from . import export
 from . import rating_base
 from . import rating_iface
-from . import export
 
 
 # load QWidget from ui file
@@ -226,10 +227,11 @@ class UiForceDistance(QtWidgets.QWidget):
                         )
                         fname = os.path.join(adir, newbase)
                 # Export data
-                ratings = self.rate_data(exp_curv)
-                export.save_tsv_approach_retract(filename=fname,
+                which = export.EXPORT_CHOICES.copy()
+                which.remove("params_ancillary")
+                export.save_tsv_metadata_results(filename=fname,
                                                  fdist_list=exp_curv,
-                                                 ratings=ratings)
+                                                 which=which)
                 self._autosave_original_files.append(fname)
 
     def curve_list_setup(self):
@@ -279,7 +281,7 @@ class UiForceDistance(QtWidgets.QWidget):
              ...
              ]
         """
-        choices = [["fit results", "on_export_fit_results"],
+        choices = [["metadata and results", "on_export_fit_results"],
                    ["E(δ) curves", "on_export_edelta"]
                    ]
         return choices
@@ -391,23 +393,12 @@ class UiForceDistance(QtWidgets.QWidget):
                 np.savetxt(fd, np.array(res))
 
     def on_export_fit_results(self):
-        """Saves all fit results"""
-        fname, _e = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent(),
-            "Save fit results",
-            "fit_results_{:03d}.tsv".format(
-                self._instance_counter),
-            "Tab Separated Values (*.tsv)"
-        )
-        if fname:
-            if not fname.endswith(".tsv"):
-                fname += ".tsv"
-            self.on_fit_all()
-            exp_curv = [fdist for fdist in self.selected_curves]
-            ratings = self.rate_data(exp_curv)
-            export.save_tsv_approach_retract(filename=fname,
-                                             fdist_list=exp_curv,
-                                             ratings=ratings)
+        """Save metadata and fit results"""
+        fdist_list = [fdist for fdist in self.selected_curves]
+        dlg = dlg_export_vals.ExportDialog(parent=self,
+                                           fdist_list=fdist_list,
+                                           identifier=self._instance_counter)
+        dlg.show()
 
     def on_fit_all(self):
         """Apply initial parameters to all curves and fit"""

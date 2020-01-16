@@ -1,79 +1,142 @@
+from collections import OrderedDict
 import codecs
-import numpy as np
-import os
+import numbers
 
+import numpy as np
+
+from afmformats import meta
 import nanite.model as nmodel
 
 from .. import units
 
+#: Valid export choices in `save_tsv_metadata_results`
+EXPORT_CHOICES = [
+    "dataset",
+    "experiment",
+    "params_ancillary",
+    "params_fitted",
+    "params_initial",
+    "qmap",
+    "rating"]
 
-def save_tsv_approach_retract(filename, fdist_list, ratings=[]):
-    """Export fitting results for a list of nanite.Indentation"""
 
-    columns = []
+def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
+    """Export metadata and fitting parameters
 
-    columns.append(["Filename",
-                    [os.path.basename(ar.path) for ar in fdist_list]])
-    columns.append(["Position Index",
-                    [ar.enum for ar in fdist_list]])
-    columns.append(["X Position",
-                    [np.nan]*len(fdist_list)])
-    columns.append(["Y Position",
-                    [np.nan]*len(fdist_list)])
-    # Add maximum indentation
-    maxindent = []
-    for fd in fdist_list:
-        if "tip position" in fd:
-            cp = fd.fit_properties["params_fitted"]["contact_point"].value
-            idmax = fd.data.appr["fit"].argmax()
-            mi = fd.data.appr["tip position"][idmax]
-            mival = (cp-mi)*1e6
-        else:
-            mival = np.nan
-        maxindent.append(mival)
-    columns.append(["Maximum indentation [µm]", maxindent])
-    # Add fit parameters
-    model_key = fdist_list[0].fit_properties["model_key"]
-    model = nmodel.models_available[model_key]
-    for name, key in zip(model.parameter_names, model.parameter_keys):
-        values = []
-        for ar in fdist_list:
-            v = ar.fit_properties["params_fitted"][key].value
-            values.append(units.si2hr(name, v)[0])
-        hrname = units.hrscname(name)
-        columns.append([hrname, values])
-    # Add fit properties
-    props = ["xmin", "xmax", "segment", "weight_cp", "model_key"]
-    for prop in props:
-        values = []
-        vs = [ar.fit_properties[prop] for ar in fdist_list]
-        columns.append(["fit "+prop, vs])
-    if ratings:  # Add rating
-        columns.append(["rating", ratings])
+    Parameters
+    ----------
+    filename: str
+        Path to store data to
+    fdist_list: list-like
+        List of :class:`nanite.Indentation` instances
+    which: list of str
+        Valid for choices to export (see :data:`EXPORT_CHOICES`)
+    """
+    if np.sum([k not in EXPORT_CHOICES for k in which]):
+        raise ValueError("Found invalid export choices.")
+
+    columns = OrderedDict()
+    # Metadata
+    for ii, fdist in enumerate(fdist_list):
+        meta = fdist.metadata.get_summary()
+        for topic in meta:
+            if topic in which:
+                for kk in meta[topic]:
+                    label, hrvalue = get_unitname_value_meta(
+                        key=kk, value=meta[topic][kk])
+                    if label not in columns:
+                        columns[label] = [np.nan] * len(fdist_list)
+                    columns[label][ii] = hrvalue
+
+        # Parameters
+        if "model_key" in fdist.fit_properties:
+            model_key = fdist.fit_properties["model_key"]
+
+            # Ancillary
+            if "params_ancillary" in which:
+                anc_dict = fdist.get_ancillary_parameters()
+                for kk in anc_dict:
+                    label, hrvalue = get_unitname_value(
+                        name=nmodel.get_parm_name(model_key, kk),
+                        value=anc_dict[kk],
+                        unit=nmodel.get_parm_unit(model_key, kk))
+                    if label not in columns:
+                        columns[label] = [np.nan] * len(fdist_list)
+                    columns[label][ii] = hrvalue
+
+            # Initial
+            if "params_initial" in which:
+                if "params_initial" in fdist.fit_properties:
+                    fp = fdist.fit_properties["params_initial"]
+                    for ki in fp:
+                        label, hrvalue = get_unitname_value(
+                            name=nmodel.get_parm_name(model_key, ki),
+                            value=fp[ki].value,
+                            unit=nmodel.get_parm_unit(model_key, ki))
+                        if label not in columns:
+                            columns[label] = [np.nan] * len(fdist_list)
+                        columns[label][ii] = hrvalue
+
+            if "params_fitted" in which:
+                if "params_fitted" in fdist.fit_properties:
+                    fp = fdist.fit_properties["params_fitted"]
+                    for ki in fp:
+                        label, hrvalue = get_unitname_value(
+                            name=nmodel.get_parm_name(model_key, ki),
+                            value=fp[ki].value,
+                            unit=nmodel.get_parm_unit(model_key, ki))
+                        if label not in columns:
+                            columns[label] = [np.nan] * len(fdist_list)
+                        columns[label][ii] = hrvalue
+
+                    # Additional fit parameters
+                    props = {"xmin": ("Fit interval minimum", "m"),
+                             "xmax": ("Fit interval maximum", "m"),
+                             "segment": ("Fit segment", ""),
+                             "weight_cp": ("Fit weight contact point", "m"),
+                             "model_key": ("Fit model", ""),
+                             }
+                    for prop in props:
+                        label, hrvalue = get_unitname_value(
+                            name=props[prop][0],
+                            value=fdist.fit_properties[prop],
+                            unit=props[prop][1])
+                        if label not in columns:
+                            columns[label] = [np.nan] * len(fdist_list)
+                        columns[label][ii] = hrvalue
+
+            if "rating" in which:
+                rdict = fdist.get_rating_parameters()
+                for label in ["Regressor", "Training set", "Rating"]:
+                    if label not in columns:
+                        columns[label] = [np.nan] * len(fdist_list)
+                    columns[label][ii] = rdict[label]
+
     save_tsv(filename, columns)
 
 
-def save_tsv(filename, column_lists):
+def save_tsv(filename, column_dict):
     """Export data set to a .tsv file
 
     Parameters
     ----------
     filename: str
         Filename to save as
-    column_lists: list
+    column_dict: dict of lists
         List with column headers and content to save.
-        E.g.: ["Column One", [1.1, 2.2, 3.3, 4.4],
-               "Column Two", [nan, 2.0, 4.0, 1.0]]
+        E.g.: {"Column One": [1.1, 2.2, 3.3, 4.4],
+               "Column Two": [nan, 2.0, 4.0, 1.0],
+               }
     """
     with codecs.open(filename, "wb") as fd:
         fd.write(codecs.BOM_UTF8)
     with codecs.open(filename, "a", encoding="utf-8") as fd:
         # Write header:
-        header = "\t".join([d[0] for d in column_lists])
+        header = "\t".join([d for d in list(column_dict.keys())])
         fd.write(header+"\r\n")
 
         # Write data
-        cols = [d[1] for d in column_lists]
+        cols = list(column_dict.values())
         # Transpose data
         data = transpose_list(cols)
         # Save line-wise
@@ -83,12 +146,33 @@ def save_tsv(filename, column_lists):
 
 
 def format_content(value):
-    try:
-        float(value)
-    except ValueError:
-        return "{}".format(value)
+    if isinstance(value, numbers.Number):
+        return "{:.5g}".format(value)
     else:
-        return "{:.6e}".format(value)
+        return "{}".format(value)
+
+
+def get_unitname_value_meta(key, value):
+    """Return header / value pair for tsv export of Indentation metadata"""
+    name, unit, validator = meta.DEF_ALL[key]
+    if isinstance(value, numbers.Number):
+        if not np.isnan(value):
+            value = validator(value)
+    else:
+        value = validator(value)
+    return get_unitname_value(name, value, unit)
+
+
+def get_unitname_value(name, value, unit):
+    """Return header / value pair for tsv export"""
+    if isinstance(value, numbers.Number):
+        hrvalue, scunit = units.si2hr(name=name, value=value, si_unit=unit)
+        strunit = " [{}]".format(scunit) if scunit else ""
+        header = name + strunit
+    else:
+        hrvalue = value
+        header = name
+    return header, hrvalue
 
 
 def transpose_list(m):

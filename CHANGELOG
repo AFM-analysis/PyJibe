@@ -1,3 +1,8 @@
+0.6.2
+ - enh: allow to select which metadata is exported
+ - fix: do not apply and fit to all before exporting metadata
+   (user may have performed individual fits)
+ - setup: bump nanite from 1.3.0 to 1.4.0
 0.6.1
  - build: workaround for Pyinstaller issue 4626
 0.6.0

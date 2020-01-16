@@ -77,7 +77,7 @@ class TabFit(QtWidgets.QWidget):
                                                             cb_first=True,
                                                             read_only=True)
             row = 0
-            for ii, ak in enumerate(list(anc.keys())):
+            for ii, ak in enumerate(self.fit_model.parameter_anc_keys):
                 if ak not in anc_used:
                     continue
                 # Get the human readable name of the parameter
