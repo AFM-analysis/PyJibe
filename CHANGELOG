@@ -1,3 +1,6 @@
+0.6.3
+ - fix: support JPK data recorded in the "force-modulation" feedback mode
+   (bump afmformats from 0.5.0 to 0.5.1)
 0.6.2
  - enh: allow to select which metadata is exported
  - fix: do not apply and fit to all before exporting metadata
