@@ -101,6 +101,52 @@ def test_remember_initial_params(qtbot):
     assert float(itab.item(1, 1).text()) == 5
 
 
+def test_update_ancillary_init(qtbot):
+    with MockModel(
+        compute_ancillaries=lambda x: {
+            # take initial fit parameter of E
+            "E": x.get_initial_fit_parameters(
+                model_ancillaries=False)["E"].value},
+        parameter_anc_keys=["E"],
+        parameter_anc_names=["ancillary E guess"],
+        parameter_anc_units=["Pa"],
+            model_key="test1"):
+
+        main_window = pyjibe.head.PyJibe()
+        main_window.load_data(files=[jpkfile, jpkfile])
+        war = main_window.subwindows[0].widget()
+        # clear data
+        war.tab_preprocess.list_preproc_applied.clear()
+        war.cb_autosave.setChecked(0)
+        # perform simple filter
+        item = QtWidgets.QListWidgetItem()
+        item.setText("compute_tip_position")
+        war.tab_preprocess.list_preproc_applied.addItem(item)
+        # disable weighting
+        war.tab_fit.cb_weight_cp.setCheckState(0)
+        # set mock model
+        idx = war.tab_fit.cb_model.findData("test1")
+        war.tab_fit.cb_model.setCurrentIndex(idx)
+        # perform fitting with standard parameters
+        # set initial parameters in user interface
+        itab = war.tab_fit.table_parameters_initial
+        atab = war.tab_fit.table_parameters_anc
+        war.on_tab_changed(1)
+        assert len(war.data_set[0].preprocessing) == 1
+        assert war.tab_preprocess.list_preproc_applied.count() == 1
+        # The ancillary parameter gets its value from the default parameters
+        assert atab.item(0, 1).text() == "3000"
+        assert itab.item(0, 1).text() == "3000"
+        # Now we change the initial parameter "E" and move on to the next
+        # curve. Ancillary parameter "F" should also change.
+        itab.item(0, 1).setText("2000")
+        assert atab.item(0, 1).text() == "2000"
+        it = war.list_curves.topLevelItem(1)
+        war.list_curves.setCurrentItem(it)
+        assert itab.item(0, 1).text() == "2000"
+        assert atab.item(0, 1).text() == "2000"
+
+
 def test_update_ancillary_nan(qtbot):
     with MockModel(
         compute_ancillaries=lambda x: {"E": np.nan},

@@ -64,6 +64,9 @@ class TabFit(QtWidgets.QWidget):
 
     def anc_update_parameters(self, fdist):
         model_key = self.fit_model.model_key
+        # Apply the current set of parameters
+        # (some ancillary parameters depend on the correct initial parameters)
+        fdist.fit_properties["params_initial"] = self.fit_parameters()
         # ancillaries
         anc = fdist.get_ancillary_parameters(model_key=model_key)
         anc_used = [ak for ak in anc if ak in self.fit_model.parameter_keys]
@@ -282,18 +285,21 @@ class TabFit(QtWidgets.QWidget):
         return params
 
     def fit_update_parameters(self, fdist):
-        """Update the ancillary and initial parameters"""
+        """Update the ancillary and initial parameters in the UI"""
         model_key = self.fit_model.model_key
         # set the model
         # - resets params_initial if model changed
         # - important for computing ancillary parameters
         fdist.fit_properties["model_key"] = model_key
         if fdist.fit_properties.get("params_initial", False):
+            # (cannot coerce this into one line, because "params_initial"
+            # can be None.)
             # set the parameters of the previous fit
             params = fdist.fit_properties["params_initial"]
         else:
             # use the initial model parameters
             params = self.fit_parameters()
+
         # parameter table
         itab = self.table_parameters_initial
 
