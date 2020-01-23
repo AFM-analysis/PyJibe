@@ -99,14 +99,13 @@ def get_string_rep(name, value, unit):
 
 def has_all_nans(adict):
     """Check whether a dictionary as all-nan values"""
+    allnan = True
     for value in adict.values():
         if isinstance(value, numbers.Number):
             if not np.isnan(value):
-                notallnan = True
+                allnan = False
                 break
         else:
-            notallnan = True
+            allnan = False
             break
-    else:
-        notallnan = False
-    return notallnan
+    return allnan
