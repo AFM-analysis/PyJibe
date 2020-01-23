@@ -60,6 +60,9 @@ extensions = ['sphinx.ext.autodoc',
               'rtd_pdf',
               ]
 
+# enable enumeration of figures
+numfig = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

@@ -19,6 +19,7 @@ Documentation
    :maxdepth: 2
 
    sec_getting_started
+   sec_interface
    sec_quick_guides
 
 .. toctree::
