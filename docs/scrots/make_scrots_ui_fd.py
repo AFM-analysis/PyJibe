@@ -6,7 +6,6 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 
-#jpkfiles = sorted(pathlib.Path("figshare_PAAm").glob("*.jpk-force"))
 jpkfiles = [pathlib.Path("map-data-2015.05.21-18.16.49.170.jpk-force-map")]
 
 
@@ -75,7 +74,4 @@ war.tabs.grab().save("_ui_fd_tab_qmap.png")
 
 mw.close()
 
-
 cleanup_autosave(jpkfile=jpkfiles[0])
-
-# https://www.sciencedirect.com/science/article/pii/0966782295000135
