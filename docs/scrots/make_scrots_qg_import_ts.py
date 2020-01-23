@@ -6,13 +6,6 @@ from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 
-app = QApplication(sys.argv)
-
-QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
-
-mw = PyJibe()
-
-
 jpkfile = pathlib.Path("figshare_PAAm/PAAm_Compliant_ROI1_force-save-"
                        + "2019.10.25-10.42.02.660.jpk-force")
 
@@ -24,6 +17,10 @@ def cleanup_autosave(jpkfile):
     files = [f for f in files if f.name.startswith("pyjibe_")]
     [f.unlink() for f in files]
 
+
+app = QApplication(sys.argv)
+QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
+mw = PyJibe()
 
 cleanup_autosave(jpkfile=jpkfile)
 
