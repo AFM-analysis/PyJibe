@@ -32,7 +32,7 @@ At the bottom right are the curve list controls (explained below).
 .. note::
     Notice how the fit residuals become small around the contact point?
     PyJibe comes with the feature *Suppress residuals near contact point*
-    (in the fit tab on the right). This feature suppresses the contributions
+    (in the fit tab on the right). This option suppresses the contributions
     of the FD curve near the contact point.
     This feature was designed for biological samples, where the physical
     tip-sample interactions near the "contact point" are not well-understood

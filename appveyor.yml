@@ -31,7 +31,7 @@ install:
   - appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git
   - appveyor-retry pip install -e .
   # Install pyinstaller (includes dependency for pywin32)
-  - appveyor-retry pip install pyinstaller==3.5
+  - appveyor-retry pip install pyinstaller==3.6
   # Show the installed packages
   - pip freeze
 
