@@ -38,6 +38,8 @@ for ii in range(200, 230):
 # Set a nice example curve
 it = war.list_curves.topLevelItem(210)
 war.list_curves.setCurrentItem(it)
+war.sp_rating_thresh.setValue(4.0)
+war.btn_rating_filter.clicked.emit()
 
 # main
 QApplication.processEvents()
@@ -60,10 +62,6 @@ war.tabs.setCurrentIndex(2)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_edelta.png")
 
-war.tabs.setCurrentIndex(3)
-QApplication.processEvents()
-war.tabs.grab().save("_ui_fd_tab_plot.png")
-
 war.tabs.setCurrentIndex(4)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_info.png")
@@ -71,6 +69,11 @@ war.tabs.grab().save("_ui_fd_tab_info.png")
 war.tabs.setCurrentIndex(5)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_qmap.png")
+
+war.tabs.setCurrentIndex(3)
+QApplication.processEvents()
+war.tabs.setFixedSize(war.tabs.sizeHint().width(), 300)
+war.tabs.grab().save("_ui_fd_tab_plot.png")
 
 mw.close()
 

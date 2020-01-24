@@ -25,9 +25,9 @@ The screenshot shows a typical data analysis in PyJibe. A *.jpk-force-map*
 file has been loaded. The plot at the top shows the experimental FD curve
 (approach light blue, retract light red), the model fit (dark blue), and the
 fitting region (shaded yellow). Below are the fit residuals. On the right
-are the main controls (discussed in more detail further below). At the bottom
+are the main controls (discussed in the sections below). At the bottom
 is the curve list, highlighting which curve is currently shown at the top.
-At the bottom right are the curve list controls (explained below).
+At the bottom right are the :ref:`curve list controls <sec_ui_fd_curvelist>`.
 
 .. note::
     Notice how the fit residuals become small around the contact point?
@@ -45,15 +45,6 @@ live zebrafish spinal cord microtome section (same data as in
 :cite:`Moellmert2020` fig. 1e and :cite:`Mueller19nanite` fig. 3a-c).
 
 
-
-Curve list controls
--------------------
-.. image:: scrots/ui_fd_curve_controls.png
-    :target: _images/ui_fd_curve_controls.png
-    :align: right
-    :scale: 65%
-
-
 Tab: Preprocess
 ---------------
 .. image:: scrots/ui_fd_tab_preproc.png
@@ -61,6 +52,21 @@ Tab: Preprocess
     :align: right
     :scale: 65%
 
+Before starting to fit FD data, it is important to perform the correct
+steps. Usually, this includes computing the tip position and correcting
+for a force and tip position offset. The offset corrections are only
+necessary for visualization purposes - Force offset and contact point
+are usually free fitting parameters.
+
+To define a new preprocessing pipeline, click on *Clear Preprocessing*
+at the top of the panel. You may either load predefined presets or
+compile your own preprocessing pipeline via drag&drop from the *Available*
+to the *Applied* list controls. When selecting a preprocessing item in
+on of the list controls, its description is shown in the text control
+at the center.
+
+
+.. _sec_ui_fd_tab_fit:
 
 Tab: Fit
 --------
@@ -69,6 +75,27 @@ Tab: Fit
     :align: right
     :scale: 65%
 
+PyJibe offers a variety of options for fitting FD data. In the upper part,
+you may select the segment (approach or retract), the axes, the fit model,
+and the fitting range.
+
+Range:
+    The fitting range can be set to absolute (relative to
+    the X axis after preprocessing or relative to the contact point. In the
+    latter case, the fit is repeated four times, updating the new contact
+    point at each iteration.
+    You have three option for setting the indentation depth (left part
+    of the fit interval):
+    
+    1. globally: For each FD curve, the same indentation depth is used
+       (after preprocessing has been applied).
+    2. individually: You select the indentation depth for each FD curve
+       separately.
+    3. guess optimal indentation depth: The optimal indentation depth
+       is guessed using the :ref:`E(δ)-curve <sec_ui_fd_tab_edelta>`.  
+
+
+.. _sec_ui_fd_tab_edelta:
 
 Tab: E(δ)
 ---------
@@ -77,6 +104,22 @@ Tab: E(δ)
     :align: right
     :scale: 65%
 
+The E(δ) curve is used to test whether the fitted Young's modulus E is
+dependent on the fitting interval. For a reliable fit, the E(δ) curve should
+exhibit a plateau. This is the case for the present example, where the fitted
+value of E does not vary much in the range from δ=-2µm to δ=-4.8µm (maximum
+indentation).
+
+The control at the top is identical to the control in the :ref:`fitting tab
+<sec_ui_fd_tab_fit>`. You may choose the number of samples of the E(δ).
+The controls for setting the indentation depth manually are enabled when
+you select *set indentation depth individually* in the dropdown menu.
+Below the plot you have the options to export the E(δ) curve as an image
+or as a data file (.tsv). If you would like to export all E(δ) curves of
+the dataset, you can do so via the *Export* menu of the main window.
+
+
+.. _sec_ui_fd_tab_plot:
 
 Tab: Plot
 ---------
@@ -85,6 +128,12 @@ Tab: Plot
     :align: right
     :scale: 65%
 
+The plotting tab allows you to modify the plot settings. By default, the plot
+is adapted to the fitting interval. You may, however, modify the axes ranges
+manually by unchecking the check boxes. 
+
+
+.. _sec_ui_fd_tab_info:
 
 Tab: Info
 ---------
@@ -93,6 +142,28 @@ Tab: Info
     :align: right
     :scale: 65%
 
+The info tab shows metadata related to the currently shown curve.
+Unknown values are indicated as *nan*.
+
+Dataset:
+    All information related to the dataset on disk and of the curve
+    relative to this dataset.
+
+Experiment:
+    All information on the actual experiment.
+
+QMap:
+    If the curve is part of a quantiative map (2D FD scan), then
+    the scan grid properties and the curve position are listed.
+
+Ancillaries:
+    Ancillary parameters are computed for each model. Here, the
+    *maximum indentation* is listed, which is the difference between
+    the fitted contact point and the value of the tip position where
+    the fitted curve has its maximum. Fit models may have their own
+    specific ancillary parameters.
+
+.. _sec_ui_fd_tab_qmap:
 
 Tab: QMap
 ---------
@@ -100,3 +171,43 @@ Tab: QMap
     :target: _images/ui_fd_tab_qmap.png
     :align: right
     :scale: 65%
+
+If the dataset consists of a quantitative map, then this map is shown
+here. It serves as an interactive overview of the dataset.
+You can choose which data to plot (e.g. piezo height, fitted parameters,
+curve rating, scan order), which colormap to use, and how the colormap should
+be scaled. The coordinate axes are identical to those shown in the info tab.
+
+The red square in the plot indicates which curve is currently shown. You may
+click on the plot to select curves manually (as opposed to using the
+curve list at the bottom of the window).
+
+Below the plot are controls for exporting the qmap as an image or as a text
+file.
+
+.. _sec_ui_fd_curvelist:
+
+Curve list controls
+-------------------
+.. image:: scrots/ui_fd_curve_controls.png
+    :target: _images/ui_fd_curve_controls.png
+    :align: right
+    :scale: 65%
+
+The curve list controls perform operations on the entire FD curve list.
+The *Apply Model and Fit All* button does exactly what it says.
+
+Curve rating allows you to rate each indentation curve. This is useful
+e.g. when you would like to sort out bad curves automatically. In this example,
+all curves with a rating below a threshold of 4.5 are excluded from further
+analysis using the *zef18 + Extra Trees* rating scheme :cite:`Mueller19nanite`.
+
+Below the curve rating options, you may enable or disable autosaving of the
+fit results. Only the results for curves that are selected as "use" in the
+curve list are exported.
+
+For more information on rating, please have a look at the :ref:`nanite
+documentation <nanite:sec_rating>`.
+The button at the bottom starts the PyJibe curve rater which is compatible
+to the nanite rating workflow. If you would like to import your own training
+set, please read the quick guide :ref:`sec_qg_import_ts`.

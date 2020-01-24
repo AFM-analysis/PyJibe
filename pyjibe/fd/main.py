@@ -449,11 +449,11 @@ class UiForceDistance(QtWidgets.QWidget):
     def on_rating_threshold(self):
         """(De)select curves according to threshold rating"""
         thresh = self.sp_rating_thresh.value()
-        self.curve_list_update()
-        for ii, ar in enumerate(self.data_set):
-            rating = self.rate_data(ar)
+        for ii, fdist in enumerate(self.data_set):
+            rtd = fdist.get_rating_parameters()
+            rating = rtd["Rating"]
             it = self.list_curves.topLevelItem(ii)
-            if rating >= thresh:
+            if not np.isnan(rating) and rating >= thresh:
                 it.setCheckState(3, 2)
             else:
                 it.setCheckState(3, 0)
