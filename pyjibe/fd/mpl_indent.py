@@ -145,11 +145,11 @@ class MPLIndentation(object):
             # y: main plot
             self.axis_main.set_ylim(ymin, ymax)
         # set residuals ylim automatically
-        rmin = np.min(self.plots["residuals"].get_data()[1])
-        rmax = np.max(self.plots["residuals"].get_data()[1])
+        rmin = np.nanmin(self.plots["residuals"].get_data()[1])
+        rmax = np.nanmax(self.plots["residuals"].get_data()[1])
         if not np.isnan(rmin + rmax):
             rmax = max(abs(rmin), abs(rmax))
-            rmax = np.ceil(rmax*2) / 2
+            rmax = np.ceil(rmax*10) / 10
             rmin = -rmax
             # y: main plot
             self.axis_res.set_ylim(rmin, rmax)

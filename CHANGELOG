@@ -2,6 +2,7 @@
  - fix: info tab did not display QMap metadata
  - fix: do not fit the entire dataset when applying a rating threshold
    but take the values from previous ratings
+ - fix: set correct display range for residuals
  - docs: UI section for basics FD analysis
  - build: Windows build broken since 0.5.6
 0.6.3
