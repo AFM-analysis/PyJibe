@@ -40,9 +40,10 @@ At the bottom right are the :ref:`curve list controls <sec_ui_fd_curvelist>`.
     suppressed to give the remainder of the indentation curve more weight.
     
 
-The data shown resemble a 2D scan of AFM force-distance curves from a
-live zebrafish spinal cord microtome section (same data as in
-:cite:`Moellmert2020` fig. 1e and :cite:`Mueller19nanite` fig. 3a-c).
+The dataset shown resembles a 2D scan of AFM force-distance curves from a
+live zebrafish spinal cord microtome section and is available on figshare
+:cite:`qmap20` (same data as in :cite:`Moellmert2020` fig. 1e
+and :cite:`Mueller19nanite` fig. 3a,d,g).
 
 
 Tab: Preprocess
