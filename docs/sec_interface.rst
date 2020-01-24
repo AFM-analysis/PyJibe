@@ -95,6 +95,31 @@ Range:
     3. guess optimal indentation depth: The optimal indentation depth
        is guessed using the :ref:`E(δ)-curve <sec_ui_fd_tab_edelta>`.  
 
+Suppress residuals near contact point:
+    This option multiplies the residuals with a linear ramp, left and right
+    of the contact point. The ramp has a value of 0 at the contact point
+    and a value of 1 at the distance defined by the controls. All other
+    residuals or not changed.
+    This feature was designed for biological samples, where the physical
+    tip-sample interactions near the "contact point" are not well-understood
+    :cite:`Mueller19nanite`. The contributions near the contact point are
+    suppressed to give the remainder of the indentation curve more weight.
+
+Ancillary Parameters:
+    Ancillary parameters (not shown in the screenshot here), are parameters
+    that are defined in the fitting model. They are computed prior to the
+    fit and can be set as fitting parameters. Standard models usually do
+    not have ancillary parameters.
+
+Initial Parameters:
+    These are the parameters set initially during fitting. In the table, you
+    may choose which parameters should remain fixed during fitting, what
+    the initial values should be, and in which interval this value may be
+    varied. 
+
+Results:
+    The fit results of the varied parameters are shown here.
+
 
 .. _sec_ui_fd_tab_edelta:
 
