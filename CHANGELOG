@@ -1,3 +1,5 @@
+0.6.6
+ - fix: typo lead to error when using rating threshold
 0.6.5
  - build: macOS build failed due to PyInstaller issue 4626
 0.6.4

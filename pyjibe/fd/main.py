@@ -458,7 +458,7 @@ class UiForceDistance(QtWidgets.QWidget):
                 if rating >= thresh:
                     it.setCheckState(3, QtCore.Qt.Checked)
                 else:
-                    it.setCheckState(3, QtCore.Qt.Unhecked)
+                    it.setCheckState(3, QtCore.Qt.Unchecked)
         self.list_curves.blockSignals(False)
         # TODO:
         # - make this more efficient. There is a lot written to disk here.
