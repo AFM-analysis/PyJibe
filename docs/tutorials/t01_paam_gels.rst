@@ -22,7 +22,7 @@ Data analysis
 -------------
 To make data analysis easier, we first divide the dataset by copying the files
 of the compliant gel (*PAAm_Compliant_\*.jpk-force*) and the stiff gel
-(*PAAm_Stiff_\*.jpk-force*) into to two separate folders "compliant" and "stiff".
+(*PAAm_Stiff_\*.jpk-force*) into two separate folders "compliant" and "stiff".
 
 
 In PyJibe, we load each of the folders using *File | Open bulk data*. We
@@ -71,12 +71,12 @@ There are several things to note here:
   *force-modulation* feedback mode. The gel is not probed in *contact* mode,
   but in a mixture between contact mode and intermittend mode (See the
   NanoWizard User Manual v. 4.2, sec. 5.7.). Maybe this ringing is not
-  visible for the compliant gels, because of the setpoint at 6nN (The setpoint
+  visible for the compliant gel, because of the setpoint at 6n N (The setpoint
   likely defines the amplitude of the force-modulation feedback mode and for
-  the compliant gels, this amplitude is below the noise level).
+  the compliant gels, this amplitude might be below the noise level).
 
-- Stiff gels get a better rating than compliant gels with the *zef18 + Extra
-  Trees* rating scheme (please see :ref:`the nanite rating workflow
+- The stiff gel gets a better rating than the compliant gel with the *zef18 +
+  Extra Trees* rating scheme (please see :ref:`the nanite rating workflow
   <nanite:sec_rating>` and :cite:`Mueller19nanite` for how rating works).
   Of course, this observation is misleading - it nicely illustrates a limit
   of machine learning. The *zef18* training set was created using zebrafish
@@ -88,7 +88,8 @@ There are several things to note here:
 Results
 -------
 You might have realized that PyJibe creates the file
-*pyjibe_fit_results_leaf.tsv* in each of the measurement folders. These
+*pyjibe_fit_results_leaf.tsv* in each of the measurement folders (if the
+*Autosave fit results as .tsv* check box is checked). These
 files contain (amongst other things) the fit results of each curve. With
 a simple Python script, we can visualize the Young's modulus of the two gels:
 
@@ -121,6 +122,6 @@ a simple Python script, we can visualize the Young's modulus of the two gels:
 
     Comparison of the hydrogels. Note that the X axes are scaled differently.
 
-The compliant hydrogel has a Young's modulus of 1090 ± 10 Pa and the stiff
-hydrogel has a Young's modulus of 27680 ± 270 Pa. These values agree well
-with the values we expected initially.
+The compliant hydrogel has a Young's modulus of 1090 ± 10 Pa (mean ± SD) and
+the stiff hydrogel has a Young's modulus of 27680 ± 270 Pa. These values agree
+well with the values we expected initially.
