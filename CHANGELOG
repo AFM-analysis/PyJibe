@@ -1,3 +1,7 @@
+0.6.7
+ - setup: bump nanite from 1.4.0 to 1.4.1
+   (baseline is now a free parameter by default)
+ - docs: add first tutorial (PAAm gels)
 0.6.6
  - fix: typo lead to error when using rating threshold
 0.6.5

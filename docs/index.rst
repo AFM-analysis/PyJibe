@@ -20,6 +20,7 @@ Documentation
 
    sec_getting_started
    sec_interface
+   sec_tutorials
    sec_quick_guides
 
 .. toctree::

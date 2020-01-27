@@ -133,7 +133,7 @@ Tab: E(δ)
 The E(δ) curve is used to test whether the fitted Young's modulus E is
 dependent on the fitting interval. For a reliable fit, the E(δ) curve should
 exhibit a plateau. This is the case for the present example, where the fitted
-value of E does not vary much in the range from δ=-2µm to δ=-4.8µm (maximum
+value of E does not vary much in the range from δ=-2.5µm to δ=-4.8µm (maximum
 indentation).
 
 The control at the top is identical to the control in the :ref:`fitting tab
