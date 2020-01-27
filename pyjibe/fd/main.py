@@ -106,7 +106,7 @@ class UiForceDistance(QtWidgets.QWidget):
         for ar in self.data_set:
             idx = self.data_set.index(ar)
             item = self.list_curves.topLevelItem(idx)
-            if item.checkState(3) == 2:
+            if item.checkState(3) == QtCore.Qt.Checked:
                 curves.append(ar)
         return curves
 
@@ -163,7 +163,7 @@ class UiForceDistance(QtWidgets.QWidget):
 
     def autosave(self, fdist):
         """Performs autosaving for all files"""
-        if (self.cb_autosave.checkState() == 2 and
+        if (self.cb_autosave.checkState() == QtCore.Qt.Checked and
             fdist.fit_properties and
                 fdist.fit_properties["success"]):
             # Determine the directory of the current curve
@@ -183,7 +183,7 @@ class UiForceDistance(QtWidgets.QWidget):
                     # fdist was fitted with same model
                     ar.fit_properties["model_key"] == model_key and
                     # user selected curve for export ("use")
-                    it.checkState(3) == 2
+                    it.checkState(3) == QtCore.Qt.Checked
                 ):
                     exp_curv.append(ar)
             # The file to export
@@ -449,14 +449,17 @@ class UiForceDistance(QtWidgets.QWidget):
     def on_rating_threshold(self):
         """(De)select curves according to threshold rating"""
         thresh = self.sp_rating_thresh.value()
+        self.list_curves.blockSignals(True)
         for ii, fdist in enumerate(self.data_set):
             rtd = fdist.get_rating_parameters()
             rating = rtd["Rating"]
             it = self.list_curves.topLevelItem(ii)
-            if not np.isnan(rating) and rating >= thresh:
-                it.setCheckState(3, 2)
-            else:
-                it.setCheckState(3, 0)
+            if not np.isnan(rating):
+                if rating >= thresh:
+                    it.setCheckState(3, QtCore.Qt.Checked)
+                else:
+                    it.setCheckState(3, QtCore.Qt.Unhecked)
+        self.list_curves.blockSignals(False)
         # TODO:
         # - make this more efficient. There is a lot written to disk here.
         for fdist in self.data_set:

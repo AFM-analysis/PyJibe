@@ -174,11 +174,15 @@ class MPLQMap(object):
             cx = self.qmap_coords[:, 0]
             cy = self.qmap_coords[:, 1]
             newxy = (cx[index]-self.dx/2, cy[index]-self.dy/2)
-            self.select_rect.set_visible(True)
             self.select_rect.set_xy(newxy)
+            self.show_selection(True)
+
+    def show_selection(self, b):
+        self.select_rect.set_visible(b)
+        if b:
             self.select_rect.set_width(self.dx)
             self.select_rect.set_height(self.dy)
-            self.canvas.draw()
+        self.canvas.draw()
 
     def update(self, qmap, feature, cmap="viridis", vmin=None, vmax=None):
         """Update the map tab plot data
@@ -221,6 +225,10 @@ class MPLQMap(object):
 
         self.plot.set_cmap(cmap)
 
+        # explicitly set x/y limits
+        self.axis_main.set_xlim(extent[0], extent[1])
+        self.axis_main.set_ylim(extent[2], extent[3])
+
         if (prev_data is None
                 or not np.allclose(qmap_data, prev_data, equal_nan=True)):
             # visibility of plot elements
@@ -238,15 +246,19 @@ class MPLQMap(object):
             self.reset_lines()
             xm, ym = np.meshgrid(range(shape[0]),
                                  range(shape[1]))
+
             for xi, yi in zip(xm.flat, ym.flat):
                 if np.isnan(qmap_data[yi, xi]):
-                    xv = qmap_coords[0][0] + xi * dx
-                    yv = qmap_coords[0][1] + yi * dy
-                    if (np.sum(np.all(np.array([xi, yi]) == p)
-                               for p in qmap_coords_px)):
-                        color = "#14571A"
+                    xv = extent[0] + (xi+.5) * dx
+                    yv = extent[2] + (yi+.5) * dy
+                    for p in qmap_coords_px:
+                        if np.allclose([xi, yi], p):
+                            # data available, but not computed
+                            color = "#14571A"  # green
+                            break
                     else:
-                        color = "#571714"
+                        # curve not available
+                        color = "#571714"  # red
                     self.lines.append(
                         self.axis_main.plot([xv-dx*.4, xv+dx*.4],
                                             [yv-dy*.4, yv+dy*.4],

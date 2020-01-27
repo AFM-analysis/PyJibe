@@ -67,6 +67,8 @@ QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_info.png")
 
 war.tabs.setCurrentIndex(5)
+war.sp_rating_thresh.setValue(0)
+war.btn_rating_filter.clicked.emit()
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_qmap.png")
 

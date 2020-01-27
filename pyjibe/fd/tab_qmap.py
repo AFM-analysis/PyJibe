@@ -21,7 +21,7 @@ class TabQMap(QtWidgets.QWidget):
         # set colormaps
         cmaps = ["viridis", "plasma", "afmhot", "seismic"]
         for cm in cmaps:
-            self.qmpa_cmap_cb.addItem(cm)
+            self.qmpa_cmap_cb.addItem(cm, cm)
         self.qmpa_cmap_cb.setCurrentIndex(0)
         self.qmap_data_cb.currentIndexChanged.connect(
             self.on_qmap_data_changed)
@@ -44,8 +44,9 @@ class TabQMap(QtWidgets.QWidget):
         if self.fd.tabs.currentWidget() == self:
             fdist = self.current_curve
             # Get all selected curves with the same path
-            fdist_map = self.fd.selected_curves.subgroup_with_path(fdist.path)
-            self.update_qmap(fdist_map, fdist_map.index(fdist))
+            fdist_group = self.fd.selected_curves.subgroup_with_path(
+                fdist.path)
+            self.update_qmap(fdist_group, fdist)
 
     def on_qmap_cmap_changed(self):
         """colormap selection changed"""
@@ -57,7 +58,7 @@ class TabQMap(QtWidgets.QWidget):
         self.qmap_sp_range1.blockSignals(True)
         self.qmap_sp_range2.blockSignals(True)
         if hasattr(self, "_cache_qmap_spin_ctl"):
-            data = self.qmap_data_cb.currentIndex()
+            data = self.qmap_data_cb.currentData()
             if data in self._cache_qmap_spin_ctl:
                 vmin, vmax = self._cache_qmap_spin_ctl[data]
             else:
@@ -73,7 +74,7 @@ class TabQMap(QtWidgets.QWidget):
         # store spin control values for data column
         vmin = self.qmap_sp_range1.value()
         vmax = self.qmap_sp_range2.value()
-        data = self.qmap_data_cb.currentIndex()
+        data = self.qmap_data_cb.currentData()
         if not hasattr(self, "_cache_qmap_spin_ctl"):
             self._cache_qmap_spin_ctl = {}
         self._cache_qmap_spin_ctl[data] = (vmin, vmax)
@@ -92,12 +93,29 @@ class TabQMap(QtWidgets.QWidget):
         item = fd.list_curves.topLevelItem(idcurve)
         fd.list_curves.setCurrentItem(item)
 
-    def update_qmap(self, fdist_map, index):
+    def update_qmap(self, fdist_group, fdist):
+        """Update the QMap plotting data
+
+        Parameters
+        ----------
+        fdist_group: nanite.IndentationGroup
+            Indentation group containing all curves that will be
+            part of the map
+        fdist: nanite.Indentation
+            Indentation curve that is currently selected. If `fdist`
+            is not in `fdist_group`, then the red selection square
+            is hidden.
+        """
+        if fdist in fdist_group:
+            index = fdist_group.index(fdist)
+        else:
+            index = None
+
         # Build list of possible selections
         selist = nanite.qmap.available_features
 
         # Get plotting parameter and check if it makes sense
-        feature = self.qmap_data_cb.currentText()
+        feature = self.qmap_data_cb.currentData()
         if not feature or feature not in selist:
             # Use a default plotting map
             feature = "data min height"
@@ -113,19 +131,22 @@ class TabQMap(QtWidgets.QWidget):
             self.qmap_data_cb.removeItem(0)
         # add new items
         for item in selist:
-            self.qmap_data_cb.addItem(item)
+            self.qmap_data_cb.addItem(item, item)
         self.qmap_data_cb.setCurrentIndex(selist.index(feature))
         self.qmap_data_cb.blockSignals(False)
 
-        if len(fdist_map) > 1:
+        if len(fdist_group) > 1:
             # Get map data
-            qmap = nanite.QMap(fdist_map)
+            qmap = nanite.QMap(fdist_group)
             # update plot
             self.mpl_qmap.update(qmap=qmap,
                                  feature=feature,
-                                 cmap=self.qmpa_cmap_cb.currentText(),
+                                 cmap=self.qmpa_cmap_cb.currentData(),
                                  vmin=self.qmap_sp_range1.value(),
                                  vmax=self.qmap_sp_range2.value())
-            self.mpl_qmap.set_selection_by_index(index)
+            if index is not None:
+                self.mpl_qmap.set_selection_by_index(index)
+            else:
+                self.mpl_qmap.show_selection(False)
         else:
             self.mpl_qmap.reset()
