@@ -27,7 +27,7 @@ Documentation
    :maxdepth: 1
 
    sec_changelog
-   sec_z_bib
+   z_bib
 
 
 Indices and tables
