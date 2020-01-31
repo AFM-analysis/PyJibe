@@ -54,7 +54,12 @@ class TabInfo(QtWidgets.QWidget):
 
         textstring = "<br>".join(text)
 
+        # remember the scroll position
+        vval = self.info_text.verticalScrollBar().value()
+        hval = self.info_text.horizontalScrollBar().value()
         self.info_text.setText(textstring)
+        self.info_text.verticalScrollBar().setValue(vval)
+        self.info_text.horizontalScrollBar().setValue(hval)
 
 
 def get_string_rep_meta(key, value):

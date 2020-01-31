@@ -5,6 +5,7 @@
  - enh: fit results and parameter export dialog now supports new groups
    in afmformats 0.7.0
  - enh: autosave now only stores fit results and rating parameters
+ - enh: remember scroll position in info tab
 0.6.7
  - setup: bump nanite from 1.4.0 to 1.4.1
    (baseline is now a free parameter by default)
