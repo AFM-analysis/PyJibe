@@ -17,46 +17,26 @@ class TabInfo(QtWidgets.QWidget):
         uic.loadUi(path_ui, self)
 
     def update_info(self, fdist):
+        hr_info = {}
+
+        # Metadata
         msum = fdist.metadata.get_summary()
-
-        text = []
-
-        # Dataset
-        text.append("<b>Dataset</b>")
-        for kk in msum["dataset"]:
-            text.append(get_string_rep_meta(kk, msum["dataset"][kk]))
-
-        # Experiment
-        text.append("")
-        text.append("<b>Experiment:</b>")
-        texte = []
-        for kk in msum["experiment"]:
-            texte.append(get_string_rep_meta(kk, msum["experiment"][kk]))
-        text += sorted(texte)
-
-        # QMap
-        if msum["qmap"] and not has_all_nans(msum["qmap"]):
-            text.append("")
-            text.append("<b>QMap:</b>")
-            textq = []
-            for kk in msum["qmap"]:
-                textq.append(get_string_rep_meta(kk, msum["qmap"][kk]))
-            text += sorted(textq)
-
-        # Analysis
-        if msum["analysis"] and not has_all_nans(msum["analysis"]):
-            text.append("")
-            text.append("<b>Analysis:</b>")
-            texta = []
-            for kk in msum["analysis"]:
-                texta.append(get_string_rep_meta(kk, msum["analysis"][kk]))
-            text += sorted(texta)
+        for sec in msum:
+            if sec == "qmap":
+                if msum["qmap"] and not has_all_nans(msum["qmap"]):
+                    textq = []
+                    for kk in msum["qmap"]:
+                        textq.append(get_string_rep_meta(kk, msum["qmap"][kk]))
+                    hr_info["QMap"] = textq
+            else:
+                atext = []
+                for kk in msum[sec]:
+                    atext.append(get_string_rep_meta(kk, msum[sec][kk]))
+                hr_info[sec.capitalize()] = atext
 
         # Ancillaries
         anc_dict = fdist.get_ancillary_parameters()
         if anc_dict:
-            text.append("")
-            text.append("<b>Ancillaries:</b>")
             text_meta = []
             model_key = fdist.fit_properties["model_key"]
             for kk in anc_dict:
@@ -64,7 +44,13 @@ class TabInfo(QtWidgets.QWidget):
                     get_string_rep(name=model.get_parm_name(model_key, kk),
                                    value=anc_dict[kk],
                                    unit=model.get_parm_unit(model_key, kk)))
-            text += sorted(text_meta)
+            hr_info["Ancillaries"] = text_meta
+
+        text = []
+        for sec in sorted(hr_info.keys()):
+            text.append("<b>{}:</b>".format(sec))
+            text += sorted(hr_info[sec])
+            text.append("")
 
         textstring = "<br>".join(text)
 

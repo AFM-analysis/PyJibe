@@ -1,3 +1,10 @@
+0.6.8
+ - setup: bump afmformats from 0.5.1 to 0.7.0 (improved metadata view
+   in info tab)
+ - setup: bump nanite from 1.4.1 to 1.5.1 (compatibility to afmformats)
+ - enh: fit results and parameter export dialog now supports new groups
+   in afmformats 0.7.0
+ - enh: autosave now only stores fit results and rating parameters
 0.6.7
  - setup: bump nanite from 1.4.0 to 1.4.1
    (baseline is now a free parameter by default)

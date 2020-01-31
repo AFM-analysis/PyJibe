@@ -171,16 +171,8 @@ Tab: Info
 The info tab shows metadata related to the currently shown curve.
 Unknown values are indicated as *nan*.
 
-Dataset:
-    All information related to the dataset on disk and of the curve
-    relative to this dataset.
-
-Experiment:
-    All information on the actual experiment.
-
-QMap:
-    If the curve is part of a quantiative map (2D FD scan), then
-    the scan grid properties and the curve position are listed.
+Acquisition:
+    Settings of the acquisition software
 
 Ancillaries:
     Ancillary parameters are computed for each model. Here, the
@@ -188,6 +180,20 @@ Ancillaries:
     the fitted contact point and the value of the tip position where
     the fitted curve has its maximum. Fit models may have their own
     specific ancillary parameters.
+
+Dataset:
+    Measurement parameters of the dataset
+
+QMap:
+    If the curve is part of a quantiative map (2D FD scan), then
+    the scan grid properties and the curve position are listed.
+
+Setup:
+    Information about the AFM setup used
+
+Storage:
+    Information about the data file, which are not particularly important
+    for the experiment, but allow to identify a dataset or curve
 
 .. _sec_ui_fd_tab_qmap:
 

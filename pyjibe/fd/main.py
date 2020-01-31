@@ -227,8 +227,7 @@ class UiForceDistance(QtWidgets.QWidget):
                         )
                         fname = os.path.join(adir, newbase)
                 # Export data
-                which = export.EXPORT_CHOICES.copy()
-                which.remove("params_ancillary")
+                which = ["params_fitted", "rating"]
                 export.save_tsv_metadata_results(filename=fname,
                                                  fdist_list=exp_curv,
                                                  which=which)
@@ -331,6 +330,8 @@ class UiForceDistance(QtWidgets.QWidget):
         self.tab_qmap.mpl_qmap_update()
         # Display edelta
         self.tab_edelta.mpl_edelta_update()
+        # Autosave
+        self.autosave(fdist)
 
     def on_curve_list_item_changed(self, item):
         """An item in the curve list was changed

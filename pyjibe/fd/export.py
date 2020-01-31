@@ -10,13 +10,10 @@ import nanite.model as nmodel
 from .. import units
 
 #: Valid export choices in `save_tsv_metadata_results`
-EXPORT_CHOICES = [
-    "dataset",
-    "experiment",
+EXPORT_CHOICES = list(meta.META_FIELDS.keys()) + [
     "params_ancillary",
     "params_fitted",
     "params_initial",
-    "qmap",
     "rating"]
 
 
@@ -69,25 +66,28 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 if "params_initial" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_initial"]
                     for ki in fp:
-                        label, hrvalue = get_unitname_value(
-                            name=nmodel.get_parm_name(model_key, ki),
-                            value=fp[ki].value,
-                            unit=nmodel.get_parm_unit(model_key, ki))
-                        if label not in columns:
-                            columns[label] = [np.nan] * len(fdist_list)
-                        columns[label][ii] = hrvalue
+                        if not fp[ki].vary:
+                            label, hrvalue = get_unitname_value(
+                                name=nmodel.get_parm_name(model_key, ki),
+                                value=fp[ki].value,
+                                unit=nmodel.get_parm_unit(model_key, ki))
+                            if label not in columns:
+                                columns[label] = [np.nan] * len(fdist_list)
+                            columns[label][ii] = hrvalue
 
+            # Fitted
             if "params_fitted" in which:
                 if "params_fitted" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_fitted"]
                     for ki in fp:
-                        label, hrvalue = get_unitname_value(
-                            name=nmodel.get_parm_name(model_key, ki),
-                            value=fp[ki].value,
-                            unit=nmodel.get_parm_unit(model_key, ki))
-                        if label not in columns:
-                            columns[label] = [np.nan] * len(fdist_list)
-                        columns[label][ii] = hrvalue
+                        if fp[ki].vary:
+                            label, hrvalue = get_unitname_value(
+                                name=nmodel.get_parm_name(model_key, ki),
+                                value=fp[ki].value,
+                                unit=nmodel.get_parm_unit(model_key, ki))
+                            if label not in columns:
+                                columns[label] = [np.nan] * len(fdist_list)
+                            columns[label][ii] = hrvalue
 
                     # Additional fit parameters
                     props = {"xmin": ("Fit interval minimum", "m"),

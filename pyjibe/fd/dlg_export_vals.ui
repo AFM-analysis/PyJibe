@@ -26,11 +26,34 @@
      <property name="title">
       <string>Metadata</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="checkBox_qmap">
+        <property name="toolTip">
+         <string>Grid position, shape, etc. (if applicable)</string>
+        </property>
+        <property name="text">
+         <string>QMap</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="checkBox_acquisition">
+        <property name="toolTip">
+         <string>AFM acquisition settings</string>
+        </property>
+        <property name="text">
+         <string>Acquisition</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="checkBox_dataset">
         <property name="toolTip">
-         <string>Path, identifier, etc.</string>
+         <string>Dataset parameters</string>
         </property>
         <property name="text">
          <string>Dataset</string>
@@ -40,23 +63,23 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="checkBox_experiment">
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="checkBox_setup">
         <property name="toolTip">
-         <string>Duration, spring constant, etc.</string>
+         <string>AFM setup</string>
         </property>
         <property name="text">
-         <string>Experiment</string>
+         <string>Setup</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QCheckBox" name="checkBox_qmap">
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBox_storage">
         <property name="toolTip">
-         <string>Grid position, shape, etc. (if applicable)</string>
+         <string>File names, dates, ...</string>
         </property>
         <property name="text">
-         <string>QMap</string>
+         <string>Storage</string>
         </property>
        </widget>
       </item>

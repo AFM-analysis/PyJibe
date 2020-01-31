@@ -31,9 +31,11 @@ class ExportDialog(QtWidgets.QDialog):
                 if not fname.endswith(".tsv"):
                     fname += ".tsv"
                 user_choices = {
+                    "acquisition": self.checkBox_acquisition,
                     "dataset": self.checkBox_dataset,
-                    "experiment": self.checkBox_experiment,
                     "qmap": self.checkBox_qmap,
+                    "setup": self.checkBox_setup,
+                    "storage": self.checkBox_storage,
                     "params_initial": self.checkBox_initial,
                     "params_fitted": self.checkBox_fitted,
                     "params_ancillary": self.checkBox_ancillary,
