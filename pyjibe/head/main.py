@@ -19,6 +19,7 @@ import sklearn
 
 
 from . import custom_widgets
+from .dlg_tool_convert import ConvertDialog
 
 from .. import registry
 from ..settings import SettingsFile
@@ -47,6 +48,8 @@ class PyJibe(QtWidgets.QMainWindow):
         self.action_open_bulk.triggered.connect(self.on_open_bulk)
         self.action_open_single.triggered.connect(self.on_open_single)
         self.action_open_multiple.triggered.connect(self.on_open_multiple)
+        # Tool menu
+        self.actionConvert_AFM_data.triggered.connect(self.on_tool_convert)
         # Help menu
         self.actionDocumentation.triggered.connect(self.on_documentation)
         self.actionSoftware.triggered.connect(self.on_software)
@@ -161,6 +164,10 @@ class PyJibe(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.information(self,
                                           "Software",
                                           sw_text)
+
+    def on_tool_convert(self):
+        dlg = ConvertDialog(self)
+        dlg.show()
 
     def load_data(self, files, retry_open=None, separate_analysis=False):
         # approach-retract data files
