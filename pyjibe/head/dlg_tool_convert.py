@@ -58,7 +58,7 @@ class ConvertDialog(QtWidgets.QDialog):
                     opath = pathlib.Path(out_dir) / name
                     fdist.export(opath,
                                  metadata=self.get_metadata_keys(fdist),
-                                 fmt=self.format)                    
+                                 fmt=self.format)
             return True
         else:
             return False  # do not close the dialog
@@ -75,13 +75,13 @@ class ConvertDialog(QtWidgets.QDialog):
                                          hashlib.md5(epath).hexdigest()[:5],
                                          self.format)
                 opath = pathlib.Path(out_dir) / name
-                
+
                 with h5py.File(opath, mode="w") as h5:
                     fdlist = afmformats.load_data(path)
                     for fdist in fdlist:
                         fdist.export(h5,
                                      metadata=self.get_metadata_keys(fdist),
-                                     fmt=self.format)                    
+                                     fmt=self.format)
             return True
         else:
             return False  # do not close the dialog
