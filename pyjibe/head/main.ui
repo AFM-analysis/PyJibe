@@ -85,8 +85,8 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_open_bulk"/>
     <addaction name="action_open_single"/>
+    <addaction name="action_open_bulk"/>
     <addaction name="action_open_multiple"/>
    </widget>
    <widget class="QMenu" name="menuExport">
@@ -117,7 +117,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_open_bulk">
    <property name="text">
-    <string>Open &amp;bulk data</string>
+    <string>Open directory (&amp;single analysis)</string>
    </property>
    <property name="toolTip">
     <string>Open bulk data</string>
@@ -126,12 +126,12 @@
     <string>Load all data from a folder into one analysis</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string/>
    </property>
   </action>
   <action name="action_open_single">
    <property name="text">
-    <string>Open &amp;single file</string>
+    <string>Open &amp;individual files</string>
    </property>
    <property name="toolTip">
     <string>Open single file</string>
@@ -139,10 +139,13 @@
    <property name="statusTip">
     <string>Only open a single file</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="action_open_multiple">
    <property name="text">
-    <string>Open &amp;multple files</string>
+    <string>Open direktory (&amp;multiple analyses)</string>
    </property>
    <property name="toolTip">
     <string>Open multple files</string>

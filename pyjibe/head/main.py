@@ -131,16 +131,25 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.settings.set_path(dlg.getDirectory(), name="load data")
 
     def on_open_single(self, evt=None):
+        ext_opts = []
+        # all
         exts = ["*"+e for e in registry.known_suffixes]
-        exts_str = "Supported file types ({})".format(" ".join(exts))
-        search_dir = self.settings.get_path("load data")
+        ext_opts.append("Supported file types ({})".format(" ".join(exts)))
+        # individual
+        for suffix in registry.known_suffixes:
+            for item in afmformats.formats.formats_by_suffix[suffix]:
+                ext_opts.append("{} - {} (*{})".format(
+                    item["maker"], item["descr"], suffix))
+        exts_str = ";;".join(ext_opts)
 
-        n, _e = QtWidgets.QFileDialog.getOpenFileName(self, "Open single file",
-                                                      search_dir, exts_str)
+        search_dir = self.settings.get_path("load data")
+        n, _e = QtWidgets.QFileDialog.getOpenFileNames(
+            self, "Open single file", search_dir, exts_str, "",
+            QtWidgets.QFileDialog.DontUseNativeDialog)
         if n:
             # user did not press cancel
-            self.load_data(files=[n], retry_open=self.on_open_single)
-            self.settings.set_path(pathlib.Path(n).parent, name="load data")
+            self.load_data(files=n, retry_open=self.on_open_single)
+            self.settings.set_path(pathlib.Path(n[0]).parent, name="load data")
 
     def on_software(self):
         libs = [afmformats,

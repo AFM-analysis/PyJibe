@@ -1,6 +1,9 @@
 0.7.0
  - feat: add data conversion tool
- - setup: bump afmformats from 0.7.0 to 0.8.0 (fix HDF5 export)
+ - enh: allow to select multiple files when loading data
+ - ref: changed order and clarified meaning of options in file menu
+ - setup: bump afmformats from 0.7.0 to 0.9.0 (fix HDF5 export,
+   support new file formats)
 0.6.8
  - setup: bump afmformats from 0.5.1 to 0.7.0 (improved metadata view
    in info tab)
