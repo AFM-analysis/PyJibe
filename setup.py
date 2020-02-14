@@ -24,7 +24,7 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.8.0",
+    install_requires=["afmformats>=0.9.0",
                       "appdirs",
                       "nanite>=1.4.1",
                       "matplotlib",

@@ -193,4 +193,5 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "numpy": ('https://docs.scipy.org/doc/numpy', None),
                        "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
                        "nanite": ('https://nanite.readthedocs.io/en/stable', None),
+                       "afmformats": ('https://afmformats.readthedocs.io/en/stable', None),
                        }

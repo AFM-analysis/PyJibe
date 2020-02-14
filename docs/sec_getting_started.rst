@@ -38,7 +38,14 @@ If you installed pyjibe with ``pip``, you may upgrade it with:
     pip install --upgrade pyjibe
 
 
+Supported file formats
+======================
+PyJibe relies on the :ref:`afmformats <afmformats:index>` package.
+A list of supported file formats can be found
+:ref:`here <afmformats:supported_formats>`.
+
+
 How to cite
------------
+===========
 If you use PyJibe in a scientific publication, please consider citing
 Müller et al., *BMC Bioinformatics* (2019) :cite:`Mueller19nanite`.
