@@ -78,10 +78,14 @@ def get_string_rep(name, value, unit):
 
     if isinstance(value, numbers.Number):
         hrvalue, scunit = units.si2hr(name=name, value=value, si_unit=unit)
-        rep = "{}: {:.5g}{}".format(name,
-                                    hrvalue,
-                                    " " + scunit if scunit else "",
-                                    )
+
+        if np.isnan(value):
+            rep = "<span style='color:#757575'>{}: unknown</span>".format(name)
+        else:
+            rep = "{}: {:.5g}{}".format(name,
+                                        hrvalue,
+                                        " " + scunit if scunit else "",
+                                        )
     else:
         rep = "{}: {}".format(name, value)
 
