@@ -2,7 +2,7 @@ import os
 import pathlib
 import pkg_resources
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
@@ -54,7 +54,7 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
     def __init__(self, *args, **kwargs):
         super(NavigationToolbarCustom, self).__init__(*args, **kwargs)
 
-    def _icon(self, name):
+    def _icon(self, name, color=None):
         """Override matplotlibs `_icon` function to get custom icons"""
         # PyQt5 supports large images
         name = name.replace('.png', '_large.png')
@@ -64,6 +64,11 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
             impath = os.path.join(imdir, name)
         pm = QtGui.QPixmap(impath)
         pm.setDevicePixelRatio(self.canvas._dpi_ratio)
+        if color is not None:
+            mask = pm.createMaskFromColor(QtGui.QColor('black'),
+                                          QtCore.Qt.MaskOutColor)
+            pm.fill(color)
+            pm.setMask(mask)
         return QtGui.QIcon(pm)
 
     def save_data(self, *args):
