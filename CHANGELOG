@@ -1,4 +1,5 @@
 0.7.1
+ - fix: wrong SI units assigend to fit results parameters
  - setup: bump afmformats from 0.9.0 to 0.10.0
    (new formats: JPK (.jpk-qi-data), AFM workshop (.csv),
    NT-MDT (.txt exported by Nova))

@@ -59,6 +59,10 @@ def hrunit(name, si_unit=None):
     if name in human_units:
         scalename, unit = human_units[name]
         scaleunit = scalename + unit
+        if si_unit is not None and si_unit != unit:
+            raise ValueError(
+                "Bad `si_unit` '{}' given for '{}', expected '{}'! ".format(
+                    si_unit, name, unit))
     elif si_unit in default_scales:
         scaleunit = default_scales[si_unit] + si_unit
     elif si_unit is not None:

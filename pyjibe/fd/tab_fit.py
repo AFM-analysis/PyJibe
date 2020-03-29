@@ -220,10 +220,10 @@ class TabFit(QtWidgets.QWidget):
                                                  read_only=True)
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
-                    name = self.fit_model.parameter_keys.index(p.name)
-                    hrname = self.fit_model.parameter_names[name]
+                    idp = self.fit_model.parameter_keys.index(p.name)
+                    hrname = self.fit_model.parameter_names[idp]
                     # SI unit
-                    si_unit = self.fit_model.parameter_units[ii]
+                    si_unit = self.fit_model.parameter_units[idp]
                     # Determine unit scale, e.g. 1e6 [sic] for µm
                     scale = units.hrscale(hrname, si_unit=si_unit)
                     label = units.hrscname(hrname, si_unit=si_unit)
@@ -237,9 +237,9 @@ class TabFit(QtWidgets.QWidget):
                                                  read_only=True)
                 for ii, p in enumerate(varps):
                     # Get the human readable name of the parameter
-                    name = self.fit_model.parameter_keys.index(p.name)
-                    hrname = self.fit_model.parameter_names[name]
-                    si_unit = self.fit_model.parameter_units[ii]
+                    idp = self.fit_model.parameter_keys.index(p.name)
+                    hrname = self.fit_model.parameter_names[idp]
+                    si_unit = self.fit_model.parameter_units[idp]
                     label = units.hrscname(hrname, si_unit=si_unit)
                     ftab.verticalHeaderItem(ii).setText(label)
                     ftab.item(ii, 0).setText("nan")
