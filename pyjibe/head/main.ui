@@ -145,7 +145,7 @@
   </action>
   <action name="action_open_multiple">
    <property name="text">
-    <string>Open direktory (&amp;multiple analyses)</string>
+    <string>Open directory (&amp;multiple analyses)</string>
    </property>
    <property name="toolTip">
     <string>Open multple files</string>
