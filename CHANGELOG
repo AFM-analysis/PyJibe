@@ -1,3 +1,5 @@
+0.7.2
+ - fix: setting bad fit range lead to ValueError during plotting
 0.7.1
  - fix: wrong SI units assigend to fit results parameters
  - setup: bump afmformats from 0.9.0 to 0.10.0

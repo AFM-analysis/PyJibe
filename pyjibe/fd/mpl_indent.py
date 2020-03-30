@@ -85,9 +85,10 @@ class MPLIndentation(object):
         self.axis_res.set_ylabel("residuals [{}]".format(yunit))
         self.axis_main.set_ylabel("{} [{}]".format(yaxis, yunit))
 
-        if "fit" in fdist.data:
+        if "fit" in fdist.data and np.sum(fdist["fit range"]):
             self.plots["residuals"].set_visible(True)
             self.plots["fit"].set_visible(True)
+            self.plots["fit range"].set_visible(True)
 
             self.plots["fit"].set_data(fdist["tip position"]*xscale,
                                        fdist["fit"]*yscale)
@@ -101,12 +102,14 @@ class MPLIndentation(object):
             xy[:, 0] = fitmax
             xy[2:4, 0] = fitmin
             self.plots["fit range"].set_xy(xy)
+
+            self.update_plot(rescale_x=rescale_x,
+                             rescale_y=rescale_y)
         else:
             self.plots["residuals"].set_visible(False)
             self.plots["fit"].set_visible(False)
-
-        self.update_plot(rescale_x=rescale_x,
-                         rescale_y=rescale_y)
+            self.plots["fit range"].set_visible(False)
+            self.canvas.draw()
 
     def update_plot(self, rescale_x=None, rescale_y=None):
         """Update plot data range"""
