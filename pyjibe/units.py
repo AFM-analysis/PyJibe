@@ -100,7 +100,6 @@ human_units["contact point"] = ["n", "m"]
 human_units["force"] = [default_scales["N"], "N"]
 human_units["force baseline"] = ["p", "N"]
 human_units["tip position"] = [default_scales["m"], "m"]
-human_units["half cone angle"] = ["", "deg"]
 
 scales = {}
 scales["k"] = 1e3

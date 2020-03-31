@@ -1,6 +1,8 @@
 0.7.3
  - fix: update initial parameters when the user edits the left
    fitting interval boundary
+ - fix: conical indenter model did not work, because of a wrong
+   (and unnecessary) entry in the `human_units` scheme.
 0.7.2
  - fix: setting bad fit range lead to ValueError during plotting
 0.7.1
