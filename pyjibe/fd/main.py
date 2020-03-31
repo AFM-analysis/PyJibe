@@ -55,6 +55,7 @@ class UiForceDistance(QtWidgets.QWidget):
             self.tab_fit.cb_delta_select.setCurrentIndex)
         self.tab_fit.sp_range_1.valueChanged["double"].connect(
             self.tab_edelta.on_delta_change_spin)
+        self.tab_fit.sp_range_1.valueChanged.connect(self.on_params_init)
         self.tab_fit.sp_range_2.valueChanged.connect(self.on_params_init)
         # rating
         self.btn_rating_filter.clicked.connect(self.on_rating_threshold)

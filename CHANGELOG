@@ -1,3 +1,6 @@
+0.7.3
+ - fix: update initial parameters when the user edits the left
+   fitting interval boundary
 0.7.2
  - fix: setting bad fit range lead to ValueError during plotting
 0.7.1
