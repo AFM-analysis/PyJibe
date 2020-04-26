@@ -45,8 +45,7 @@ class FileDialog(QtWidgets.QFileDialog):
 
 
 # TODO:
-# - upgrade matplotlib to something other than 1.5.1 and
-#   use the capabilities of the new toolbars.
+# - use the capabilities of the new toolbars?
 
 class NavigationToolbarCustom(NavigationToolbar2QT):
     """A custom toolbar that allows other icons"""
