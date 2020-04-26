@@ -5,18 +5,19 @@ import sys
 import traceback
 import webbrowser
 
+import matplotlib
+matplotlib.use('QT5Agg')
+
 from PyQt5 import uic, QtCore, QtWidgets
 
 import afmformats
 import appdirs
 import h5py
 import lmfit
-import matplotlib
 import nanite
 import numpy
 import scipy
 import sklearn
-
 
 from . import custom_widgets
 from .dlg_tool_convert import ConvertDialog
