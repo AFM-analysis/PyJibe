@@ -6,6 +6,7 @@ import traceback
 import webbrowser
 
 import matplotlib
+matplotlib.use('QT5Agg')  # noqa: E402
 
 from PyQt5 import uic, QtCore, QtWidgets
 
@@ -24,8 +25,6 @@ from .dlg_tool_convert import ConvertDialog
 from .. import registry
 from ..settings import SettingsFile
 from .._version import version as __version__
-
-matplotlib.use('QT5Agg')
 
 
 class PyJibeQMdiSubWindow(QtWidgets.QMdiSubWindow):
