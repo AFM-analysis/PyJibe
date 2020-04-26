@@ -10,7 +10,9 @@ matrix:
  include:
  - os: osx
    language: generic
-   env: MAC_PYTHON_VERSION=3.6
+   env:
+    - MAC_PYTHON_VERSION=3.6.8
+    - MAC_PYTHON_OSX_VERSION=10.6
    sudo: required
  - os: linux
    language: python
@@ -18,7 +20,7 @@ matrix:
    services: xvfb
 install:
 # install other dependencies
-- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION
+- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION MAC_PYTHON_OSX_VERSION
 # install binary packages
 - travis_retry pip install --upgrade pip
 - travis_retry pip install setuptools wheel
