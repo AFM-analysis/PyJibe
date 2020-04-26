@@ -20,7 +20,7 @@ matrix:
    services: xvfb
 install:
 # install other dependencies
-- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION MAC_PYTHON_OSX_VERSION
+- source ./.travis/${TRAVIS_OS_NAME}_setup_python.sh $MAC_PYTHON_VERSION $MAC_PYTHON_OSX_VERSION
 # install binary packages
 - travis_retry pip install --upgrade pip
 - travis_retry pip install setuptools wheel
