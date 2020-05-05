@@ -37,6 +37,12 @@ class PyJibeQMdiSubWindow(QtWidgets.QMdiSubWindow):
 
 class PyJibe(QtWidgets.QMainWindow):
     def __init__(self, *args, **kwargs):
+        """Initialize PyJibe
+
+        If you pass the "--version" command line argument, the
+        application will print the version after initialization
+        and exit.
+        """
         super(PyJibe, self).__init__(*args, **kwargs)
         path_ui = pkg_resources.resource_filename("pyjibe.head", "main.ui")
         uic.loadUi(path_ui, self)
@@ -62,6 +68,11 @@ class PyJibe(QtWidgets.QMainWindow):
         self.subwindow_data = []
         self.mdiArea.cascadeSubWindows()
         self.showMaximized()
+        # if "--version" was specified, print the version and exit
+        if "--version" in sys.argv:
+            print(__version__)
+            QtWidgets.QApplication.processEvents()
+            sys.exit(0)
 
     def add_subwindow(self, aclass, flist):
         """Add a subwindow, register data set and add to menu"""
