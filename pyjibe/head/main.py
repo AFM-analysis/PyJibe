@@ -1,3 +1,5 @@
+# flake8: noqa: E402 (matplotlib.use has to be right after the import)
+
 import pathlib
 import pkg_resources
 import signal
@@ -6,7 +8,7 @@ import traceback
 import webbrowser
 
 import matplotlib
-matplotlib.use('QT5Agg')  # noqa: E402
+matplotlib.use('QT5Agg')
 
 from PyQt5 import uic, QtCore, QtWidgets
 

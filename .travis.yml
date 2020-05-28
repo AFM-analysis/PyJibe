@@ -38,7 +38,6 @@ script:
 - coverage run --source=pyjibe setup.py test
 - coverage report -m
 - flake8 pyjibe
-- flake8 examples
 - flake8 tests
 after_success:
 - codecov
