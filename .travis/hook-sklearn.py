@@ -8,6 +8,9 @@
 #-----------------------------------------------------------------------------
 
 # Hook for sklearn
+from PyInstaller.utils.hooks import collect_data_files
+datas += collect_data_files("sklearn", subdir=".dylibs")
+
 hiddenimports = [
     'sklearn.tree._utils',
     'sklearn.neighbors.typedefs',

@@ -55,7 +55,7 @@ after_test:
   # Run pyinstaller
   - "pyinstaller -y --log-level=WARN .appveyor\\pyjibe.spec"
   # Run the binary (the most simple test)
-#  - "dist\\pyjibe\\pyjibe_ui.exe --version"
+  - "dist\\pyjibe\\pyjibe_ui.exe --version"
   # Create InnoSetup installers
   # Generate iss file
   - "python .appveyor\\make_iss.py"
