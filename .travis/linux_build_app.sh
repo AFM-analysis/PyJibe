@@ -1,2 +1,3 @@
 #!/bin/bash
-# nothing to do
+echo "nothing to do"
+
