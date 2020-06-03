@@ -10,6 +10,8 @@
 # - The file ./travis/AppNameApp.py [sic] must be present (relative
 #   to root of the repository)
 
+set -e
+
 if [ -z $1 ]; then
     echo "Please specify package name as command line argument!"
     exit 1
@@ -38,6 +40,11 @@ pip install pyinstaller
 # otherwise PyPI deployment on travis-CI tries to upload *.dmg files.
 pyinstaller -w -y --distpath="./dist_app" --additional-hooks-dir=".travis" $SCRIPT
 
+# Test the binary by executing it with --version argument
+echo ""
+echo "...Testing the app (this should print the version). If it hangs, set 'console=True' in your .spec file!"
+./dist_app/${NAME}.app/Contents/MacOS/${NAME} --version
+
 # Create PKG (pkgbuild is for deployments in app stores)
 # https://www.manpagez.com/man/1/productbuild/
 #productbuild --install-location /Applications/ --component ${APP} ${PKG}
@@ -64,5 +71,4 @@ hdiutil convert "${TMP}" -format UDZO -imagekey zlib-level=9 -o "${DMG}"
 
 # remove temporary DMG
 rm $TMP
-
 
