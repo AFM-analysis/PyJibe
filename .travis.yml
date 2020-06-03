@@ -39,11 +39,11 @@ script:
 - coverage report -m
 - flake8 pyjibe
 - flake8 tests
-after_success:
-- codecov
 - python setup.py sdist bdist_wheel
 - pip install pyinstaller==3.6
 - bash ./.travis/${TRAVIS_OS_NAME}_build_app.sh PyJibeApp $TRAVIS_TAG
+after_success:
+- codecov
 deploy:
   - provider: pypi
     user: "ci_afm"
