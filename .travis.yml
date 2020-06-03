@@ -32,6 +32,7 @@ install:
 - travis_retry pip install git+git://github.com/AFM-analysis/nanite.git
 - travis_retry pip install -e .
 - travis_retry pip install threadpoolctl==2.0.0
+- travis_retry pip install PyQt5==5.14.2 PyQt5-sip==12.7.2
 # for tests:
 - travis_retry pip install codecov coverage flake8
 - pip freeze
