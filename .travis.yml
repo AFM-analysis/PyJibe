@@ -31,6 +31,7 @@ install:
 - travis_retry pip install git+git://github.com/AFM-analysis/afmformats.git
 - travis_retry pip install git+git://github.com/AFM-analysis/nanite.git
 - travis_retry pip install -e .
+- travis_retry pip install threadpoolctl==2.0.0
 # for tests:
 - travis_retry pip install codecov coverage flake8
 - pip freeze
