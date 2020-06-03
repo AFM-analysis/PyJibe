@@ -18,3 +18,11 @@ hiddenimports = ["mpl_toolkits",
                  "mpl_toolkits.axes_grid1",
                  ]
 
+excludedimports = ["FixTk",
+                   "tcl",
+                   "tk",
+                   "_tkinter",
+                   "tkinter",
+                   "Tkinter",
+                   ]
+
