@@ -16,13 +16,8 @@ datas += collect_data_files("pyjibe", subdir="img")
 
 hiddenimports = ["mpl_toolkits",
                  "mpl_toolkits.axes_grid1",
+                 # nanite CLI
+                 "tkinter",
+                 "_tkinter",
                  ]
-
-excludedimports = ["FixTk",
-                   "tcl",
-                   "tk",
-                   "_tkinter",
-                   "tkinter",
-                   "Tkinter",
-                   ]
 
