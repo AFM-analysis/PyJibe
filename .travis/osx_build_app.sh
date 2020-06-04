@@ -38,7 +38,7 @@ pip install pyinstaller
 
 # Work in a different directory (./dist_app instead of ./dist),
 # otherwise PyPI deployment on travis-CI tries to upload *.dmg files.
-pyinstaller -w -y --distpath="./dist_app" --additional-hooks-dir=".travis" $SCRIPT
+pyinstaller -w -y --distpath="./dist_app" --exclude-module tkinter --additional-hooks-dir=".travis" $SCRIPT
 
 # Test the binary by executing it with --version argument
 echo ""
