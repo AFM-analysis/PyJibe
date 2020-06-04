@@ -18,8 +18,3 @@ hiddenimports = ["mpl_toolkits",
                  "mpl_toolkits.axes_grid1",
                  ]
 
-excludedimports = ["_tkinter",
-                   "tkinter",
-                   "matplotlib.backends.backend_tkagg",
-                   ]
-
