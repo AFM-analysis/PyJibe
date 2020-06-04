@@ -42,8 +42,9 @@ pyinstaller -w -y --distpath="./dist_app" --exclude-module tkinter --additional-
 
 # Test the binary by executing it with --version argument
 echo ""
-echo "...Testing the app (this should print the version). If it hangs, set 'console=True' in your .spec file!"
+echo "...Testing the app (this should print the version)."
 ./dist_app/${NAME}.app/Contents/MacOS/${NAME} --version
+echo ""
 
 # Create PKG (pkgbuild is for deployments in app stores)
 # https://www.manpagez.com/man/1/productbuild/
