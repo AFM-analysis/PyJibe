@@ -20,5 +20,6 @@ hiddenimports = ["mpl_toolkits",
 
 excludedimports = ["_tkinter",
                    "tkinter",
+                   "matplotlib.backends.backend_tkagg",
                    ]
 
