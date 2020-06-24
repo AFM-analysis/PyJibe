@@ -1,5 +1,9 @@
-0.7.7
+0.8.0
  - fix: exclude misplaced 'available' method from preprocessors
+ - setup: bump nanite from 1.5.5 to 1.6.0 (improved contact point
+   estimation - this may introduce small changes in the fit result
+   which should not be significant, but which justify a new minor
+   version)
 0.7.6
  - maintenance release (fix macOS build)
  - setup: bump afmformats from 0.10.2 to 0.11.0
