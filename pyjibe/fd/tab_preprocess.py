@@ -1,4 +1,3 @@
-import inspect
 import pkg_resources
 
 import nanite.preproc as npreproc
@@ -14,15 +13,7 @@ class TabPreprocess(QtWidgets.QWidget):
 
         # Setup everything necessary for the preprocessing tab:
         # Get list of preprocessing methods
-        mem = inspect.getmembers(npreproc.IndentationPreprocessor)
-        premem = []
-        for m in mem:
-            if (m[1].__doc__ is not None and
-                not m[0].startswith("_") and
-                    not m[0] == "apply"):
-                premem.append(m[0])
-
-        premem.sort()
+        premem = npreproc.IndentationPreprocessor.available()
 
         for p in premem:
             item = QtWidgets.QListWidgetItem()
