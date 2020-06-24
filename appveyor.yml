@@ -26,8 +26,10 @@ install:
   - python --version
   # Install pyjibe and its dependencies
   - appveyor-retry python -m pip install --upgrade pip
-  # Install scikit-learn version that works with PyInstaller 3.6
-  - appveyor-retry python -m pip install scikit-learn==0.21.3
+  # Pin version of scipy (1.5 did not work with PyInstaller 3.6?)
+  - appveyor-retry pip install "scipy<1.5.0"
+  # nanite needs scikit-learn>0.23.0
+  - appveyor-retry python -m pip install scikit-learn==0.23.1
   - appveyor-retry pip install git+git://github.com/AFM-analysis/nanite.git
   - appveyor-retry pip install -e .
   # Show the installed packages
