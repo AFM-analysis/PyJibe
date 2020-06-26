@@ -36,7 +36,7 @@ Testing
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/PyJibe.svg
    :target: https://pypi.python.org/pypi/PyJibe
 .. |Tests Status Linux macOS| image:: https://img.shields.io/travis/AFM-analysis/PyJibe.svg?label=tests_linux_macos
-   :target: https://travis-ci.org/AFM-analysis/PyJibe
+   :target: https://travis-ci.com/AFM-analysis/PyJibe
 .. |Tests Status Win| image:: https://img.shields.io/appveyor/ci/paulmueller/PyJibe?label=tests_win
    :target: https://ci.appveyor.com/project/paulmueller/PyJibe
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/AFM-analysis/PyJibe/master.svg
