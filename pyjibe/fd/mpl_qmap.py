@@ -1,3 +1,4 @@
+import copy
 import io
 
 import matplotlib as mpl
@@ -32,7 +33,7 @@ class MPLQMap(object):
         self.no_data_text.set_visible(False)
         # main axis
         self.axis_main = self.figure.add_subplot(111)
-        cmap = mpl.cm.get_cmap(rc["color_map"])
+        cmap = copy.copy(mpl.cm.get_cmap(rc["color_map"]))
         cmap.set_over(rc["color_map_over"], 1)
         cmap.set_under(rc["color_map_under"], 1)
         self.plot = self.axis_main.imshow(np.zeros((10, 10)),

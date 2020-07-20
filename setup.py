@@ -27,7 +27,7 @@ setup(
     install_requires=["afmformats>=0.11.0",
                       "appdirs",
                       "nanite>=1.6.2",
-                      "matplotlib",
+                      "matplotlib>=3.3.0",  # NavigationToolbar2QT mod
                       "pyqt5"],
     python_requires='>=3.6, <4',
     entry_points={"gui_scripts": ['pyjibe = pyjibe.__main__:main']},
