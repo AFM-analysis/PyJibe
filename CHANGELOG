@@ -1,3 +1,5 @@
+0.8.1
+ - fix: correctly handle lmfit models with expressions
 0.8.0
  - fix: exclude misplaced 'available' method from preprocessors
  - setup: bump nanite from 1.5.5 to 1.6.0 (improved contact point

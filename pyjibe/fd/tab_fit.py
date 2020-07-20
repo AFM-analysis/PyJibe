@@ -135,11 +135,17 @@ class TabFit(QtWidgets.QWidget):
                 if table.item(rr, cc) is None:
                     item = QtWidgets.QTableWidgetItem()
                     table.setItem(rr, cc, item)
-                    if cc == 0 and cb_first:
-                        item.setFlags(QtCore.Qt.ItemIsUserCheckable
-                                      | QtCore.Qt.ItemIsEnabled)
-                    elif read_only:
-                        item.setFlags(QtCore.Qt.ItemIsEnabled)
+                else:
+                    item = table.item(rr, cc)
+                if cc == 0 and cb_first:
+                    item.setFlags(QtCore.Qt.ItemIsUserCheckable
+                                  | QtCore.Qt.ItemIsEnabled
+                                  | QtCore.Qt.ItemIsEditable)
+                elif read_only:
+                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                else:
+                    item.setFlags(QtCore.Qt.ItemIsEnabled
+                                  | QtCore.Qt.ItemIsEditable)
 
         return rows_changed
 
@@ -215,10 +221,12 @@ class TabFit(QtWidgets.QWidget):
             if update_ui:
                 # Display results in `self.table_parameters_fitted`
                 fitpar = fdist.fit_properties["params_fitted"]
-                varps = [p[1] for p in fitpar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps),
+                # Display all varied parameters and expression parameters
+                # (expression parameters are discouraged, but supported)
+                fps = [p[1] for p in fitpar.items() if p[1].vary or p[1].expr]
+                self.assert_parameter_table_rows(ftab, len(fps),
                                                  read_only=True)
-                for ii, p in enumerate(varps):
+                for ii, p in enumerate(fps):
                     # Get the human readable name of the parameter
                     idp = self.fit_model.parameter_keys.index(p.name)
                     hrname = self.fit_model.parameter_names[idp]
@@ -232,10 +240,10 @@ class TabFit(QtWidgets.QWidget):
         else:
             if update_ui:
                 inipar = fdist.fit_properties["params_initial"]
-                varps = [p[1] for p in inipar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(varps),
+                fps = [p[1] for p in inipar.items() if p[1].vary]
+                self.assert_parameter_table_rows(ftab, len(fps),
                                                  read_only=True)
-                for ii, p in enumerate(varps):
+                for ii, p in enumerate(fps):
                     # Get the human readable name of the parameter
                     idp = self.fit_model.parameter_keys.index(p.name)
                     hrname = self.fit_model.parameter_names[idp]
@@ -263,6 +271,9 @@ class TabFit(QtWidgets.QWidget):
             # Only update if there is already something set
             for ii, key in enumerate(list(params.keys())):
                 p = params[key]
+                if p.expr:
+                    # Parameter has an expression, no update necessary
+                    continue
                 # Determine the scale for which we need to revert
                 # the multiplications.
                 # performed in `fit_update_parameters`.
@@ -310,6 +321,7 @@ class TabFit(QtWidgets.QWidget):
         itab.blockSignals(True)
 
         self.assert_parameter_table_rows(itab, len(params), cb_first=True)
+        params.update_constraints()  # in case we have expressions
         for ii, key in enumerate(list(params.keys())):
             p = params[key]
             # Get the human readable name of the parameter
@@ -328,6 +340,13 @@ class TabFit(QtWidgets.QWidget):
             itab.item(ii, 1).setText("{:.5g}".format(p.value*scale))
             itab.item(ii, 2).setText(str(p.min*scale))
             itab.item(ii, 3).setText(str(p.max*scale))
+            # grey out expression parameters
+            if p.expr:
+                for jj in range(4):
+                    item = itab.item(ii, jj)
+                    if jj == 0:  # check box
+                        item.setCheckState(QtCore.Qt.Unchecked)
+                    item.setFlags(QtCore.Qt.NoItemFlags)
 
         itab.blockSignals(False)
 
