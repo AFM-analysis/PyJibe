@@ -54,7 +54,7 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
     def __init__(self, *args, **kwargs):
         super(NavigationToolbarCustom, self).__init__(*args, **kwargs)
 
-    def _icon(self, name):
+    def _icon(self, name, color=None):
         """Override matplotlibs `_icon` function to get custom icons"""
         name = name.replace('.png', '_large.png')
         impath = str(cbook._get_data_path('images', name))
