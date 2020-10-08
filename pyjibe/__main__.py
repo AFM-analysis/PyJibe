@@ -34,8 +34,6 @@ def main(splash=True):
     QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
 
     window = PyJibe()
-    window.show()
-    window.raise_()
 
     if splash:
         splash.finish(window)

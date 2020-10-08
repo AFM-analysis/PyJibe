@@ -75,6 +75,10 @@ class PyJibe(QtWidgets.QMainWindow):
             print(__version__)
             QtWidgets.QApplication.processEvents()
             sys.exit(0)
+        self.show()
+        self.raise_()
+        self.activateWindow()
+        self.setWindowState(QtCore.Qt.WindowState.WindowActive)
 
     def add_subwindow(self, aclass, flist):
         """Add a subwindow, register data set and add to menu"""
