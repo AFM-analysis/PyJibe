@@ -8,8 +8,9 @@ import nanite.indent as nindent
 import nanite.rate.rater
 
 
+_cfg_dir = appdirs.user_config_dir(appname="PyJibe", appauthor="AFM-Analysis")
 #: Rating configuration directory
-CFG_DIR = pathlib.Path(appdirs.user_config_dir(appname="PyJibe")) / "rating"
+CFG_DIR = pathlib.Path(_cfg_dir) / "rating"
 #: Path to main rating configuration file
 CFG_PATH = CFG_DIR / "rating_schemes.txt"
 

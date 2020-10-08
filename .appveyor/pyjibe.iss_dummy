@@ -3,8 +3,8 @@
 
 #define MyAppName "PyJibe"
 #define MyAppVersion "0.1.0"
-#define MyAppPublisher "Paul Müller"
-#define MyAppURL "https://gucklab.com"
+#define MyAppPublisher "AFM-Analysis"
+#define MyAppURL "https://pyjibe.readthedocs.io"
 #define MyAppExeName "pyjibe_ui.exe"
 #define MyAppPlatform "win32"
 #define MyAppDir = SourcePath + "..\dist\pyjibe\"
@@ -21,8 +21,9 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={localappdata}\{#MyAppName}
+DefaultDirName={localappdata}\{#MyAppPublisher}{#MyAppName}
 DisableDirPage=yes
+UsePreviousAppDir=false
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputBaseFilename={#MyAppName}_{#MyAppVersion}_{#MyAppPlatform}_setup
