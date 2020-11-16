@@ -2,6 +2,8 @@
  - fix: main window not focused after startup
  - fix: Windows installation location was confusing and did
    not coincide configuration file location
+ - setup: bump afmformats from 0.11.0 to 0.12.0
+   (improved JPK file format speed)
 0.8.2
  - setup: bump matplotlib to >=3
    (NavigationToolbar2QT modifications)

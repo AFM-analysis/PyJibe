@@ -105,3 +105,5 @@ venv.bak/
 
 _version_save.py
 *.bib.bak
+
+.idea
