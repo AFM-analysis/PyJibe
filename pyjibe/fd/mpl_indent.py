@@ -14,16 +14,17 @@ class MPLIndentation(object):
         """Matplotlib plot for force-indentation data"""
         # Add matplotlib figure
         self.figure = Figure(facecolor="none", tight_layout=True,
-                             frameon={"pad": .0})
+                             frameon=True)
         gs = gridspec.GridSpec(2, 1, height_ratios=[4, 1])
 
         # main axis
         self.axis_main = self.figure.add_subplot(gs[0])
         self.axis_main.grid()
         self.plots = {}
+        self.axis_main.set_facecolor('#DDDDDD')
         self.plots["fit range"] = self.axis_main.axvspan(np.pi,
                                                          np.sqrt(2),
-                                                         facecolor="#FDFDF0",
+                                                         facecolor="#FFFFFF",
                                                          edgecolor="none",
                                                          label="fit range")
         self.plots["approach"] = self.axis_main.plot(range(10),

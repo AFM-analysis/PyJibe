@@ -24,7 +24,8 @@ software as a *setpoint* using an active feedback loop.
 The screenshot shows a typical data analysis in PyJibe. A *.jpk-force-map*
 file has been loaded. The plot at the top shows the experimental FD curve
 (approach light blue, retract light red), the model fit (dark blue), and the
-fitting region (shaded yellow). Below are the fit residuals. On the right
+fitting region (white region, bounded by gray background in the upper plot).
+Below are the fit residuals. On the right
 are the main controls (discussed in the sections below). At the bottom
 is the curve list, highlighting which curve is currently shown at the top.
 At the bottom right are the :ref:`curve list controls <sec_ui_fd_curvelist>`.

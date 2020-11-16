@@ -1,12 +1,13 @@
 """Screenshots for quick guide import ts (not working automatically)"""
 import pathlib
 import sys
+import time
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 
-jpkfile = pathlib.Path("figshare_PAAm/PAAm_Compliant_ROI1_force-save-"
+jpkfile = pathlib.Path("PAAm_Compliant_ROI1_force-save-"
                        + "2019.10.25-10.42.02.660.jpk-force")
 
 
@@ -37,7 +38,6 @@ QApplication.processEvents()
 war.grab().save("_qg_import_ts.png")
 
 print("Screenshot must be taken manually")
-import IPython  # noqa: E402
-IPython.embed()
+time.sleep(10)
 
 mw.close()

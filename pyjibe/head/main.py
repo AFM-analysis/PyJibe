@@ -199,7 +199,7 @@ class PyJibe(QtWidgets.QMainWindow):
     def load_data(self, files, retry_open=None, separate_analysis=False):
         # approach-retract data files
         supfiles = []
-        for ff in files:
+        for ff in sorted(files):
             path = pathlib.Path(ff)
             if path.suffix in registry.known_suffixes:
                 supfiles.append(ff)
