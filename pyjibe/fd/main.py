@@ -267,7 +267,7 @@ class UiForceDistance(QtWidgets.QWidget):
             it = self.list_curves.topLevelItem(ii)
             it.setText(2, "{:.1f}".format(rating))
             cm = colormap.cm_rating
-            color = np.array(cm(rating/10))*255
+            color = np.array(np.array(cm(rating/10))*255, dtype=int)
             it.setBackground(2, QtGui.QColor(*color))
 
     @staticmethod
