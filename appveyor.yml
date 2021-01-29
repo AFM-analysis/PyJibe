@@ -56,19 +56,19 @@ after_test:
   # Install pyinstaller (includes dependency for pywin32)
   - appveyor-retry pip install pyinstaller==3.6
   # Run pyinstaller
-  - "pyinstaller -y --log-level=WARN .appveyor\\pyjibe.spec"
+  - "pyinstaller -y --log-level=WARN build-recipes\\win_pyjibe.spec"
   # Run the binary (the most simple test)
   - "dist\\pyjibe\\pyjibe_ui.exe --version"
   # Create InnoSetup installers
   # Generate iss file
-  - "python .appveyor\\make_iss.py"
+  - "python build-recipes\\win_make_iss.py"
   # Set InnoSetup path here, because Cython complained about it.
   - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
-  - iscc /Q .appveyor\\pyjibe.iss
+  - iscc /Q build-recipes\\win_pyjibe.iss
 
 artifacts:
   # InnoSetup files
-  - path: .appveyor\Output\*
+  - path: build-recipes\Output\*
 
 deploy:
   provider: GitHub

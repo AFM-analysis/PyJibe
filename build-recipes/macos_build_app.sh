@@ -24,7 +24,7 @@ else
     NAMEVERSION=${1}_${2}
 fi
 
-SCRIPT=".travis/${NAME}.py"
+SCRIPT="./${NAME}.py"
 APP="./dist_app/${NAME}.app"
 DMG="./dist_app/${NAMEVERSION}.dmg"
 PKG="./dist_app/${NAME}.pkg"
@@ -34,11 +34,9 @@ TMP="./dist_app/pack.temp.dmg"
 rm -rf ./build
 rm -rf ./dist_app
 
-pip install pyinstaller
+pip install -r macos_build_requirements.txt
 
-# Work in a different directory (./dist_app instead of ./dist),
-# otherwise PyPI deployment on travis-CI tries to upload *.dmg files.
-pyinstaller -w -y --distpath="./dist_app" --exclude-module tkinter --additional-hooks-dir=".travis" $SCRIPT
+pyinstaller -w -y --distpath="./dist_app" --exclude-module tkinter --additional-hooks-dir="." $SCRIPT
 
 # Test the binary by executing it with --version argument
 echo ""

@@ -1,15 +1,21 @@
-"""Create InnoSetup .iss file from template"""
-import pathlib
+"""Create inno setup .iss file"""
+import io
+import os.path as op
 import platform
+import sys
+
+import pyjibe
+
+# make library available
+cdir = op.dirname(op.abspath(__file__))
+pdir = op.dirname(cdir)
+sys.path.insert(0, pdir)
 
 # get version
-import pyjibe
 version = pyjibe.__version__
 
-here = pathlib.Path(__file__).parent
-
 # read dummy
-with (here / "pyjibe.iss_dummy").open('r') as dummy:
+with io.open(op.join(cdir, "win_pyjibe.iss_dummy"), 'r') as dummy:
     iss = dummy.readlines()
 
 # replace keywords
@@ -22,6 +28,5 @@ for i in range(len(iss)):
             platform.architecture()[0])
 
 # write iss
-with (here / "pyjibe.iss").open('w') as issfile:
+with io.open(op.join(cdir, "win_pyjibe.iss"), 'w') as issfile:
     issfile.writelines(iss)
-

@@ -1,0 +1,60 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: "0 0 1 * *"
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.7', '3.8']
+        os: [macos-latest, ubuntu-latest]
+    env:
+      # Display must be available globally for linux to know where xvfb is
+      DISPLAY: :0
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Setup xvfb (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+        # start xvfb in the background
+        sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+    - name: Install Python dependencies
+      run: |
+        # prerequisites
+        python -m pip install --upgrade pip wheel
+        python -m pip install codecov coverage flake8 pytest
+        # install dependencies
+        pip install -e .
+        # show installed packages
+        pip freeze
+    - name: Start application and print version
+      run: |
+        QT_DEBUG_PLUGINS=1 python -m pyjibe --version
+    - name: Test with pytest
+      run: |
+         coverage run --source=pyjibe setup.py test
+    - name: Lint with flake8
+      run: |
+        flake8 .
+    - name: Submit code coverage
+      run: |
+        coverage report -m
+        codecov
+    - name: Create app and check if it runs (macOS)
+      if: runner.os == 'macOS'
+      working-directory: ./build-recipes
+      run: |
+        bash ./macos_build_app.sh PyJibeApp $(git describe --tags)
