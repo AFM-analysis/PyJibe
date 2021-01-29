@@ -18,4 +18,5 @@ hiddenimports = [
     'sklearn.neighbors.typedefs',
     'sklearn.neighbors.quad_tree',
     'sklearn.utils._cython_blas',
+    'scipy.special.cython_special',
 ]
