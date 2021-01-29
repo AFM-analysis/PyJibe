@@ -17,7 +17,6 @@ class RTDPDF(Directive):
         else:
             is_rtd = False
 
-
         rst = []
 
         if is_rtd:

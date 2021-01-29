@@ -82,11 +82,11 @@ plt.savefig("_t01_comparison.png", dpi=300)
 print("Compliant mean +- SD: {:.5g} +- {:.5g}".format(
     np.mean(data_compl["Young\'s Modulus [Pa]"]),
     np.std(data_compl["Young\'s Modulus [Pa]"])
-    ))
+))
 
 print("Stiff mean +- SD: {:.5g} +- {:.5g}".format(
     np.mean(data_stiff["Young\'s Modulus [Pa]"]),
     np.std(data_stiff["Young\'s Modulus [Pa]"])
-    ))
+))
 
 shutil.rmtree(tempdir)
