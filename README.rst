@@ -1,7 +1,7 @@
 |PyJibe|
 ========
 
-|PyPI Version| |Tests Status Linux macOS| |Tests Status Win| |Coverage Status| |Docs Status|
+|PyPI Version| |Tests Status Unix| |Tests Status Win| |Coverage Status| |Docs Status|
 
 
 **PyJibe** is a graphical end-user software for the analysis of atomic force
@@ -35,8 +35,8 @@ Testing
 .. |PyJibe| image:: https://raw.github.com/AFM-analysis/PyJibe/master/docs/logo/PyJibe.png
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/PyJibe.svg
    :target: https://pypi.python.org/pypi/PyJibe
-.. |Tests Status Linux macOS| image:: https://img.shields.io/travis/AFM-analysis/PyJibe.svg?label=tests_linux_macos
-   :target: https://travis-ci.com/AFM-analysis/PyJibe
+.. |Tests Status Unix| image:: https://img.shields.io/github/workflow/status/AFM-analysis/PyJibe/Checks
+   :target: https://github.com/AFM-analysis/PyJibe/actions?query=workflow%3AChecks
 .. |Tests Status Win| image:: https://img.shields.io/appveyor/ci/paulmueller/PyJibe?label=tests_win
    :target: https://ci.appveyor.com/project/paulmueller/PyJibe
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/AFM-analysis/PyJibe/master.svg
