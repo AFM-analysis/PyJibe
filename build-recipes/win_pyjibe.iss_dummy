@@ -5,7 +5,7 @@
 #define MyAppVersion "0.1.0"
 #define MyAppPublisher "AFM-Analysis"
 #define MyAppURL "https://pyjibe.readthedocs.io"
-#define MyAppExeName "pyjibe_ui.exe"
+#define MyAppExeName "PyJibe.exe"
 #define MyAppPlatform "win32"
 #define MyAppDir = SourcePath + "..\dist\pyjibe\"
 

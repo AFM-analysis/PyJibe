@@ -58,7 +58,7 @@ after_test:
   # Run pyinstaller
   - "pyinstaller -y --log-level=WARN build-recipes\\win_pyjibe.spec"
   # Run the binary (the most simple test)
-  - "dist\\pyjibe\\pyjibe_ui.exe --version"
+  - "dist\\pyjibe\\PyJibe.exe --version"
   # Create InnoSetup installers
   # Generate iss file
   - "python build-recipes\\win_make_iss.py"

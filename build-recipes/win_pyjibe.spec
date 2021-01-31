@@ -11,9 +11,8 @@ if not exists(join(cdir, "pyjibe")):
 	warnings.warn("Cannot find 'pyjibe'! Please run pyinstaller "+
                   "from git root folder.")
 
-name = "PyJibe"
 pyinstdir = os.path.realpath(cdir+"/build-recipes/")
-script = os.path.join(pyinstdir, name+".py")
+script = os.path.join(pyinstdir, "PyJibeApp.py")
 
 # Icon
 icofile = os.path.join(pyinstdir,"PyJibe.ico")
@@ -30,7 +29,7 @@ exe = EXE(pyz,
           a.scripts,
           options,
           exclude_binaries=True,
-          name=name+"_ui.exe",
+          name="PyJibe.exe",
           debug=False,
           strip=False,
           upx=False,
@@ -43,4 +42,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=False,
-               name=name)
+               name="PyJibe")
