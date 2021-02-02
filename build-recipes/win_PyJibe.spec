@@ -10,7 +10,7 @@ if not exists("./{}Launcher.py".format(NAME)):
                   "Please run pyinstaller from the 'build-recipes' directory.")
 
 
-a = Analysis([NAME * "Launcher.py"],
+a = Analysis([NAME + "Launcher.py"],
              pathex=["."],
              hookspath=["."],
              runtime_hooks=None)
@@ -26,7 +26,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=False,
-          icon=NAME * ".ico",
+          icon=NAME + ".ico",
           console=False)
 
 coll = COLLECT(exe,
