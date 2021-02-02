@@ -70,6 +70,5 @@ deploy:
     secure: /b5SfmYssAfLaWi0qkPhxR5CruSVBZUurSQLEL3RAaRlHn6HTPrkIqvrLDk/8JxB
   artifact: /.*\.exe/
   draft: true
-  prerelease: true
   on:
     appveyor_repo_tag: true        # deploy on tag push only
