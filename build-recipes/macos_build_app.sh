@@ -32,7 +32,7 @@ TMP="./dist/pack.temp.dmg"
 
 # cleanup from previous builds
 rm -rf ./build
-rm -rf ./dist_app
+rm -rf ./dist
 
 pip install -r macos_build_requirements.txt
 
@@ -41,7 +41,7 @@ pyinstaller -y --log-level=WARN ${SPEC}
 # Test the binary by executing it with --version argument
 echo ""
 echo "...Testing the app (this should print the version)."
-./dist_app/${NAME}.app/Contents/MacOS/${NAME} --version
+./dist/${NAME}.app/Contents/MacOS/${NAME}.bin --version
 echo ""
 
 # Create PKG (pkgbuild is for deployments in app stores)
@@ -52,14 +52,14 @@ pkgbuild --install-location /Applications/ --component ${APP} ${PKG}
 
 # Create DMG
 # add link to Applications
-mkdir ./dist_app/ui-release
-cd ./dist_app/ui-release
+mkdir ./dist/ui-release
+cd ./dist/ui-release
 ln -s /Applications
 cd -
-mv ${APP} ./dist_app/ui-release/
+mv ${APP} ./dist/ui-release/
 
 # create temporary DMG
-hdiutil create -srcfolder ./dist_app/ui-release/ -volname "${NAMEVERSION}" -fs HFS+ \
+hdiutil create -srcfolder ./dist/ui-release/ -volname "${NAMEVERSION}" -fs HFS+ \
         -fsargs "-c c=64,a=16,e=16" -format UDRW "${TMP}"
 
 # optional: edit the DMG

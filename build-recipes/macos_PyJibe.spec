@@ -4,14 +4,15 @@ import warnings
 
 from pyjibe._version import version
 
+NAME = "PyJibe"
 
-if not exists("./PyJibeLauncher.py"):
-    warnings.warn("Cannot find 'PyJibeLauncher.py'! Please run pyinstaller " +
-                  "from the 'build-recipes' directory.")
+if not exists("./{}Launcher.py".format(NAME):
+    warnings.warn("Cannot find {}Launcher.py'! ".format(NAME) +
+                  "Please run pyinstaller from the 'build-recipes' directory.")
 
 block_cipher = None
 
-a = Analysis(['PyJibeLauncher.py'],
+a = Analysis(['{}Launcher.py'.format(NAME)],
              pathex=['.'],
              binaries=[],
              datas=[],
@@ -29,7 +30,7 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='PyJibe.bin',
+          name=NAME + '.bin',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -42,12 +43,13 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='PyJibe')
+               name=NAME)
 app = BUNDLE(coll,
-             name='PyJibe.app',
-             icon='PyJibe.icns',
+             name=NAME + '.app',
+             icon=NAME + '.icns',
              bundle_identifier=None,
              info_plist = {
+                'NSPrincipalClass': 'NSApplication',
                 'NSHighResolutionCapable' : 'True',
                 'CFBundleShortVersionString' : version,
                 }
