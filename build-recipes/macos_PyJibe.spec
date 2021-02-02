@@ -42,5 +42,9 @@ coll = COLLECT(exe,
                name='PyJibe')
 app = BUNDLE(coll,
              name='PyJibe.app',
-             icon=None,
-             bundle_identifier=None)
+             icon='PyJibe.icns',
+             bundle_identifier=None,
+             info_plist = {
+                'NSHighResolutionCapable' : 'True',
+                }
+             )

@@ -25,10 +25,10 @@ else
 fi
 
 SPEC="./macos_${NAME}.spec"
-APP="./dist_app/${NAME}.app"
-DMG="./dist_app/${NAMEVERSION}.dmg"
-PKG="./dist_app/${NAME}.pkg"
-TMP="./dist_app/pack.temp.dmg"
+APP="./dist/${NAME}.app"
+DMG="./dist/${NAMEVERSION}.dmg"
+PKG="./dist/${NAME}.pkg"
+TMP="./dist/pack.temp.dmg"
 
 # cleanup from previous builds
 rm -rf ./build
@@ -36,7 +36,7 @@ rm -rf ./dist_app
 
 pip install -r macos_build_requirements.txt
 
-pyinstaller -y --log-level=WARN --distpath="./dist_app" ${SPEC}
+pyinstaller -y --log-level=WARN ${SPEC}
 
 # Test the binary by executing it with --version argument
 echo ""
