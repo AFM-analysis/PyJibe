@@ -2,6 +2,9 @@
 from os.path import exists
 import warnings
 
+from pyjibe._version import version
+
+
 if not exists("./PyJibeLauncher.py"):
     warnings.warn("Cannot find 'PyJibeLauncher.py'! Please run pyinstaller " +
                   "from the 'build-recipes' directory.")
@@ -46,5 +49,6 @@ app = BUNDLE(coll,
              bundle_identifier=None,
              info_plist = {
                 'NSHighResolutionCapable' : 'True',
+                'CFBundleShortVersionString' : version,
                 }
              )

@@ -13,6 +13,8 @@ from PyInstaller.utils.hooks import collect_data_files
 # Data files
 datas = collect_data_files("pyjibe", include_py_files=True)
 datas += collect_data_files("pyjibe", subdir="img")
+datas += collect_data_files("pyjibe", subdir="fd")
+datas += collect_data_files("pyjibe", subdir="head")
 
 hiddenimports = ["mpl_toolkits",
                  "mpl_toolkits.axes_grid1",
