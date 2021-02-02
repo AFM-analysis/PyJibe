@@ -58,3 +58,4 @@ jobs:
       working-directory: ./build-recipes
       run: |
         bash ./macos_build_app.sh PyJibeApp $(git describe --tags)
+        cat PyJibeApp.spec
