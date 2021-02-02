@@ -6,7 +6,7 @@ from pyjibe._version import version
 
 NAME = "PyJibe"
 
-if not exists("./{}Launcher.py".format(NAME):
+if not exists("./{}Launcher.py".format(NAME)):
     warnings.warn("Cannot find {}Launcher.py'! ".format(NAME) +
                   "Please run pyinstaller from the 'build-recipes' directory.")
 
