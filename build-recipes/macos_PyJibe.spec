@@ -2,12 +2,11 @@
 from os.path import exists
 import warnings
 
-if not exists("./PyJibeLauncher.py")):
-	warnings.warn("Cannot find 'PyJibeLauncher.py'! Please run pyinstaller "+
+if not exists("./PyJibeLauncher.py"):
+    warnings.warn("Cannot find 'PyJibeLauncher.py'! Please run pyinstaller " +
                   "from the 'build-recipes' directory.")
 
 block_cipher = None
-
 
 a = Analysis(['PyJibeLauncher.py'],
              pathex=['.'],
@@ -22,7 +21,7 @@ a = Analysis(['PyJibeLauncher.py'],
              cipher=block_cipher,
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+          cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           [],
@@ -32,7 +31,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False )
+          console=False)
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
