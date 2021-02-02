@@ -1,5 +1,6 @@
 0.8.5
  - build: migrate from travisCI to GitHub Actions
+ - build: overhauled build pipeline (#9)
 0.8.4
  - build: add pyinstaller hooks for afmformats
 0.8.3

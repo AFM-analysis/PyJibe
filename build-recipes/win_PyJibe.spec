@@ -1,25 +1,18 @@
-import os
-from os.path import abspath, exists, join, dirname, relpath
-import platform
-import sys
+# -*- mode: python ; coding: utf-8 -*-
+from os.path import exists
 import warnings
 
-cdir = abspath(".")
-sys.path.insert(0, cdir)
 
-if not exists(join(cdir, "pyjibe")):
-	warnings.warn("Cannot find 'pyjibe'! Please run pyinstaller "+
-                  "from git root folder.")
+NAME = "PyJibe"
 
-pyinstdir = os.path.realpath(cdir + "/build-recipes/")
-script = os.path.join(pyinstdir, "PyJibeLauncher.py")
+if not exists("./{}Launcher.py".format(NAME)):
+    warnings.warn("Cannot find {}Launcher.py'! ".format(NAME) +
+                  "Please run pyinstaller from the 'build-recipes' directory.")
 
-# Icon
-icofile = os.path.join(pyinstdir, "PyJibe.ico")
 
-a = Analysis([script],
-             pathex=[cdir],
-             hookspath=[pyinstdir],
+a = Analysis([NAME * "Launcher.py"],
+             pathex=["."],
+             hookspath=["."],
              runtime_hooks=None)
 
 options = [ ('u', None, 'OPTION'), ('W ignore', None, 'OPTION') ]
@@ -29,11 +22,11 @@ exe = EXE(pyz,
           a.scripts,
           options,
           exclude_binaries=True,
-          name="PyJibe.exe",
+          name=NAME + ".exe",
           debug=False,
           strip=False,
           upx=False,
-          icon=icofile,
+          icon=NAME * ".ico",
           console=False)
 
 coll = COLLECT(exe,
@@ -42,4 +35,4 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                upx=False,
-               name="PyJibe")
+               name=NAME)

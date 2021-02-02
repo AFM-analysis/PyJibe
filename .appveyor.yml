@@ -49,15 +49,16 @@ after_test:
   - python setup.py sdist
   - ps: "ls dist"
   # Run pyinstaller
-  - pyinstaller -y --log-level=WARN build-recipes\\win_PyJibe.spec
+  - cd build-recipes
+  - pyinstaller -y --log-level=WARN win_PyJibe.spec
   # Run the binary (the most simple test)
   - dist\\pyjibe\\PyJibe.exe --version
   # Create InnoSetup installers
   # Generate iss file
-  - python build-recipes\\win_make_iss.py
+  - python win_make_iss.py
   # Set InnoSetup path here, because Cython complained about it.
   - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 5"
-  - iscc /Q build-recipes\\win_pyjibe.iss
+  - iscc /Q win_pyjibe.iss
 
 artifacts:
   # InnoSetup files

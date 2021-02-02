@@ -48,7 +48,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./build-recipes/dist_app/PyJibe_${{ env.RELEASE_VERSION }}.dmg
+        asset_path: ./build-recipes/dist/PyJibe_${{ env.RELEASE_VERSION }}.dmg
         asset_name: PyJibe_${{ env.RELEASE_VERSION }}.dmg
         asset_content_type: application/zip
     - name: Upload Release Asset PGK
@@ -58,6 +58,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ./build-recipes/dist_app/PyJibe.pkg
+        asset_path: ./build-recipes/dist/PyJibe.pkg
         asset_name: PyJibe.pkg
         asset_content_type: application/zip
