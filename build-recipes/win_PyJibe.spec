@@ -11,11 +11,11 @@ if not exists(join(cdir, "pyjibe")):
 	warnings.warn("Cannot find 'pyjibe'! Please run pyinstaller "+
                   "from git root folder.")
 
-pyinstdir = os.path.realpath(cdir+"/build-recipes/")
-script = os.path.join(pyinstdir, "PyJibeApp.py")
+pyinstdir = os.path.realpath(cdir + "/build-recipes/")
+script = os.path.join(pyinstdir, "PyJibeLauncher.py")
 
 # Icon
-icofile = os.path.join(pyinstdir,"PyJibe.ico")
+icofile = os.path.join(pyinstdir, "PyJibe.ico")
 
 a = Analysis([script],
              pathex=[cdir],

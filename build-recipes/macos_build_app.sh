@@ -24,7 +24,7 @@ else
     NAMEVERSION=${1}_${2}
 fi
 
-SCRIPT="./${NAME}.py"
+SPEC="./macos_${NAME}.spec"
 APP="./dist_app/${NAME}.app"
 DMG="./dist_app/${NAMEVERSION}.dmg"
 PKG="./dist_app/${NAME}.pkg"
@@ -36,7 +36,7 @@ rm -rf ./dist_app
 
 pip install -r macos_build_requirements.txt
 
-pyinstaller -w -y --distpath="./dist_app" --exclude-module tkinter --additional-hooks-dir="." $SCRIPT
+pyinstaller -y --log-level=WARN --distpath="./dist_app" ${SPEC}
 
 # Test the binary by executing it with --version argument
 echo ""

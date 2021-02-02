@@ -49,7 +49,7 @@ after_test:
   - python setup.py sdist
   - ps: "ls dist"
   # Run pyinstaller
-  - pyinstaller -y --log-level=WARN build-recipes\\win_pyjibe.spec
+  - pyinstaller -y --log-level=WARN build-recipes\\win_PyJibe.spec
   # Run the binary (the most simple test)
   - dist\\pyjibe\\PyJibe.exe --version
   # Create InnoSetup installers
