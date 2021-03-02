@@ -65,6 +65,7 @@ artifacts:
   - path: build-recipes\Output\*
 
 deploy:
+  release: PyJibe $(APPVEYOR_REPO_TAG_NAME)
   provider: GitHub
   auth_token:
     secure: /b5SfmYssAfLaWi0qkPhxR5CruSVBZUurSQLEL3RAaRlHn6HTPrkIqvrLDk/8JxB
