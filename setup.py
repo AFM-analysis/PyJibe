@@ -32,8 +32,6 @@ setup(
     python_requires='>=3.6, <4',
     entry_points={"gui_scripts": ['pyjibe = pyjibe.__main__:main']},
     keywords=["atomic force microscopy", "biomechanics"],
-    setup_requires=['pytest-runner'],
-    tests_require=["pytest", "pytest-qt"],
     classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3.6',
