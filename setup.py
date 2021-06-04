@@ -24,7 +24,7 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.12.4",
+    install_requires=["afmformats>=0.12.5",
                       "appdirs",
                       "nanite>=1.6.2",
                       "matplotlib>=3",  # NavigationToolbar2QT mod
