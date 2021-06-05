@@ -3,6 +3,7 @@
    did not allow browsing to "/Volumes" (it is now added to the sidebar)
  - build: bump afmformats from 0.12.4 to 0.12.5 (OSError:
    "Too many files open" with the JPK file format)
+ - build: bump nanite from 1.6.2 to 1.7.3
  - build: pin PyQt5 for GitHub releases
  - tests: don't used deprecated weight_cp function from nanite
 0.8.6
