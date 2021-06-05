@@ -1,5 +1,4 @@
 # flake8: noqa: E402 (matplotlib.use has to be right after the import)
-
 import pathlib
 import pkg_resources
 import signal
@@ -124,7 +123,7 @@ class PyJibe(QtWidgets.QMainWindow):
         webbrowser.open("https://pyjibe.readthedocs.io")
 
     def on_open_bulk(self, evt=None):
-        dlg = custom_widgets.FileDialog(self)
+        dlg = custom_widgets.DirectoryDialogMultiSelect(self)
         search_dir = self.settings.get_path("load data")
         dlg.setDirectory(search_dir)
         if dlg.exec_():
@@ -136,7 +135,7 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.settings.set_path(dlg.getDirectory(), name="load data")
 
     def on_open_multiple(self, evt=None):
-        dlg = custom_widgets.FileDialog(self)
+        dlg = custom_widgets.DirectoryDialogMultiSelect(self)
         search_dir = self.settings.get_path("load data")
         dlg.setDirectory(search_dir)
 
@@ -162,8 +161,7 @@ class PyJibe(QtWidgets.QMainWindow):
 
         search_dir = self.settings.get_path("load data")
         n, _e = QtWidgets.QFileDialog.getOpenFileNames(
-            self, "Open single file", search_dir, exts_str, "",
-            QtWidgets.QFileDialog.DontUseNativeDialog)
+            self, "Open single file", search_dir, exts_str, "")
         if n:
             # user did not press cancel
             self.load_data(files=n, retry_open=self.on_open_single)

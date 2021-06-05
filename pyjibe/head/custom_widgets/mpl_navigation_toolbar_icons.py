@@ -1,5 +1,4 @@
 import os
-import pathlib
 import pkg_resources
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -7,46 +6,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import cbook
 
-
-class FileDialog(QtWidgets.QFileDialog):
-    def __init__(self, *args):
-        """A dialog that lets the user select multiple directories"""
-        QtWidgets.QFileDialog.__init__(self, *args)
-        self.setOption(self.DontUseNativeDialog, True)
-        self.setFileMode(self.DirectoryOnly)
-
-        self.tree = self.findChild(QtWidgets.QTreeView)
-        self.tree.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-
-        self.list = self.findChild(QtWidgets.QListView)
-        self.list.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-
-        for view in self.findChildren((QtWidgets.QListView,
-                                       QtWidgets.QTreeView)):
-            if isinstance(view.model(), QtWidgets.QFileSystemModel):
-                view.setSelectionMode(
-                    QtWidgets.QAbstractItemView.MultiSelection)
-
-    def getDirectory(self):
-        dirs = self.selectedFiles()
-        if dirs:
-            path = pathlib.Path(dirs[0])
-            if len(dirs) > 1:
-                path = path.parent
-        return str(path)
-
-    def selectedFilesRecursive(self):
-        dirs = self.selectedFiles()
-        files = []
-        for d in dirs:
-            for rt, _d, fs in os.walk(d):
-                for f in fs:
-                    files.append(os.path.join(rt, f))
-        return files
-
-
 # TODO:
 # - use the capabilities of the new toolbars?
+
 
 class NavigationToolbarCustom(NavigationToolbar2QT):
     """A custom toolbar that allows other icons"""
