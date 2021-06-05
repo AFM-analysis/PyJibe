@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets
 import pytest
 
 import nanite.model
-from nanite.model import weight
+from nanite.model.residuals import compute_contact_point_weights
 import pyjibe.head
 
 
@@ -103,7 +103,7 @@ class MockModelExpr():
         if weight_cp:
             # weight the curve so that the data around the contact_point do
             # not affect the fit so much.
-            weights = weight.weight_cp(
+            weights = compute_contact_point_weights(
                 cp=params["contact_point"].value,
                 delta=delta,
                 weight_dist=weight_cp)
