@@ -410,6 +410,7 @@ class UiForceDistance(QtWidgets.QWidget):
                                            identifier=self._instance_counter)
         dlg.show()
 
+    @QtCore.pyqtSlot()
     def on_fit_all(self):
         """Apply initial parameters to all curves and fit"""
         # We will fit all curves with the currently visible settings
@@ -417,17 +418,31 @@ class UiForceDistance(QtWidgets.QWidget):
                                         "Stop", 1, len(self.data_set))
         bar.setWindowTitle("Loading data files")
         bar.setMinimumDuration(1000)
+        errored = []
         for ii, fdist in enumerate(self.data_set):
             QtCore.QCoreApplication.instance().processEvents(
                 QtCore.QEventLoop.AllEvents, 300)
             if bar.wasCanceled():
                 break
-            self.tab_preprocess.fit_apply_preprocessing(fdist)
-            self.tab_fit.fit_approach_retract(fdist, update_ui=False)
+            try:
+                self.tab_preprocess.fit_apply_preprocessing(fdist)
+                self.tab_fit.fit_approach_retract(fdist, update_ui=False)
+                self.curve_list_update(item=ii)
+            except BaseException as e:
+                errored.append([fdist.path, e.__class__.__name__, e.args])
             bar.setValue(ii+1)
-            self.curve_list_update(item=ii)
-        # Display map
+        # display qmap
         self.tab_qmap.mpl_qmap_update()
+        if errored:
+            # Show warning dialog with datasets that issued an error
+            msg = "The following curves could not be processed properly:<br>"
+            for pp, err, eargs in errored:
+                msg += f"<br>{pp.name}: {err} ({', '.join(list(eargs))})<br>"
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Some curves could not be processed!",
+                msg,
+            )
 
     def on_model(self):
         """Called when the fitting model is changed"""

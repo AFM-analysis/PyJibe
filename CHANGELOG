@@ -1,4 +1,5 @@
 0.8.8
+ - fix: handle bad curves properly when running bulk analysis (#13)
  - ref: make sure there are no duplicate files when loading data
    (possibly fixes #12)
  - ref: cleanup - call overloaded processEvents

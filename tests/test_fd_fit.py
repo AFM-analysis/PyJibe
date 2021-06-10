@@ -1,11 +1,19 @@
 """Test of data set functionalities"""
-import numpy as np
-from PyQt5 import QtWidgets
+import pathlib
+import shutil
+import tempfile
 
 import nanite.model as nmodel
+import numpy as np
+import pytest
+from PyQt5 import QtCore, QtWidgets
+
 import pyjibe.head
 
 from helpers import make_directory_with_data
+
+
+data_path = pathlib.Path(__file__).parent / "data"
 
 
 class MockModel():
@@ -23,14 +31,6 @@ class MockModel():
 
     def __exit__(self, a, b, c):
         nmodel.models_available.pop(self.model_key)
-
-
-def cleanup_autosave(jpkfile):
-    """Remove autosave files"""
-    path = jpkfile.parent
-    files = path.glob("*.tsv")
-    files = [f for f in files if f.name.startswith("pyjibe_")]
-    [f.unlink() for f in files]
 
 
 def test_ancillary_update_init(qtbot):
@@ -155,6 +155,46 @@ def test_ancillary_update_preproc_change(qtbot):
         assert war.tab_preprocess.list_preproc_applied.count() == 2
         assert atab.item(0, 1).text() == "2345"
         assert itab.item(0, 1).text() == "2345"
+
+
+@pytest.mark.filterwarnings('ignore::UserWarning')
+def test_apply_and_fit_all_with_bad_data(qtbot, monkeypatch):
+    # setup data directory with two good and one invalid file
+    td = pathlib.Path(tempfile.mkdtemp(prefix="pyjibe_test_apply_fit_all_"))
+    shutil.copy2(data_path / "spot3-0192.jpk-force", td / "data1.jpk-force")
+    shutil.copy2(data_path / "invalid_dataset.jpk-force",
+                 td / "data2.jpk-force")
+    shutil.copy2(data_path / "spot3-0192.jpk-force", td / "data3.jpk-force")
+    files = sorted(td.glob("*.jpk-force"))
+    # sanity checks
+    assert len(files) == 3
+    assert files[1].name == "data2.jpk-force"
+
+    # monkeypatch message dialog
+    message_list = []
+    monkeypatch.setattr(
+        QtWidgets.QMessageBox, "warning",
+        lambda parent, title, message: message_list.append(message))
+
+    # initialize
+    main_window = pyjibe.head.PyJibe()
+    main_window.load_data(files=files)
+    war = main_window.subwindows[0].widget()
+
+    # Hit "apply model and fit all"
+    qtbot.mouseClick(war.btn_fitall, QtCore.Qt.LeftButton, delay=200)
+
+    # make sure that we got that message
+    assert message_list
+    assert "data2.jpk-force" in message_list[0]
+
+    # make sure the curves got rated
+    good1 = war.list_curves.topLevelItem(0)
+    assert float(good1.data(2, 0)) > 0  # column 2 shows the rating
+    bad = war.list_curves.topLevelItem(1)
+    assert float(bad.data(2, 0)) == -1  # column 2 shows the rating
+    good2 = war.list_curves.topLevelItem(2)
+    assert float(good2.data(2, 0)) > 0  # column 2 shows the rating
 
 
 def test_change_model_keep_parms(qtbot):
