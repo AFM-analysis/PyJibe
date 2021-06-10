@@ -1,7 +1,7 @@
 import pkg_resources
 
 import numpy as np
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtCore, QtWidgets
 
 from .. import units
 from .mpl_edelta import MPLEDelta
@@ -65,6 +65,7 @@ class TabEdelta(QtWidgets.QWidget):
             self.fd.tab_fit.fit_approach_retract(fdist)
             self.mpl_edelta.update(fdist, delta_opt)
 
+    @QtCore.pyqtSlot()
     def on_delta_guess(self):
         """Guess the optimal indentation depth for the current curve"""
         fdist = self.current_curve
@@ -72,6 +73,7 @@ class TabEdelta(QtWidgets.QWidget):
         value /= units.scales["µ"]
         self.delta_spin.setValue(value)
 
+    @QtCore.pyqtSlot()
     def on_delta_change_spin(self, value):
         """Indentation depth spin control value changed"""
         # Update all controls

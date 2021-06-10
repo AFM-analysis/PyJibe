@@ -2,7 +2,7 @@ import os
 import pkg_resources
 
 from nanite.rate import io as nio
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtCore, QtWidgets
 
 
 # load QWidget from ui file
@@ -54,6 +54,7 @@ class Rater(QtWidgets.QWidget, UiUserRatingBase):
             else:
                 signal.disconnect(slot)
 
+    @QtCore.pyqtSlot()
     def on_change_index(self):
         index = self.curve_index.value()-1
         self.setup_signals(False)
@@ -67,6 +68,7 @@ class Rater(QtWidgets.QWidget, UiUserRatingBase):
         self.sp_rating.selectAll()
         self.sp_rating.setFocus()
 
+    @QtCore.pyqtSlot()
     def on_change_values(self):
         index = self.curve_index.value()-1
         fdist = self.fdui.data_set[index]

@@ -374,15 +374,19 @@ class TabFit(QtWidgets.QWidget):
         self.cb_delta_select.currentIndexChanged['int'].connect(
             self.on_delta_select)
 
+    @QtCore.pyqtSlot()
     def on_model(self):
         self.fd.on_model()
 
+    @QtCore.pyqtSlot()
     def on_params_anc(self):
         self.fd.on_params_init()
 
+    @QtCore.pyqtSlot()
     def on_params_init(self):
         self.fd.on_params_init()
 
+    @QtCore.pyqtSlot(int)
     def on_delta_select(self, index):
         """The user selected a method for indentation depth determination
 
@@ -446,6 +450,7 @@ class TabFit(QtWidgets.QWidget):
             self.cb_right_individ.setChecked(False)
         self.on_params_init()
 
+    @QtCore.pyqtSlot()
     def on_update_weights(self, on_params_init=True):
         """Compute the weight in µm or % for user convenience
 

@@ -9,6 +9,7 @@ from matplotlib.backends.backend_qt5agg import (
 import matplotlib.patches as mpatches
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
+from PyQt5 import QtCore
 
 
 from ..head import custom_widgets
@@ -21,7 +22,7 @@ rc = {"color_invalid": "k",
       }
 
 
-class MPLQMap(object):
+class MPLQMap:
     def __init__(self):
         """Matplotlib plot for 2D quantitative map data"""
         # Do not use tight_layout (adjust subplot parameters instead)
@@ -88,6 +89,7 @@ class MPLQMap(object):
         """
         self.click_callback = callback
 
+    @QtCore.pyqtSlot()
     def on_click(self, event):
         if (self.click_callback is not None and
             self.qmap_coords is not None and

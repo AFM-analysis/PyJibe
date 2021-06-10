@@ -299,6 +299,7 @@ class UiForceDistance(QtWidgets.QWidget):
             fdist = self.current_curve
         self.tab_info.update_info(fdist)
 
+    @QtCore.pyqtSlot()
     def on_cb_rating_scheme(self):
         """Switch rating scheme or import a new one"""
         scheme_id = self.cb_rating_scheme.currentIndex()
@@ -318,6 +319,7 @@ class UiForceDistance(QtWidgets.QWidget):
         else:
             self.on_params_init()
 
+    @QtCore.pyqtSlot()
     def on_curve_list(self):
         """Called when a new curve is selected"""
         fdist = self.current_curve
@@ -341,6 +343,7 @@ class UiForceDistance(QtWidgets.QWidget):
         # Autosave
         self.autosave(fdist)
 
+    @QtCore.pyqtSlot(QtCore.QModelIndex)
     def on_curve_list_item_changed(self, item):
         """An item in the curve list was changed
 
@@ -355,6 +358,7 @@ class UiForceDistance(QtWidgets.QWidget):
             self.tab_qmap.mpl_qmap_update()
             self.autosave(fdist)
 
+    @QtCore.pyqtSlot()
     def on_export_edelta(self):
         """Saves all edelta curves"""
         fname, _e = QtWidgets.QFileDialog.getSaveFileName(
@@ -402,6 +406,7 @@ class UiForceDistance(QtWidgets.QWidget):
             with io.open(fname, "ab") as fd:
                 np.savetxt(fd, np.array(res))
 
+    @QtCore.pyqtSlot()
     def on_export_fit_results(self):
         """Save metadata and fit results"""
         fdist_list = [fdist for fdist in self.selected_curves]
@@ -444,6 +449,7 @@ class UiForceDistance(QtWidgets.QWidget):
                 msg,
             )
 
+    @QtCore.pyqtSlot()
     def on_model(self):
         """Called when the fitting model is changed"""
         # The difference to "on_params_init" is that we
@@ -457,10 +463,12 @@ class UiForceDistance(QtWidgets.QWidget):
         self.curve_list_update()
         self.tab_qmap.mpl_qmap_update()
 
+    @QtCore.pyqtSlot()
     def on_mpl_curve_update(self):
         fdist = self.current_curve
         self.widget_fdist.mpl_curve_update(fdist)
 
+    @QtCore.pyqtSlot()
     def on_params_init(self):
         """Called when the initial parameters are changed"""
         fdist = self.current_curve
@@ -472,6 +480,7 @@ class UiForceDistance(QtWidgets.QWidget):
         self.curve_list_update(item=idx)
         self.tab_qmap.mpl_qmap_update()
 
+    @QtCore.pyqtSlot()
     def on_rating_threshold(self):
         """(De)select curves according to threshold rating"""
         thresh = self.sp_rating_thresh.value()
@@ -491,6 +500,7 @@ class UiForceDistance(QtWidgets.QWidget):
         for fdist in self.data_set:
             self.autosave(fdist)
 
+    @QtCore.pyqtSlot(int)
     def on_tab_changed(self, index):
         """Called when the tab on the right hand is changed"""
         if hasattr(self, "user_tab_selected"):
@@ -513,6 +523,7 @@ class UiForceDistance(QtWidgets.QWidget):
 
         self.user_tab_selected = curtab
 
+    @QtCore.pyqtSlot()
     def on_user_rate(self):
         """Start the curve rater"""
         cont = QtWidgets.QFileDialog.getSaveFileName(

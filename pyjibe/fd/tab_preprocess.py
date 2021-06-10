@@ -1,7 +1,7 @@
 import pkg_resources
 
 import nanite.preproc as npreproc
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtCore, QtWidgets
 
 
 class TabPreprocess(QtWidgets.QWidget):
@@ -46,6 +46,7 @@ class TabPreprocess(QtWidgets.QWidget):
         # Perform preprocessing
         fdist.apply_preprocessing(preprocessing)
 
+    @QtCore.pyqtSlot()
     def on_preset_changed(self):
         """Update preselection"""
         text = self.cb_preproc_presel.currentText()

@@ -1,7 +1,7 @@
 import pkg_resources
 
 import nanite
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtCore, QtWidgets
 
 from .mpl_qmap import MPLQMap
 
@@ -48,10 +48,12 @@ class TabQMap(QtWidgets.QWidget):
                 fdist.path)
             self.update_qmap(fdist_group, fdist)
 
+    @QtCore.pyqtSlot()
     def on_qmap_cmap_changed(self):
         """colormap selection changed"""
         self.mpl_qmap_update()
 
+    @QtCore.pyqtSlot()
     def on_qmap_data_changed(self):
         """data column selection changed"""
         # set previous spin control values if existent
@@ -69,6 +71,7 @@ class TabQMap(QtWidgets.QWidget):
         self.qmap_sp_range2.blockSignals(False)
         self.mpl_qmap_update()
 
+    @QtCore.pyqtSlot()
     def on_qmap_min_max_changed(self):
         """min or max spin controls changed"""
         # store spin control values for data column
@@ -80,6 +83,7 @@ class TabQMap(QtWidgets.QWidget):
         self._cache_qmap_spin_ctl[data] = (vmin, vmax)
         self.mpl_qmap_update()
 
+    @QtCore.pyqtSlot()
     def on_qmap_selection(self, idx):
         """Show the curve indexed in the current qmap"""
         # Perform operations on ForceDistance
