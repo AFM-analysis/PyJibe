@@ -112,7 +112,13 @@ class UiForceDistance(QtWidgets.QWidget):
         return curves
 
     def add_files(self, files):
-        """ Populate self.data_set and display the first curve """
+        """Populate self.data_set and display the first curve
+
+        Parameters
+        ----------
+        files: list of pathlib.Path
+            List of experimental data files
+        """
         # The `mult` parameter is used to chunk the progress bar,
         # because we cannot use floats with `QProgressDialog`, but
         # we want to be able to show progress for files that contain
@@ -122,9 +128,8 @@ class UiForceDistance(QtWidgets.QWidget):
                                         "Stop", 1, len(files)*mult)
         bar.setWindowTitle("Loading data files")
         bar.setMinimumDuration(1000)
-        for ii, f in enumerate(files):
-            label = "Loading file\n{}".format(os.path.basename(f))
-            bar.setLabelText(label)
+        for ii, pp in enumerate(files):
+            bar.setLabelText(f"Loading file\n{pp}")
 
             def callback(partial):
                 """Call back method for a progress dialog
@@ -144,7 +149,7 @@ class UiForceDistance(QtWidgets.QWidget):
                     # we can exit the parent for-loop.
                     raise AbortProgress
             try:
-                grp = nanite.IndentationGroup(f, callback=callback)
+                grp = nanite.IndentationGroup(pp, callback=callback)
                 callback(1)
             except afmformats.errors.FileFormatMetaDataError:
                 # ignore e.g. JPK callibration curves

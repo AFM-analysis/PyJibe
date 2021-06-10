@@ -1,3 +1,7 @@
+0.8.8
+ - ref: make sure there are no duplicate files when loading data
+   (possibly fixes #12)
+ - tests: add helper function for setting up datasets
 0.8.7
  - fix: add workaround for macOS where the non-native PyQt5 dialogs
    did not allow browsing to "/Volumes" (it is now added to the sidebar)

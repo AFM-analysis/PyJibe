@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 from PyQt5 import QtCore, QtWidgets
@@ -31,18 +30,9 @@ class DirectoryDialogMultiSelect(QtWidgets.QFileDialog):
         self.setSidebarUrls(sorted(set(sidebar_urls)))
 
     def getDirectory(self):
-        dirs = self.selectedFiles()
-        if dirs:
-            path = pathlib.Path(dirs[0])
-            if len(dirs) > 1:
-                path = path.parent
-        return str(path)
-
-    def selectedFilesRecursive(self):
-        dirs = self.selectedFiles()
-        files = []
-        for d in dirs:
-            for rt, _d, fs in os.walk(d):
-                for f in fs:
-                    files.append(os.path.join(rt, f))
-        return files
+        """Return a string of the root directory"""
+        files = self.selectedFiles()
+        if files:
+            return str(pathlib.Path(files[0]).parent)
+        else:
+            return None

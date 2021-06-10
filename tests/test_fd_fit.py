@@ -1,16 +1,11 @@
 """Test of data set functionalities"""
-import pathlib
-
 import numpy as np
 from PyQt5 import QtWidgets
-import pytest
 
 import nanite.model as nmodel
 import pyjibe.head
 
-
-here = pathlib.Path(__file__).parent
-jpkfile = here / "data" / "spot3-0192.jpk-force"
+from helpers import make_directory_with_data
 
 
 class MockModel():
@@ -38,16 +33,6 @@ def cleanup_autosave(jpkfile):
     [f.unlink() for f in files]
 
 
-@pytest.fixture(autouse=True)
-def run_around_tests():
-    # Code that will run before your test, for example:
-    cleanup_autosave(jpkfile)
-    # A test function will be run at this point
-    yield
-    # Code that will run after your test, for example:
-    cleanup_autosave(jpkfile)
-
-
 def test_ancillary_update_init(qtbot):
     with MockModel(
         compute_ancillaries=lambda x: {
@@ -60,7 +45,7 @@ def test_ancillary_update_init(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
-        main_window.load_data(files=[jpkfile, jpkfile])
+        main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
         war.tab_preprocess.list_preproc_applied.clear()
@@ -103,7 +88,7 @@ def test_ancillary_update_nan(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
-        main_window.load_data(files=[jpkfile, jpkfile])
+        main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
         war.tab_preprocess.list_preproc_applied.clear()
@@ -136,7 +121,7 @@ def test_ancillary_update_preproc_change(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
-        main_window.load_data(files=[jpkfile, jpkfile])
+        main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
         war.tab_preprocess.list_preproc_applied.clear()
@@ -174,7 +159,7 @@ def test_ancillary_update_preproc_change(qtbot):
 
 def test_change_model_keep_parms(qtbot):
     main_window = pyjibe.head.PyJibe()
-    main_window.load_data(files=[jpkfile, jpkfile])
+    main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
     war.tab_preprocess.list_preproc_applied.clear()
@@ -198,7 +183,7 @@ def test_change_model_keep_parms(qtbot):
 
 def test_remember_initial_params(qtbot):
     main_window = pyjibe.head.PyJibe()
-    main_window.load_data(files=[jpkfile, jpkfile])
+    main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
     war.tab_preprocess.list_preproc_applied.clear()

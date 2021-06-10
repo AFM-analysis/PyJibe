@@ -1,21 +1,16 @@
 """Test of data set functionalities"""
-import pathlib
-
 import lmfit
 import numpy as np
 from PyQt5 import QtWidgets
-import pytest
 
 import nanite.model
 from nanite.model.residuals import compute_contact_point_weights
 import pyjibe.head
 
-
-here = pathlib.Path(__file__).parent
-jpkfile = here / "data" / "spot3-0192.jpk-force"
+from helpers import make_directory_with_data
 
 
-class MockModelExpr():
+class MockModelExpr:
     def __init__(self, **kwargs):
         """E and E1 add up to the actual emodulus. E1 is varied indirectly"""
         self.model_doc = """Mock model with constraint"""
@@ -118,24 +113,6 @@ class MockModelExpr():
         nanite.model.models_available.pop(self.model_key)
 
 
-def cleanup_autosave(jpkfile):
-    """Remove autosave files"""
-    path = jpkfile.parent
-    files = path.glob("*.tsv")
-    files = [f for f in files if f.name.startswith("pyjibe_")]
-    [f.unlink() for f in files]
-
-
-@pytest.fixture(autouse=True)
-def run_around_tests():
-    # Code that will run before your test, for example:
-    cleanup_autosave(jpkfile)
-    # A test function will be run at this point
-    yield
-    # Code that will run after your test, for example:
-    cleanup_autosave(jpkfile)
-
-
 def test_model_expr_base(qtbot):
     """Expressions sanity check
 
@@ -144,7 +121,7 @@ def test_model_expr_base(qtbot):
     """
     with MockModelExpr() as mod:
         main_window = pyjibe.head.PyJibe()
-        main_window.load_data(files=[jpkfile, jpkfile])
+        main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
         war.tab_preprocess.list_preproc_applied.clear()
@@ -166,9 +143,3 @@ def test_model_expr_base(qtbot):
         assert parmsi["E1"].expr == "virtual_parameter+E"
         assert parmsf["E1"].expr == "virtual_parameter+E"
         assert np.allclose(parmsf["E1"].value, 15388.14166)
-
-
-if __name__ == "__main__":
-    with MockModelExpr() as mod:
-        from pyjibe.__main__ import main
-        main()

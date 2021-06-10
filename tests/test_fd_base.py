@@ -1,33 +1,10 @@
 """Test of data set functionalities"""
-import pathlib
-
 import numpy as np
 from PyQt5 import QtWidgets
-import pytest
 
 import pyjibe.head
 
-
-here = pathlib.Path(__file__).parent
-jpkfile = here / "data" / "spot3-0192.jpk-force"
-
-
-def cleanup_autosave(jpkfile):
-    """Remove autosave files"""
-    path = jpkfile.parent
-    files = path.glob("*.tsv")
-    files = [f for f in files if f.name.startswith("pyjibe_")]
-    [f.unlink() for f in files]
-
-
-@pytest.fixture(autouse=True)
-def run_around_tests():
-    # Code that will run before your test, for example:
-    cleanup_autosave(jpkfile)
-    # A test function will be run at this point
-    yield
-    # Code that will run after your test, for example:
-    cleanup_autosave(jpkfile)
+from helpers import make_directory_with_data
 
 
 def test_simple(qtbot):
@@ -38,7 +15,7 @@ def test_simple(qtbot):
 
 def test_clear_and_verify_data(qtbot):
     main_window = pyjibe.head.PyJibe()
-    main_window.load_data(files=[jpkfile])
+    main_window.load_data(files=make_directory_with_data())
     war = main_window.subwindows[0].widget()
     # clear data
     tpp = war.tab_preprocess
@@ -76,7 +53,7 @@ def test_clear_and_verify_data(qtbot):
 def test_fit_all(qtbot):
     """Perform a simple fit with the standard parameters"""
     main_window = pyjibe.head.PyJibe()
-    main_window.load_data(files=[jpkfile, jpkfile])
+    main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     war.cb_autosave.setChecked(0)
     war.on_fit_all()

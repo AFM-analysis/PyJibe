@@ -127,8 +127,7 @@ class PyJibe(QtWidgets.QMainWindow):
         search_dir = self.settings.get_path("load data")
         dlg.setDirectory(search_dir)
         if dlg.exec_():
-            files = dlg.selectedFilesRecursive()
-            files.sort()
+            files = dlg.selectedFiles()
             if files:
                 self.load_data(files=files, retry_open=self.on_open_bulk,
                                separate_analysis=False)
@@ -140,8 +139,7 @@ class PyJibe(QtWidgets.QMainWindow):
         dlg.setDirectory(search_dir)
 
         if dlg.exec_():
-            files = dlg.selectedFilesRecursive()
-            files.sort()
+            files = dlg.selectedFiles()
             if files:
                 self.load_data(files=files, retry_open=self.on_open_multiple,
                                separate_analysis=True)
@@ -195,33 +193,38 @@ class PyJibe(QtWidgets.QMainWindow):
         dlg.show()
 
     def load_data(self, files, retry_open=None, separate_analysis=False):
-        # approach-retract data files
-        supfiles = []
-        for ff in sorted(files):
+        """Load AFM data"""
+        # expand directories
+        data_files = []
+        for ff in files:
             path = pathlib.Path(ff)
-            if path.suffix in registry.known_suffixes:
-                supfiles.append(ff)
+            if path.is_dir():
+                # recursive analysis
+                for pp in path.rglob("*"):
+                    if pp.suffix in registry.known_suffixes:
+                        data_files.append(pp)
+            else:
+                if path.suffix in registry.known_suffixes:
+                    data_files.append(path)
 
-        # check if AFM files were found
-        if not len(supfiles):
-            msg = QtWidgets.QMessageBox()
-            msg.setIcon(QtWidgets.QMessageBox.Warning)
-            msg.setText("No AFM data files found!")
-            msg.setInformativeText("")
-            msg.setWindowTitle("No AFM data found!")
-            msg.setStandardButtons(
-                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Retry)
-            retval = msg.exec_()
-            if (retry_open is not None and
-                    retval == QtWidgets.QMessageBox.Retry):
+        if not data_files:
+            ret = QtWidgets.QMessageBox.warning(
+                self,
+                "No AFM data found!",
+                "No AFM data files could be found in the location specified.",
+                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Retry
+            )
+            if retry_open is not None and ret == QtWidgets.QMessageBox.Retry:
                 retry_open()
         else:
+            # Make sure there are no duplicate files (#12)
+            data_files = sorted(set(data_files))
             if separate_analysis:
                 # open each file in one analysis
-                supfiles = [[ss] for ss in supfiles]
+                usable = [[ss] for ss in data_files]
             else:
-                supfiles = [supfiles]
-            for flist in supfiles:
+                usable = [data_files]
+            for flist in usable:
                 aclass = registry.fd.UiForceDistance
                 self.add_subwindow(aclass, flist)
 
