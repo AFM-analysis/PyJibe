@@ -7,6 +7,7 @@ from matplotlib.backends.backend_qt5agg import (
 import nanite.fit as nfit
 import numpy as np
 from PyQt5.QtWidgets import QApplication
+from PyQt5 import QtCore
 
 
 from .. import units
@@ -74,7 +75,8 @@ class MPLEDelta(object):
         # - use Python threading instead of this lambda method?
         self._update_in_progress_active = fdist
         if fdist in self._update_in_progress_locks:
-            QApplication.instance().processEvents()
+            QApplication.instance().processEvents(
+                QtCore.QEventLoop.AllEvents, 300)
         else:
             self._update_in_progress_locks[fdist] = True
             def cbfdist(e, d): return self.update_plot(e, d, fdist=fdist)
@@ -121,4 +123,4 @@ class MPLEDelta(object):
             self.plot_data[:, 0] = indentations
             self.plot_data[:, 1] = emoduli
 
-            QApplication.processEvents()
+            QApplication.processEvents(QtCore.QEventLoop.AllEvents, 300)

@@ -143,7 +143,8 @@ class UiForceDistance(QtWidgets.QWidget):
                     The progress for a single file
                 """
                 bar.setValue(int((ii+partial)*mult))
-                QtCore.QCoreApplication.instance().processEvents()
+                QtCore.QCoreApplication.instance().processEvents(
+                    QtCore.QEventLoop.AllEvents, 300)
                 if bar.wasCanceled():
                     # Raise a custom `AbortProgress` error, such that
                     # we can exit the parent for-loop.
@@ -387,7 +388,8 @@ class UiForceDistance(QtWidgets.QWidget):
                     pass
                 else:
                     res += [d, e]
-                QtCore.QCoreApplication.instance().processEvents()
+                QtCore.QCoreApplication.instance().processEvents(
+                    QtCore.QEventLoop.AllEvents, 300)
                 bar.setValue(ii+1)
 
             # export curves with numpy
@@ -416,7 +418,8 @@ class UiForceDistance(QtWidgets.QWidget):
         bar.setWindowTitle("Loading data files")
         bar.setMinimumDuration(1000)
         for ii, fdist in enumerate(self.data_set):
-            QtCore.QCoreApplication.instance().processEvents()
+            QtCore.QCoreApplication.instance().processEvents(
+                QtCore.QEventLoop.AllEvents, 300)
             if bar.wasCanceled():
                 break
             self.tab_preprocess.fit_apply_preprocessing(fdist)

@@ -4,6 +4,7 @@ def main(splash=True):
     import sys
 
     from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtCore import QEventLoop
 
     app = QApplication(sys.argv)
     # Note:
@@ -21,7 +22,7 @@ def main(splash=True):
         splash.setMask(splash_pix.mask())
         splash.show()
         # make sure Qt really displays the splash screen
-        app.processEvents()
+        app.processEvents(QEventLoop.AllEvents, 300)
 
     from PyQt5 import QtCore, QtGui
     from .head import PyJibe
