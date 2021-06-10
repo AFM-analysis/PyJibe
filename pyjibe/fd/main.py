@@ -159,7 +159,8 @@ class UiForceDistance(QtWidgets.QWidget):
                 # The custom error `AbortProgress` was called, because
                 # the user wants to stop loading the data.
                 break
-            self.data_set += grp
+            else:
+                self.data_set += grp
         bar.reset()
         bar.close()
         self.curve_list_setup()
