@@ -4,7 +4,7 @@ import os
 import pkg_resources
 import time
 
-import afmformats
+import afmformats.errors
 import nanite
 import nanite.fit as nfit
 import numpy as np
@@ -88,6 +88,56 @@ class UiForceDistance(QtWidgets.QWidget):
         # Filenames that were created by this instance
         self._autosave_original_files = []
 
+    def load_file(self, path, callback, user_metadata):
+        """Load a data file, optionally asking for missing metadata
+
+        Parameters
+        ----------
+        path: str or pathlib.Path
+            path to the data file
+        callback: callable
+            function for tracking loading progress
+        user_metadata: dict
+            dictionary holding the user-defined metadata; this
+            dictionary is edited in-place (i.e. the user only needs
+            to specify missing metadata once per import) if the
+            `user_metadata` is used consistently in an import loop
+            (like in `self.add_files`). Note that only the metadata
+            that is missing are used from user_metadata.
+        """
+        try:
+            grp = nanite.IndentationGroup(path, callback=callback)
+        except afmformats.errors.MissingMetaDataError as e:
+            custom_metadata = {}
+            for key in e.meta_keys:
+                # check if the keys are in user_metadata
+                if key not in user_metadata:
+                    # show dialog asking for missing metadata
+                    name, unit, _ = afmformats.meta.DEF_ALL[key]
+                    value, ok_pressed = QtWidgets.QInputDialog.getDouble(
+                        self,
+                        f"Missing metadata '{name}'",
+                        f"Please specify the {name}"
+                        + (f" [{unit}]" if unit else "")
+                        + ":",
+                        .0,
+                        .0,
+                        99999,
+                        12,
+                        )
+                    if not ok_pressed:
+                        # if user pressed cancel, raise AbortError
+                        raise AbortProgress(f"User did not enter {key}!")
+                    # add new keys in user_metadata
+                    user_metadata[key] = value
+                # populate custom_metadata with the user_metadata
+                custom_metadata[key] = user_metadata[key]
+            # now loading the data should work
+            grp = nanite.IndentationGroup(path,
+                                          callback=callback,
+                                          meta_override=custom_metadata)
+        return grp
+
     @property
     def current_curve(self):
         idx = self.current_index
@@ -128,6 +178,7 @@ class UiForceDistance(QtWidgets.QWidget):
                                         "Stop", 1, len(files)*mult)
         bar.setWindowTitle("Loading data files")
         bar.setMinimumDuration(1000)
+        user_metadata = {}
         for ii, pp in enumerate(files):
             bar.setLabelText(f"Loading file\n{pp}")
 
@@ -150,12 +201,9 @@ class UiForceDistance(QtWidgets.QWidget):
                     # we can exit the parent for-loop.
                     raise AbortProgress
             try:
-                grp = nanite.IndentationGroup(pp, callback=callback)
-                callback(1)
-            except afmformats.errors.FileFormatMetaDataError:
-                # ignore e.g. JPK callibration curves
-                callback(1)
-                continue
+                grp = self.load_file(pp,
+                                     callback=callback,
+                                     user_metadata=user_metadata)
             except AbortProgress:
                 # The custom error `AbortProgress` was called, because
                 # the user wants to stop loading the data.
@@ -515,10 +563,10 @@ class UiForceDistance(QtWidgets.QWidget):
             # Redraw the current map
             self.tab_qmap.mpl_qmap_update()
         elif curtab == self.tab_edelta:
-            # Compute edelta plot
+            # Compute e-delta plot
             self.tab_edelta.mpl_edelta_update()
         elif curtab == self.tab_info:
-            # Updat info (e.g. ancillaries)
+            # Update info (e.g. ancillaries)
             self.info_update()
 
         self.user_tab_selected = curtab

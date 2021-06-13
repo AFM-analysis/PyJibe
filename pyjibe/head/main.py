@@ -198,15 +198,7 @@ class PyJibe(QtWidgets.QMainWindow):
         # expand directories
         data_files = []
         for ff in files:
-            path = pathlib.Path(ff)
-            if path.is_dir():
-                # recursive analysis
-                for pp in path.rglob("*"):
-                    if pp.suffix in registry.known_suffixes:
-                        data_files.append(pp)
-            else:
-                if path.suffix in registry.known_suffixes:
-                    data_files.append(path)
+            data_files += afmformats.find_data(ff)
 
         if not data_files:
             ret = QtWidgets.QMessageBox.warning(
