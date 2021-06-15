@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pkg_resources
 
 from nanite.rate import io as nio
@@ -17,6 +18,9 @@ class Rater(QtWidgets.QWidget, UiUserRatingBase):
         UiUserRatingBase.__init__(self)
         self.setupUi(self)
         self.fdui = fdui
+        path = pathlib.Path(path)
+        if not path.suffix == ".h5":
+            path = path.with_name(path.name + ".h5")
         self.path = path
 
         self.initial_stuff()
