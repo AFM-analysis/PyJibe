@@ -39,7 +39,7 @@ class UiForceDistance(QtWidgets.QWidget):
         if not self.settings.value("force-distance/rate ts path", ""):
             dataloc = pathlib.Path(QtCore.QStandardPaths.writableLocation(
                 QtCore.QStandardPaths.AppDataLocation))
-            ts_import_path = dataloc / "training_sets_imported"
+            ts_import_path = dataloc / "force-distance_rate-ts-user"
             self.settings.setValue("force-distance/rate ts path",
                                    str(ts_import_path))
 
