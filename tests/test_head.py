@@ -1,8 +1,11 @@
 import io
 import pathlib
 import shutil
+import sys
 import tempfile
 from unittest import mock
+
+import pytest
 
 import pyjibe
 import pyjibe.head
@@ -11,6 +14,7 @@ import pyjibe.head
 data_path = pathlib.Path(__file__).parent / "data"
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python>=3.8")
 def test_init_print_version(qtbot):
     """I just wanted to show off how good I am with mock and pytest"""
     mock_stdout = io.StringIO()
@@ -26,6 +30,7 @@ def test_init_print_version(qtbot):
     assert mock_stdout.getvalue().strip() == pyjibe.__version__
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python>=3.8")
 def test_on_about(qtbot):
     mock_about = mock.Mock()
     with mock.patch("PyQt5.QtWidgets.QMessageBox.about", mock_about):
@@ -37,6 +42,7 @@ def test_on_about(qtbot):
     assert "PyJibe" in mock_about.call_args.args[2]
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python>=3.8")
 def test_on_documentation(qtbot):
     mock_wbopen = mock.Mock()
     with mock.patch("webbrowser.open", mock_wbopen):
