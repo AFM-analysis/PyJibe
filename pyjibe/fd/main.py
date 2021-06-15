@@ -1,6 +1,7 @@
 import hashlib
 import io
 import os
+import pathlib
 import pkg_resources
 import time
 
@@ -32,6 +33,15 @@ class UiForceDistance(QtWidgets.QWidget):
         super(UiForceDistance, self).__init__(*args, **kwargs)
         path_ui = pkg_resources.resource_filename("pyjibe.fd", "main.ui")
         uic.loadUi(path_ui, self)
+
+        self.settings = QtCore.QSettings()
+        self.settings.setIniCodec("utf-8")
+        if not self.settings.value("force-distance/rate ts path", ""):
+            dataloc = pathlib.Path(QtCore.QStandardPaths.writableLocation(
+                QtCore.QStandardPaths.AppDataLocation))
+            ts_import_path = dataloc / "training_sets_imported"
+            self.settings.setValue("force-distance/rate ts path",
+                                   str(ts_import_path))
 
         UiForceDistance._instance_counter += 1
         title = "Force-Distance #{}".format(self._instance_counter)
@@ -350,8 +360,9 @@ class UiForceDistance(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def on_cb_rating_scheme(self):
         """Switch rating scheme or import a new one"""
+        rate_ts_path = self.settings.value("force-distance/rate ts path", "")
         scheme_id = self.cb_rating_scheme.currentIndex()
-        schemes = rating_base.get_rating_schemes()
+        schemes = rating_base.get_rating_schemes(rate_ts_path=rate_ts_path)
         if len(schemes) == scheme_id:
             search_dir = ""
             exts_str = "Training set zip file (*.zip)"
@@ -359,7 +370,9 @@ class UiForceDistance(QtWidgets.QWidget):
                 self.parent(), "Import a training set",
                 search_dir, exts_str)
             if tsz:
-                idx = rating_base.import_training_set(tsz)
+                idx = rating_base.import_training_set(
+                    ts_zip=tsz,
+                    rate_ts_path=rate_ts_path)
                 self.rating_scheme_setup()
                 self.cb_rating_scheme.setCurrentIndex(idx)
             else:
@@ -590,12 +603,16 @@ class UiForceDistance(QtWidgets.QWidget):
 
     def rate_data(self, data):
         """Apply rating to a force-distance curves (or a list of curves)"""
+        rate_ts_path = self.settings.value("force-distance/rate ts path", "")
         scheme_id = self.cb_rating_scheme.currentIndex()
-        return rating_base.rate_fdist(data, scheme_id)
+        return rating_base.rate_fdist(data=data,
+                                      scheme_id=scheme_id,
+                                      rate_ts_path=rate_ts_path)
 
     def rating_scheme_setup(self):
+        rate_ts_path = self.settings.value("force-distance/rate ts path", "")
         self.cb_rating_scheme.clear()
-        schemes = rating_base.get_rating_schemes()
+        schemes = rating_base.get_rating_schemes(rate_ts_path=rate_ts_path)
         self.cb_rating_scheme.addItems(list(schemes.keys()))
         self.cb_rating_scheme.addItem("Add...")
 

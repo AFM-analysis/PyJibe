@@ -1,6 +1,9 @@
 0.9.0
  - feat: allow users to enter missing metadata during loading
    of data files (#5)
+ - ref: directory for importing training datasets for rating changed
+   (but I think this currently affects nobody)
+ - setup: dump appdirs dependency (moved to QSettings)
  - setup: bump afmformats from 0.12.5 to 0.13.2 (mostly #5)
  - setup: bump nanite from 1.7.3 to 1.7.4 (mostly #5)
 0.8.8

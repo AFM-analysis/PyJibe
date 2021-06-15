@@ -12,7 +12,6 @@ matplotlib.use('QT5Agg')
 from PyQt5 import uic, QtCore, QtWidgets
 
 import afmformats
-import appdirs
 import h5py
 import lmfit
 import nanite
@@ -24,7 +23,6 @@ from . import custom_widgets
 from .dlg_tool_convert import ConvertDialog
 
 from .. import registry
-from ..settings import SettingsFile
 from .._version import version as __version__
 
 
@@ -45,6 +43,19 @@ class PyJibe(QtWidgets.QMainWindow):
         and exit.
         """
         super(PyJibe, self).__init__(*args, **kwargs)
+        # Settings are stored in the .ini file format. Even though
+        # `self.settings` may return integer/bool in the same session,
+        # in the next session, it will reliably return strings. Lists
+        # of strings (comma-separated) work nicely though.
+        QtCore.QCoreApplication.setOrganizationName("AFM-Analysis")
+        QtCore.QCoreApplication.setOrganizationDomain("pyjibe.mpl.mpg.de")
+        QtCore.QCoreApplication.setApplicationName("PyJibe")
+        QtCore.QSettings.setDefaultFormat(QtCore.QSettings.IniFormat)
+        #: PyJibe settings
+        self.settings = QtCore.QSettings()
+        self.settings.setIniCodec("utf-8")
+
+        # load ui files
         path_ui = pkg_resources.resource_filename("pyjibe.head", "main.ui")
         uic.loadUi(path_ui, self)
 
@@ -62,8 +73,6 @@ class PyJibe(QtWidgets.QMainWindow):
         self.actionDocumentation.triggered.connect(self.on_documentation)
         self.actionSoftware.triggered.connect(self.on_software)
         self.actionAbout.triggered.connect(self.on_about)
-        # Add settings
-        self.settings = SettingsFile()
 
         self.subwindows = []
         self.subwindow_data = []
@@ -125,18 +134,19 @@ class PyJibe(QtWidgets.QMainWindow):
 
     def on_open_bulk(self, evt=None):
         dlg = custom_widgets.DirectoryDialogMultiSelect(self)
-        search_dir = self.settings.get_path("load data")
+        search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
         if dlg.exec_():
             files = dlg.selectedFiles()
             if files:
                 self.load_data(files=files, retry_open=self.on_open_bulk,
                                separate_analysis=False)
-                self.settings.set_path(dlg.getDirectory(), name="load data")
+                self.settings.setValue("paths/load data",
+                                       str(dlg.getDirectory()))
 
     def on_open_multiple(self, evt=None):
         dlg = custom_widgets.DirectoryDialogMultiSelect(self)
-        search_dir = self.settings.get_path("load data")
+        search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
 
         if dlg.exec_():
@@ -144,7 +154,8 @@ class PyJibe(QtWidgets.QMainWindow):
             if files:
                 self.load_data(files=files, retry_open=self.on_open_multiple,
                                separate_analysis=True)
-                self.settings.set_path(dlg.getDirectory(), name="load data")
+                self.settings.setValue("paths/load data",
+                                       str(dlg.getDirectory()))
 
     def on_open_single(self, evt=None):
         ext_opts = []
@@ -158,17 +169,17 @@ class PyJibe(QtWidgets.QMainWindow):
                     item["maker"], item["descr"], suffix))
         exts_str = ";;".join(ext_opts)
 
-        search_dir = self.settings.get_path("load data")
+        search_dir = self.settings.value("paths/load data", "")
         n, _e = QtWidgets.QFileDialog.getOpenFileNames(
             self, "Open single file", search_dir, exts_str, "")
         if n:
             # user did not press cancel
             self.load_data(files=n, retry_open=self.on_open_single)
-            self.settings.set_path(pathlib.Path(n[0]).parent, name="load data")
+            self.settings.setValue("paths/load data",
+                                   str(pathlib.Path(n[0]).parent))
 
     def on_software(self):
         libs = [afmformats,
-                appdirs,
                 h5py,
                 lmfit,
                 matplotlib,
