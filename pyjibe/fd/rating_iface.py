@@ -24,7 +24,12 @@ class Rater(QtWidgets.QWidget, UiUserRatingBase):
         self.path = path
 
         self.initial_stuff()
-        self.setup_signals()
+
+        # signals
+        self.curve_index.valueChanged.connect(self.on_change_index)
+        self.sp_rating.valueChanged.connect(self.on_change_values)
+        self.text_comment.textChanged.connect(self.on_change_values)
+
         self.on_change_index()  # load first dataset if applicable
 
     def initial_stuff(self):
@@ -44,33 +49,25 @@ class Rater(QtWidgets.QWidget, UiUserRatingBase):
         self.curve_index.setValue(idx+1)
         self.curve_index.setMaximum(len(self.fdui.data_set))
 
-    def setup_signals(self, enable=True):
-        cn = [
-            # Change of index updates apc
-            [self.curve_index.valueChanged, self.on_change_index],
-            [self.sp_rating.valueChanged, self.on_change_values],
-            [self.text_comment.textChanged, self.on_change_values],
-        ]
-
-        for signal, slot in cn:
-            if enable:
-                signal.connect(slot)
-            else:
-                signal.disconnect(slot)
-
     @QtCore.pyqtSlot()
     def on_change_index(self):
+        self.curve_index.blockSignals(True)
+        self.sp_rating.blockSignals(True)
+        self.text_comment.blockSignals(True)
+
         index = self.curve_index.value()-1
-        self.setup_signals(False)
         fdist = self.fdui.data_set[index]
         _, rating, comment = nio.hdf5_rated(self.path, fdist)
         self.sp_rating.setValue(rating)
         self.text_comment.setPlainText(comment)
-        self.setup_signals(True)
         it = self.fdui.list_curves.topLevelItem(index)
         self.fdui.list_curves.setCurrentItem(it)
         self.sp_rating.selectAll()
         self.sp_rating.setFocus()
+
+        self.curve_index.blockSignals(False)
+        self.sp_rating.blockSignals(False)
+        self.text_comment.blockSignals(False)
 
     @QtCore.pyqtSlot()
     def on_change_values(self):

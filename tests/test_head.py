@@ -101,6 +101,7 @@ def test_on_open_bulk(qtbot):
     mw.close()
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python>=3.8")
 def test_on_open_bulk_no_data(qtbot):
     def mock_selected_files(self):
         return [tempfile.mkdtemp(prefix="pyjibe_no_data_")]
