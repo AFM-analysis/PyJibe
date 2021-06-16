@@ -150,19 +150,21 @@ class UiForceDistance(QtWidgets.QWidget):
 
     @property
     def current_curve(self):
+        """Indentation object of curve currently shown"""
         idx = self.current_index
         fdist = self.data_set[idx]
         return fdist
 
     @property
     def current_index(self):
+        """Index of curve currently shown"""
         item = self.list_curves.currentItem()
         idx = self.list_curves.indexOfTopLevelItem(item)
         return idx
 
     @property
     def selected_curves(self):
-        """Return an IndentationGroup with all curves selected by the user"""
+        """IndentationGroup with all curves selected by the user"""
         curves = nanite.IndentationGroup()
         for ar in self.data_set:
             idx = self.data_set.index(ar)
