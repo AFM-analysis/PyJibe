@@ -89,6 +89,34 @@ class PyJibe(QtWidgets.QMainWindow):
         self.activateWindow()
         self.setWindowState(QtCore.Qt.WindowState.WindowActive)
 
+    def load_data(self, files, retry_open=None, separate_analysis=False):
+        """Load AFM data"""
+        # expand directories
+        data_files = []
+        for ff in files:
+            data_files += afmformats.find_data(ff)
+
+        if not data_files:
+            ret = QtWidgets.QMessageBox.warning(
+                self,
+                "No AFM data found!",
+                "No AFM data files could be found in the location specified.",
+                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Retry
+            )
+            if retry_open is not None and ret == QtWidgets.QMessageBox.Retry:
+                retry_open()
+        else:
+            # Make sure there are no duplicate files (#12)
+            data_files = sorted(set(data_files))
+            if separate_analysis:
+                # open each file in one analysis
+                usable = [[ss] for ss in data_files]
+            else:
+                usable = [data_files]
+            for flist in usable:
+                aclass = registry.fd.UiForceDistance
+                self.add_subwindow(aclass, flist)
+
     def add_subwindow(self, aclass, flist):
         """Add a subwindow, register data set and add to menu"""
         sub = PyJibeQMdiSubWindow()
@@ -203,34 +231,6 @@ class PyJibe(QtWidgets.QMainWindow):
     def on_tool_convert(self):
         dlg = ConvertDialog(self)
         dlg.show()
-
-    def load_data(self, files, retry_open=None, separate_analysis=False):
-        """Load AFM data"""
-        # expand directories
-        data_files = []
-        for ff in files:
-            data_files += afmformats.find_data(ff)
-
-        if not data_files:
-            ret = QtWidgets.QMessageBox.warning(
-                self,
-                "No AFM data found!",
-                "No AFM data files could be found in the location specified.",
-                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Retry
-            )
-            if retry_open is not None and ret == QtWidgets.QMessageBox.Retry:
-                retry_open()
-        else:
-            # Make sure there are no duplicate files (#12)
-            data_files = sorted(set(data_files))
-            if separate_analysis:
-                # open each file in one analysis
-                usable = [[ss] for ss in data_files]
-            else:
-                usable = [data_files]
-            for flist in usable:
-                aclass = registry.fd.UiForceDistance
-                self.add_subwindow(aclass, flist)
 
 
 def excepthook(etype, value, trace):
