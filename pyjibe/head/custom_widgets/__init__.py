@@ -5,3 +5,4 @@ from .mpl_navigation_toolbar_icons import (
     NavigationToolbarEDelta,
     NavigationToolbarQMap
     )
+from .wait_cursor import ShowWaitCursor, show_wait_cursor

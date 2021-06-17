@@ -2,6 +2,7 @@
  - feat: allow users to enter missing metadata during loading
    of data files (#5)
  - fix: automatically append .h5 suffix when rating datasets
+ - enh: add busy cursor where applicable
  - ref: directory for importing training datasets for rating changed
    (but I think this currently affects nobody)
  - setup: dump appdirs dependency (moved to QSettings)

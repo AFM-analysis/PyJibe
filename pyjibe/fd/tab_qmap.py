@@ -5,6 +5,8 @@ from PyQt5 import uic, QtCore, QtWidgets
 
 from .mpl_qmap import MPLQMap
 
+from ..head.custom_widgets import show_wait_cursor
+
 
 class TabQMap(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
@@ -49,11 +51,13 @@ class TabQMap(QtWidgets.QWidget):
             self.update_qmap(fdist_group, fdist)
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_qmap_cmap_changed(self):
         """colormap selection changed"""
         self.mpl_qmap_update()
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_qmap_data_changed(self):
         """data column selection changed"""
         # set previous spin control values if existent
@@ -72,6 +76,7 @@ class TabQMap(QtWidgets.QWidget):
         self.mpl_qmap_update()
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_qmap_min_max_changed(self):
         """min or max spin controls changed"""
         # store spin control values for data column
@@ -84,6 +89,7 @@ class TabQMap(QtWidgets.QWidget):
         self.mpl_qmap_update()
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_qmap_selection(self, idx):
         """Show the curve indexed in the current qmap"""
         # Perform operations on ForceDistance

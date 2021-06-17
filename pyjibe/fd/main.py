@@ -12,6 +12,7 @@ import numpy as np
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
+from ..head.custom_widgets import ShowWaitCursor, show_wait_cursor
 
 from . import dlg_export_vals
 from . import export
@@ -407,6 +408,7 @@ class UiForceDistance(QtWidgets.QWidget):
         self.autosave(fdist)
 
     @QtCore.pyqtSlot(QtCore.QModelIndex)
+    @show_wait_cursor
     def on_curve_list_item_changed(self, item):
         """An item in the curve list was changed
 
@@ -479,6 +481,7 @@ class UiForceDistance(QtWidgets.QWidget):
         dlg.show()
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_fit_all(self):
         """Apply initial parameters to all curves and fit"""
         # We will fit all curves with the currently visible settings
@@ -544,6 +547,7 @@ class UiForceDistance(QtWidgets.QWidget):
         self.tab_qmap.mpl_qmap_update()
 
     @QtCore.pyqtSlot()
+    @show_wait_cursor
     def on_rating_threshold(self):
         """(De)select curves according to threshold rating"""
         thresh = self.sp_rating_thresh.value()
@@ -564,6 +568,7 @@ class UiForceDistance(QtWidgets.QWidget):
             self.autosave(fdist)
 
     @QtCore.pyqtSlot(int)
+    @show_wait_cursor
     def on_tab_changed(self, index):
         """Called when the tab on the right hand is changed"""
         if hasattr(self, "user_tab_selected"):
