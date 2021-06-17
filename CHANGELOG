@@ -6,8 +6,9 @@
  - ref: directory for importing training datasets for rating changed
    (but I think this currently affects nobody)
  - setup: dump appdirs dependency (moved to QSettings)
- - setup: bump afmformats from 0.12.5 to 0.13.2 (mostly #5)
+ - setup: bump afmformats from 0.12.5 to 0.13.3 (mostly #5 and speed)
  - setup: bump nanite from 1.7.3 to 1.7.4 (mostly #5)
+ - tests: increase coverage
 0.8.8
  - fix: handle bad curves properly when running bulk analysis (#13)
  - ref: make sure there are no duplicate files when loading data
