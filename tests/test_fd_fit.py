@@ -63,7 +63,7 @@ def test_ancillary_update_init(qtbot):
         # set initial parameters in user interface
         itab = war.tab_fit.table_parameters_initial
         atab = war.tab_fit.table_parameters_anc
-        war.on_tab_changed(1)
+        war.on_tab_changed()
         assert len(war.data_set[0].preprocessing) == 1
         assert war.tab_preprocess.list_preproc_applied.count() == 1
         # The ancillary parameter gets its value from the default parameters
@@ -139,7 +139,7 @@ def test_ancillary_update_preproc_change(qtbot):
         # set initial parameters in user interface
         itab = war.tab_fit.table_parameters_initial
         atab = war.tab_fit.table_parameters_anc
-        war.on_tab_changed(1)
+        war.on_tab_changed()
         assert len(war.data_set[0].preprocessing) == 1
         assert war.tab_preprocess.list_preproc_applied.count() == 1
         assert atab.item(0, 1).text() == "nan"
