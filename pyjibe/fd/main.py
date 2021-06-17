@@ -12,7 +12,7 @@ import numpy as np
 from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
-from ..head.custom_widgets import ShowWaitCursor, show_wait_cursor
+from ..head.custom_widgets import show_wait_cursor
 
 from . import dlg_export_vals
 from . import export
