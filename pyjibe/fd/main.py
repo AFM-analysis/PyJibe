@@ -567,9 +567,9 @@ class UiForceDistance(QtWidgets.QWidget):
         for fdist in self.data_set:
             self.autosave(fdist)
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.pyqtSlot()
     @show_wait_cursor
-    def on_tab_changed(self, index):
+    def on_tab_changed(self):
         """Called when the tab on the right hand is changed"""
         if hasattr(self, "user_tab_selected"):
             prevtab = self.user_tab_selected
