@@ -16,7 +16,7 @@ from helpers import make_directory_with_data
 data_path = pathlib.Path(__file__).parent / "data"
 
 
-class MockModel():
+class MockModel:
     def __init__(self, model_key, **kwargs):
         # rebase on hertz model
         md = nmodel.models_available["hertz_para"]
@@ -248,3 +248,31 @@ def test_remember_initial_params(qtbot):
     cl2 = war.list_curves.itemBelow(cl1)
     war.list_curves.setCurrentItem(cl2)
     assert float(itab.item(1, 1).text()) == 5
+
+
+def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
+    main_window = pyjibe.head.PyJibe()
+    main_window.load_data(files=make_directory_with_data(2))
+    war = main_window.subwindows[0].widget()
+    # perform fitting with standard parameters
+    # set initial parameters in user interface
+    itab = war.tab_fit.table_parameters_initial
+    # set value for contact point
+    itab.item(3, 1).setText(str(12345))
+    # change the model to pyramidal
+    pyr_name = nmodel.model_hertz_three_sided_pyramid.model_name
+    pyr_idx = war.tab_fit.cb_model.findText(pyr_name)
+    war.tab_fit.cb_model.setCurrentIndex(pyr_idx)
+    # set left fitting range
+    for text_entered, resulting_value in [
+        ["-1.40", -1.4],
+        ["1...2", 1.2],
+        ["1.0e-4", 1e-4],
+        ["inf", np.inf],
+        ["1.10201", 1.10201],
+        ["1.001", 1.001],
+        ["-1.04", -1.04]
+            ]:
+        war.tab_fit.sp_range_1.clear()
+        qtbot.keyClicks(war.tab_fit.sp_range_1, text_entered)
+        assert war.tab_fit.sp_range_1.value() == resulting_value

@@ -73,7 +73,7 @@ class TabEdelta(QtWidgets.QWidget):
         value /= units.scales["µ"]
         self.delta_spin.setValue(value)
 
-    @QtCore.pyqtSlot()
+    @QtCore.pyqtSlot(float)
     def on_delta_change_spin(self, value):
         """Indentation depth spin control value changed"""
         # Update all controls

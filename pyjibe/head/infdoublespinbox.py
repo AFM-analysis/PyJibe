@@ -22,23 +22,54 @@ class InfDoubleSpinBox(QtWidgets.QDoubleSpinBox):
         return convert_string_to_float(text)
 
     def textFromValue(self, value):
-        return str(value)
+        text = f"{value:.7g}"
+        if not text.count("e"):
+            # We don't have the exponential notation.
+            text = str(value)
+        return text
 
 
 class FloatValidator(QtGui.QValidator):
+    def __init__(self, *args, **kwargs):
+        super(FloatValidator, self).__init__(*args, **kwargs)
+        self.previous = None
+
     def validate(self, string, position):
-        if valid_float_string(string):
+        previous = self.previous
+        self.previous = string
+
+        if string.count(".") > 1:
+            # if user types "." and there is already a dot, let the cursor
+            # move to the other side
+            if not string[position-1] == ".":
+                # user pressed "." another time -> don't go forward
+                position -= 1
+            a, b = string.split(".", 1)
+            string = ".".join([a, b.replace(".", "")])
+
             return self.Acceptable, string, position
-        if string == "" or string[position-1] in 'e.-+':
+        elif (previous is not None and previous.count(".")
+                and not string.count(".") and position == previous.index(".")):
+            # make sure removing decimal point does not lead to large numbers
+            # (1.003 -> 1003)
+            string = string[:position]
+            return self.Acceptable, string, position
+        elif string == "":
             return self.Intermediate, string, position
-        return self.Invalid, string, position
+        elif string and string[position-1] in '.e-+':
+            # remove trailing numbers
+            return self.Intermediate, string.rstrip("0"), position
+        elif valid_float_string(string):
+            return self.Acceptable, string, position
+        else:
+            return self.Invalid, string, position
 
     def fixup(self, text):
         try:
-            val = convert_string_to_float(text)
+            text = convert_string_to_float(text)
         except ValueError:
-            val = ""
-        return str(val)
+            text = ""
+        return text
 
 
 def valid_float_string(string):
@@ -52,6 +83,7 @@ def valid_float_string(string):
 
 
 def convert_string_to_float(string):
+    """Convert string of float or +/- "inf" to float"""
     try:
         val = float(string)
     except ValueError:
@@ -63,7 +95,7 @@ def convert_string_to_float(string):
         string = string.strip("+-")
         for iid in ["i", "in", "inf"]:
             if string == iid:
-                val = asign*np.inf
+                val = asign * np.inf
                 break
         else:
             raise ValueError("Not a valid float!")
