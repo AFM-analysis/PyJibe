@@ -47,5 +47,13 @@ A list of supported file formats can be found
 
 How to cite
 ===========
-If you use PyJibe in a scientific publication, please consider citing
-Müller et al., *BMC Bioinformatics* (2019) :cite:`Mueller19nanite`.
+If you use PyJibe in a scientific publication, please cite it with:
+
+.. pull-quote::
+
+   Paul Müller and others (2019), PyJibe version X.X.X: Atomic force
+   microscopy data analysis [Software].
+   Available at https://github.com/AFM-analysis/PyJibe.
+
+Please also consider citing Müller et al., *BMC Bioinformatics* (2019)
+:cite:`Mueller19nanite` (for fitting and rating force-indentation data).
