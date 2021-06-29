@@ -61,7 +61,7 @@ class MPLQMap:
         acbar.ax.yaxis.set_label_position("right")
         self.colorbar = acbar
 
-        self.lines = []
+        self.lines = {}
 
         # mouse click event
         self.click_callback = None
@@ -111,11 +111,7 @@ class MPLQMap:
         self.qmap_shape = (np.nan, np.nan)
         self.dx = 1
         self.dy = 1
-        self.reset_lines()
-
-    def reset_lines(self):
-        for _ in range(len(self.lines)):
-            self.lines.pop(0).remove()
+        self.lines.clear()
 
     def save_data_callback(self, filename):
         """Save current image as tsv"""
@@ -242,30 +238,35 @@ class MPLQMap:
             self.plot.set_extent(extent)
             self.colorbar.set_label(feature)
 
-            # set invalid elements
-            # TODO: This all really eats a lot of time
-            self.reset_lines()
+            # draw diagonal lines for invalid elements
+            # (self.lines is a dictionary with pixel enumeration as indices
+            # that holds references to the line plots - this is much faster
+            # than regenerating the line plots each time (mpl is slow).
             xm, ym = np.meshgrid(range(shape[0]),
                                  range(shape[1]))
+            for ii, (xi, yi) in enumerate(zip(xm.flat, ym.flat)):
+                data_is_nan = np.isnan(qmap_data[yi, xi])
+                if data_is_nan and ii not in self.lines:
+                    # convert coordinates to a vector
+                    vi = np.array([[xi, yi]])
+                    # compute distance to grid
+                    dist = np.min(np.sum(np.abs(qmap_coords_px - vi), axis=1))
+                    if np.allclose(dist, 0):
+                        # data available, but not computed
+                        color = "#14571A"  # green
+                    else:
+                        # curve not available (not on grid)
+                        color = "#571714"  # red
 
-            for xi, yi in zip(xm.flat, ym.flat):
-                if np.isnan(qmap_data[yi, xi]):
                     xv = extent[0] + (xi+.5) * dx
                     yv = extent[2] + (yi+.5) * dy
-                    for p in qmap_coords_px:
-                        if np.allclose([xi, yi], p):
-                            # data available, but not computed
-                            color = "#14571A"  # green
-                            break
-                    else:
-                        # curve not available
-                        color = "#571714"  # red
-                    self.lines.append(
-                        self.axis_main.plot([xv-dx*.4, xv+dx*.4],
-                                            [yv-dy*.4, yv+dy*.4],
-                                            color=color,
-                                            lw=1)[0]
-                    )
+
+                    self.lines[ii] = self.axis_main.plot([xv-dx*.4, xv+dx*.4],
+                                                         [yv-dy*.4, yv+dy*.4],
+                                                         color=color,
+                                                         lw=1)[0]
+                elif not data_is_nan and ii in self.lines:
+                    self.lines.pop(ii).remove()
 
             # common variables
             self.dx = dx
