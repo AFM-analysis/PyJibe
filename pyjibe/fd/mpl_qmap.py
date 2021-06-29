@@ -205,7 +205,6 @@ class MPLQMap:
         be displayed in the plot stating that no map data is available.
         """
         prev_data = self.qmap_data
-
         qmap_data = qmap.get_qmap(feature=feature, qmap_only=True)
         qmap_coords = qmap.get_coords(which="um")
         qmap_coords_px = qmap.get_coords(which="px")
@@ -213,7 +212,6 @@ class MPLQMap:
         extent = qmap.extent
         dx = (extent[1] - extent[0])/shape[0]
         dy = (extent[3] - extent[2])/shape[1]
-
         # TODO:
         # - only update the plot if vmin/vmax or qmap_data as changed
 
@@ -227,7 +225,6 @@ class MPLQMap:
         self.plot.set_clim(vmin=vmin, vmax=vmax)
 
         self.plot.set_cmap(cmap)
-
         # explicitly set x/y limits
         self.axis_main.set_xlim(extent[0], extent[1])
         self.axis_main.set_ylim(extent[2], extent[3])
@@ -246,6 +243,7 @@ class MPLQMap:
             self.colorbar.set_label(feature)
 
             # set invalid elements
+            # TODO: This all really eats a lot of time
             self.reset_lines()
             xm, ym = np.meshgrid(range(shape[0]),
                                  range(shape[1]))

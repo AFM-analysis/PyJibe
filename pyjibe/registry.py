@@ -1,11 +1,12 @@
-from afmformats.formats import formats_by_mode
+from afmformats.formats import formats_by_modality
 
 from . import fd
 
 
 analysis_types = {
     "fd": {
-        "suffixes": [f["suffix"] for f in formats_by_mode["force-distance"]],
+        "suffixes": [f["suffix"]
+                     for f in formats_by_modality["force-distance"]],
         "gui": fd.UiForceDistance,
     }
 }

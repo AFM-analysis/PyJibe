@@ -1,3 +1,8 @@
+0.9.2
+ - setup: bump afmformats from 0.13.3 to 0.14.1 (mostly speed,
+   support AFM workshop maps)
+ - setup: bump nanite from 1.7.4 to 1.7.5 (mostly speed)
+ - ref: speed-up QMap visualization by caching nanite.QMap instances
 0.9.1
  - docs: minor update
  - fix: regression where left fitting range could not be set

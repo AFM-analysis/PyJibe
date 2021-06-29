@@ -8,6 +8,18 @@ from .mpl_qmap import MPLQMap
 from ..head.custom_widgets import show_wait_cursor
 
 
+class QMapCache:
+    """Caches QMap data based on AFMGroup paths"""
+    _cache = {}
+
+    @staticmethod
+    def get_qmap(fdist_group):
+        path = fdist_group.path.resolve()
+        if path not in QMapCache._cache:
+            QMapCache._cache[path] = nanite.QMap(fdist_group)
+        return QMapCache._cache[path]
+
+
 class TabQMap(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabQMap, self).__init__(*args, **kwargs)
@@ -121,33 +133,31 @@ class TabQMap(QtWidgets.QWidget):
         else:
             index = None
 
-        # Build list of possible selections
-        selist = nanite.qmap.available_features
-
-        # Get plotting parameter and check if it makes sense
-        feature = self.qmap_data_cb.currentData()
-        if not feature or feature not in selist:
-            # Use a default plotting map
-            feature = "data min height"
-
-        # Make sure that we have a valid property to plot
-        assert feature in selist
-
-        # Update dropdown menu with possible selections
-        # disable signals while updating the combobox
-        self.qmap_data_cb.blockSignals(True)
-        # remove all items
-        for _i in range(self.qmap_data_cb.count()):
-            self.qmap_data_cb.removeItem(0)
-        # add new items
-        for item in selist:
-            self.qmap_data_cb.addItem(item, item)
-        self.qmap_data_cb.setCurrentIndex(selist.index(feature))
-        self.qmap_data_cb.blockSignals(False)
-
         if len(fdist_group) > 1:
             # Get map data
-            qmap = nanite.QMap(fdist_group)
+            qmap = QMapCache.get_qmap(fdist_group)
+            # Build list of possible selections
+            selist = qmap.features
+            # Get plotting parameter and check if it makes sense
+            feature = self.qmap_data_cb.currentData()
+            if not feature or feature not in selist:
+                # Use a default plotting map
+                feature = "data: lowest height"
+            # Make sure that we have a valid property to plot
+            assert feature in selist
+
+            # Update dropdown menu with possible selections
+            # disable signals while updating the combobox
+            self.qmap_data_cb.blockSignals(True)
+            # remove all items
+            for _i in range(self.qmap_data_cb.count()):
+                self.qmap_data_cb.removeItem(0)
+            # add new items
+            for item in selist:
+                self.qmap_data_cb.addItem(item, item)
+            self.qmap_data_cb.setCurrentIndex(selist.index(feature))
+            self.qmap_data_cb.blockSignals(False)
+
             # update plot
             self.mpl_qmap.update(qmap=qmap,
                                  feature=feature,

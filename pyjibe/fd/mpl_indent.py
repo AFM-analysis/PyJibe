@@ -86,7 +86,7 @@ class MPLIndentation(object):
         self.axis_res.set_ylabel("residuals [{}]".format(yunit))
         self.axis_main.set_ylabel("{} [{}]".format(yaxis, yunit))
 
-        if "fit" in fdist.data and np.sum(fdist["fit range"]):
+        if "fit" in fdist and np.sum(fdist["fit range"]):
             self.plots["residuals"].set_visible(True)
             self.plots["fit"].set_visible(True)
             self.plots["fit range"].set_visible(True)
