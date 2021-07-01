@@ -24,8 +24,8 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.14.1",
-                      "nanite>=1.7.5",
+    install_requires=["afmformats>=0.14.3",
+                      "nanite>=1.7.6",
                       "matplotlib>=3",  # NavigationToolbar2QT mod
                       "pyqt5"],
     python_requires='>=3.6, <4',

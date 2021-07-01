@@ -142,7 +142,7 @@ class TabQMap(QtWidgets.QWidget):
             feature = self.qmap_data_cb.currentData()
             if not feature or feature not in selist:
                 # Use a default plotting map
-                feature = "data: lowest height"
+                feature = "data: height base point"
             # Make sure that we have a valid property to plot
             assert feature in selist
 
