@@ -109,7 +109,14 @@
     </property>
     <addaction name="actionConvert_AFM_data"/>
    </widget>
+   <widget class="QMenu" name="menuPreferences">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="action_developer_mode"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menuPreferences"/>
    <addaction name="menuExport"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
@@ -172,6 +179,14 @@
   <action name="actionConvert_AFM_data">
    <property name="text">
     <string>Convert AFM data</string>
+   </property>
+  </action>
+  <action name="action_developer_mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Developer mode</string>
    </property>
   </action>
  </widget>

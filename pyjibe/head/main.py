@@ -15,6 +15,7 @@ import afmformats
 import h5py
 import lmfit
 import nanite
+import nanite.read
 import numpy
 import scipy
 import sklearn
@@ -67,6 +68,11 @@ class PyJibe(QtWidgets.QMainWindow):
         self.action_open_bulk.triggered.connect(self.on_open_bulk)
         self.action_open_single.triggered.connect(self.on_open_single)
         self.action_open_multiple.triggered.connect(self.on_open_multiple)
+        # Edit menu
+        is_dev_mode = bool(int(self.settings.value("developer mode", "0")))
+        self.action_developer_mode.setChecked(is_dev_mode)
+        self.on_developer_mode(is_dev_mode)
+        self.action_developer_mode.triggered.connect(self.on_developer_mode)
         # Tool menu
         self.actionConvert_AFM_data.triggered.connect(self.on_tool_convert)
         # Help menu
@@ -146,6 +152,7 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.menuExport.removeAction(action)
                 break
 
+    @QtCore.pyqtSlot()
     def on_about(self):
         about_text = "PyJibe is a user interface for data analysis in " \
             + "atomic force microscopy with an emphasis on biological " \
@@ -157,10 +164,22 @@ class PyJibe(QtWidgets.QMainWindow):
                                     "PyJibe {}".format(__version__),
                                     about_text)
 
+    @QtCore.pyqtSlot(bool)
+    def on_developer_mode(self, checked):
+        # remember in settings
+        self.settings.setValue("developer mode", str(int(checked)))
+        # set nanite
+        if checked:
+            nanite.read.DEFAULT_MODALITY = None
+        else:
+            nanite.read.DEFAULT_MODALITY = "force-distance"
+
+    @QtCore.pyqtSlot()
     def on_documentation(self):
         webbrowser.open("https://pyjibe.readthedocs.io")
 
-    def on_open_bulk(self, evt=None):
+    @QtCore.pyqtSlot()
+    def on_open_bulk(self):
         dlg = custom_widgets.DirectoryDialogMultiSelect(self)
         search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
@@ -172,7 +191,8 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.settings.setValue("paths/load data",
                                        str(dlg.getDirectory()))
 
-    def on_open_multiple(self, evt=None):
+    @QtCore.pyqtSlot()
+    def on_open_multiple(self):
         dlg = custom_widgets.DirectoryDialogMultiSelect(self)
         search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
@@ -185,7 +205,8 @@ class PyJibe(QtWidgets.QMainWindow):
                 self.settings.setValue("paths/load data",
                                        str(dlg.getDirectory()))
 
-    def on_open_single(self, evt=None):
+    @QtCore.pyqtSlot()
+    def on_open_single(self):
         ext_opts = []
         # all
         exts = ["*"+e for e in registry.known_suffixes]
@@ -206,6 +227,7 @@ class PyJibe(QtWidgets.QMainWindow):
             self.settings.setValue("paths/load data",
                                    str(pathlib.Path(n[0]).parent))
 
+    @QtCore.pyqtSlot()
     def on_software(self):
         libs = [afmformats,
                 h5py,
@@ -228,6 +250,7 @@ class PyJibe(QtWidgets.QMainWindow):
                                           "Software",
                                           sw_text)
 
+    @QtCore.pyqtSlot()
     def on_tool_convert(self):
         dlg = ConvertDialog(self)
         dlg.show()

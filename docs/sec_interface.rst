@@ -244,3 +244,15 @@ documentation <nanite:sec_rating>`.
 The button at the bottom starts the PyJibe curve rater which is compatible
 to the nanite rating workflow. If you would like to import your own training
 set, please read the quick guide :ref:`sec_qg_import_ts`.
+
+
+Developer mode
+==============
+Under *Edit | Developer mode*, you can enable developer mode which will:
+
+- Allow you to open experimental data that were not recorded via
+  force-distance modality (e.g. creep-compliance). Related issues are
+  `nanite #11 <https://github.com/AFM-analysis/nanite/issues/11>`_ and
+  `afmformats #15 <https://github.com/AFM-analysis/afmformats/issues/15>`_.
+- Slow down loading of large datasets (because the modality has to be
+  determined first).
