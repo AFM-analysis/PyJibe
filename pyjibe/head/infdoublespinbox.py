@@ -22,11 +22,7 @@ class InfDoubleSpinBox(QtWidgets.QDoubleSpinBox):
         return convert_string_to_float(text)
 
     def textFromValue(self, value):
-        text = f"{value:.7g}"
-        if not text.count("e"):
-            # We don't have the exponential notation.
-            text = str(value)
-        return text
+        return convert_float_to_string(value)
 
 
 class FloatValidator(QtGui.QValidator):
@@ -66,7 +62,7 @@ class FloatValidator(QtGui.QValidator):
 
     def fixup(self, text):
         try:
-            text = convert_string_to_float(text)
+            text = convert_float_to_string(convert_string_to_float(text))
         except ValueError:
             text = ""
         return text
@@ -80,6 +76,15 @@ def valid_float_string(string):
     else:
         valid = True
     return valid
+
+
+def convert_float_to_string(value):
+    """Convert float to a string"""
+    text = f"{value:.7g}"
+    if not text.count("e"):
+        # We don't have the exponential notation.
+        text = str(value)
+    return text
 
 
 def convert_string_to_float(string):
