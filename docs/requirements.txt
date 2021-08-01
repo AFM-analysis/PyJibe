@@ -11,4 +11,4 @@ sphinxcontrib.bibtex>=2.0
 sphinx_rtd_theme
 # bullet-points not rendering.
 # https://stackoverflow.com/questions/67542699/readthedocs-sphinx-not-rendering-bullet-list-from-rst-file
-docutils=0.16
+docutils==0.16
