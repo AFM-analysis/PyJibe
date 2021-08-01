@@ -1,3 +1,6 @@
+0.9.4
+ - enh: only show exact sneddon model "sneddon_spher" in developer
+   mode to avoid confusion
 0.9.3
  - fix: possible fix for TypeError in InfDoubleSpinBox
  - setup: bump afmformats from 0.14.3 to 0.15.0 as well as

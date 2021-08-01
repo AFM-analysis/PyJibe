@@ -18,6 +18,11 @@ class TabFit(QtWidgets.QWidget):
         id_para = 0
         # Model selection
         models_av = list(nmodel.models_available.keys())
+        # Exact spherical model is only available in developer mode
+        settings = QtCore.QSettings()
+        settings.setIniCodec("utf-8")
+        if not bool(int(settings.value("developer mode", "0"))):
+            models_av.remove("sneddon_spher")
         models_av.sort(key=lambda x: nmodel.models_available[x].model_name)
         for ii, key in enumerate(models_av):
             model = nmodel.models_available[key]

@@ -256,3 +256,8 @@ Under *Edit | Developer mode*, you can enable developer mode which will:
   `afmformats #15 <https://github.com/AFM-analysis/afmformats/issues/15>`_.
 - Slow down loading of large datasets (because the modality has to be
   determined first).
+- Add the force-distance fitting model :ref:`sneddon_spher
+  <nanite:sec_ref_model_sneddon_spher>` to the list of available fit models
+  (it is excluded by default, because it is virtually identical to the
+  :ref:`sneddon_spher_approx <nanite:sec_ref_model_sneddon_spher_approx>`
+  model which is much faster).
