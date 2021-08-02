@@ -1,9 +1,10 @@
+import warnings
+
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas)
 import numpy as np
-
 
 from .. import units
 from ..head import custom_widgets
@@ -76,11 +77,18 @@ class MPLIndentation(object):
         yunit = units.hrunit(yaxis)
 
         # approach and retract data
-        for segment in ["approach", "retract"]:
-            segment_bool = segment == "retract"
+        if fdist.metadata["segment count"] == 2:
+            segments = ["approach", "retract"]
+        else:
+            segments = ["approach", "intermediate", "retract"]
+        for ii, segment in enumerate(segments):
+            if segment == "intermediate":
+                # Dear future self...
+                warnings.warn("Ignoring 'intermediate' segment!")
+                continue
             self.plots[segment].set_data(
-                fdist[xaxis][fdist["segment"] == segment_bool]*xscale,
-                fdist[yaxis][fdist["segment"] == segment_bool]*yscale)
+                fdist[xaxis][fdist["segment"] == ii]*xscale,
+                fdist[yaxis][fdist["segment"] == ii]*yscale)
 
         self.axis_res.set_xlabel("{} [{}]".format(xaxis, xunit))
         self.axis_res.set_ylabel("residuals [{}]".format(yunit))

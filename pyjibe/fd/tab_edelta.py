@@ -51,9 +51,8 @@ class TabEdelta(QtWidgets.QWidget):
             delta_opt = self.fd.tab_fit.sp_range_1.value()
             # Update slider range
             xaxis = self.fd.tab_fit.cb_xaxis.currentText()
-            segment = self.fd.tab_fit.cb_segment.currentText().lower()
-            segment_bool = segment == "retract"
-            segid = fdist["segment"] == segment_bool
+            segment_idx = self.fd.tab_fit.cb_segment.currentIndex()
+            segid = fdist["segment"] == segment_idx
             xdata = fdist[xaxis]
             xscale = units.hrscale(xaxis)
             minx = np.min(xdata[segid])*xscale
