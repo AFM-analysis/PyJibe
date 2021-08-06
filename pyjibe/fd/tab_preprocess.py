@@ -1,6 +1,6 @@
 import pkg_resources
 
-import nanite.preproc as npreproc
+from nanite.preproc import IndentationPreprocessor
 from PyQt5 import uic, QtCore, QtWidgets
 
 
@@ -13,17 +13,22 @@ class TabPreprocess(QtWidgets.QWidget):
 
         # Setup everything necessary for the preprocessing tab:
         # Get list of preprocessing methods
-        premem = npreproc.IndentationPreprocessor.available()
+        premem = IndentationPreprocessor.available()
 
-        for p in premem:
-            item = QtWidgets.QListWidgetItem()
-            item.setText(p)
-            self.list_preproc_available.addItem(item)
-
-        self.list_preproc_available.currentItemChanged.connect(
-            lambda: self.update_displayed_docstring("available"))
-        self.list_preproc_applied.currentItemChanged.connect(
-            lambda: self.update_displayed_docstring("applied"))
+        self._map_widgets_to_preproc_ids = {}
+        for pid in premem:
+            pwidget = QtWidgets.QCheckBox(
+                text=IndentationPreprocessor.get_name(pid),
+                parent=self)
+            meth = IndentationPreprocessor.get_func(pid)
+            pwidget.setToolTip(meth.__doc__)
+            self._map_widgets_to_preproc_ids[pwidget] = pid
+            self.layout_preproc_area.addWidget(pwidget)
+            pwidget.stateChanged.connect(self.check_selection)
+        spacer_item = QtWidgets.QSpacerItem(20, 0,
+                                            QtWidgets.QSizePolicy.Minimum,
+                                            QtWidgets.QSizePolicy.Expanding)
+        self.layout_preproc_area.addItem(spacer_item)
 
         # Add recommended item (see `self.preproc_set_preset`)
         self.cb_preproc_presel.addItem("Recommended")
@@ -33,51 +38,56 @@ class TabPreprocess(QtWidgets.QWidget):
         # Apply recommended defaults
         self.cb_preproc_presel.setCurrentIndex(1)
 
+    @QtCore.pyqtSlot(int)
+    def check_selection(self, state):
+        """If the user selects an item, make sure requirements are checked"""
+        sender = self.sender()
+        if sender in self._map_widgets_to_preproc_ids:
+            pid = self._map_widgets_to_preproc_ids[sender]
+            if state == 2:
+                # Enable all steps that this step here requires
+                req_stps = IndentationPreprocessor.get_require_steps(pid)
+                if req_stps:
+                    for pwid in self._map_widgets_to_preproc_ids:
+                        if self._map_widgets_to_preproc_ids[pwid] in req_stps:
+                            pwid.setChecked(True)
+            if state == 0:
+                # Disable all steps that depend on this one
+                for dwid in self._map_widgets_to_preproc_ids:
+                    did = self._map_widgets_to_preproc_ids[dwid]
+                    req_stps = IndentationPreprocessor.get_require_steps(did)
+                    if req_stps and pid in req_stps:
+                        dwid.setChecked(False)
+
     def fit_apply_preprocessing(self, fdist):
         """Apply the preprocessing steps if required"""
         # Note: Preprocessing is cached once in `fdist`.
         # Thus calling this method a second time without any
         # change in the GUI is free.
-        num = self.list_preproc_applied.count()
-        preprocessing = []
-        for ii in range(num):
-            item = self.list_preproc_applied.item(ii)
-            preprocessing.append(item.text())
+        identifiers = []
+        for pwidget in self._map_widgets_to_preproc_ids:
+            pid = self._map_widgets_to_preproc_ids[pwidget]
+            if pwidget.isChecked():
+                identifiers.append(pid)
+        # Make sure the order is correct
+        identifiers = IndentationPreprocessor.autosort(identifiers)
         # Perform preprocessing
-        fdist.apply_preprocessing(preprocessing)
+        fdist.apply_preprocessing(identifiers)
 
     @QtCore.pyqtSlot()
     def on_preset_changed(self):
         """Update preselection"""
         text = self.cb_preproc_presel.currentText()
-        self.list_preproc_applied.clear()
         if text == "None":
-            pass
+            used_methods = []
         elif text == "Recommended":
-            recommended_methods = ["compute_tip_position",
-                                   "correct_force_offset",
-                                   "correct_tip_offset",
-                                   "correct_split_approach_retract"]
-            for m in recommended_methods:
-                item = QtWidgets.QListWidgetItem()
-                item.setText(m)
-                self.list_preproc_applied.addItem(item)
+            used_methods = ["compute_tip_position",
+                            "correct_force_offset",
+                            "correct_tip_offset",
+                            "correct_split_approach_retract"]
+        else:
+            raise ValueError(f"Unknown text '{text}'!")
 
-    def update_displayed_docstring(self, source):
-        """Update the description box with the method doc string
-
-        Writes text to `self.text_preprocessing` according to the
-        method selected in `self.list_preproc_available` or
-        `self.list_preproc_applied`.
-        """
-        if source == "available":
-            thelist = self.list_preproc_available
-        elif source == "applied":
-            thelist = self.list_preproc_applied
-        item = thelist.currentItem()
-        if item is None:
-            return
-        method_name = item.text()
-        method = getattr(npreproc.IndentationPreprocessor, method_name)
-        doc = method.__doc__.replace("    ", "").strip()
-        self.text_preprocessing.setPlainText(doc)
+        for pwidget in self._map_widgets_to_preproc_ids:
+            pid = self._map_widgets_to_preproc_ids[pwidget]
+            pwidget.setChecked(pid in used_methods)
