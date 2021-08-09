@@ -1,6 +1,5 @@
 """Test of data set functionalities"""
 import numpy as np
-from PyQt5 import QtWidgets
 
 import pyjibe.head
 
@@ -19,12 +18,9 @@ def test_clear_and_verify_data(qtbot):
     war = main_window.subwindows[0].widget()
     # clear data
     tpp = war.tab_preprocess
-    tpp.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
-    item = QtWidgets.QListWidgetItem()
-    item.setText("compute_tip_position")
-    tpp.list_preproc_applied.addItem(item)
+    tpp.set_preprocessing(["compute_tip_position"])
     # perform fitting with standard parameters
     # set initial parameters in user interface
     itab = war.tab_fit.table_parameters_initial

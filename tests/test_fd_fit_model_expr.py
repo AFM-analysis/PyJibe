@@ -1,7 +1,6 @@
 """Test of data set functionalities"""
 import lmfit
 import numpy as np
-from PyQt5 import QtWidgets
 
 import nanite.model
 from nanite.model.residuals import compute_contact_point_weights
@@ -124,12 +123,9 @@ def test_model_expr_base(qtbot):
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
-        war.tab_preprocess.list_preproc_applied.clear()
         war.cb_autosave.setChecked(0)
         # perform simple filter
-        item = QtWidgets.QListWidgetItem()
-        item.setText("compute_tip_position")
-        war.tab_preprocess.list_preproc_applied.addItem(item)
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # set mock model
         idx = war.tab_fit.cb_model.findData(mod.model_key)
         war.tab_fit.cb_model.setCurrentIndex(idx)

@@ -48,12 +48,9 @@ def test_ancillary_update_init(qtbot):
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
-        war.tab_preprocess.list_preproc_applied.clear()
         war.cb_autosave.setChecked(0)
         # perform simple filter
-        item = QtWidgets.QListWidgetItem()
-        item.setText("compute_tip_position")
-        war.tab_preprocess.list_preproc_applied.addItem(item)
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
         war.tab_fit.cb_weight_cp.setCheckState(0)
         # set mock model
@@ -65,7 +62,7 @@ def test_ancillary_update_init(qtbot):
         atab = war.tab_fit.table_parameters_anc
         war.on_tab_changed()
         assert len(war.data_set[0].preprocessing) == 1
-        assert war.tab_preprocess.list_preproc_applied.count() == 1
+        assert len(war.tab_preprocess.current_preprocessing()[0]) == 1
         # The ancillary parameter gets its value from the default parameters
         assert atab.item(0, 1).text() == "3000"
         assert itab.item(0, 1).text() == "3000"
@@ -91,12 +88,9 @@ def test_ancillary_update_nan(qtbot):
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
-        war.tab_preprocess.list_preproc_applied.clear()
         war.cb_autosave.setChecked(0)
         # perform simple filter
-        item = QtWidgets.QListWidgetItem()
-        item.setText("compute_tip_position")
-        war.tab_preprocess.list_preproc_applied.addItem(item)
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
         war.tab_fit.cb_weight_cp.setCheckState(0)
         # set mock model
@@ -124,12 +118,9 @@ def test_ancillary_update_preproc_change(qtbot):
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
-        war.tab_preprocess.list_preproc_applied.clear()
         war.cb_autosave.setChecked(0)
         # perform simple filter
-        item = QtWidgets.QListWidgetItem()
-        item.setText("compute_tip_position")
-        war.tab_preprocess.list_preproc_applied.addItem(item)
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
         war.tab_fit.cb_weight_cp.setCheckState(0)
         # set mock model
@@ -141,18 +132,19 @@ def test_ancillary_update_preproc_change(qtbot):
         atab = war.tab_fit.table_parameters_anc
         war.on_tab_changed()
         assert len(war.data_set[0].preprocessing) == 1
-        assert war.tab_preprocess.list_preproc_applied.count() == 1
+        assert len(war.tab_preprocess.current_preprocessing()[0]) == 1
         assert atab.item(0, 1).text() == "nan"
         assert itab.item(0, 1).text() == "3000"
         # up until here this is the same as `test_update_ancillary_nan`
         # now change preprocessing
         war.tabs.setCurrentIndex(0)  # actually switch tabs like a user
-        item = QtWidgets.QListWidgetItem()
-        item.setText("correct_tip_offset")
-        war.tab_preprocess.list_preproc_applied.addItem(item)
+        # manually check the "correct_tip_offset" widget
+        for pwid, k in war.tab_preprocess._map_widgets_to_preproc_ids.items():
+            if k == "correct_tip_offset":
+                pwid.setChecked(True)
         war.tabs.setCurrentIndex(1)  # triggers recomputation of anc
         assert len(war.data_set[0].preprocessing) == 2
-        assert war.tab_preprocess.list_preproc_applied.count() == 2
+        assert len(war.tab_preprocess.current_preprocessing()[0]) == 2
         assert atab.item(0, 1).text() == "2345"
         assert itab.item(0, 1).text() == "2345"
 
@@ -202,12 +194,9 @@ def test_change_model_keep_parms(qtbot):
     main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
-    war.tab_preprocess.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
-    item = QtWidgets.QListWidgetItem()
-    item.setText("compute_tip_position")
-    war.tab_preprocess.list_preproc_applied.addItem(item)
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
     # perform fitting with standard parameters
     # set initial parameters in user interface
     itab = war.tab_fit.table_parameters_initial
@@ -226,12 +215,9 @@ def test_remember_initial_params(qtbot):
     main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
-    war.tab_preprocess.list_preproc_applied.clear()
     war.cb_autosave.setChecked(0)
     # perform simple filter
-    item = QtWidgets.QListWidgetItem()
-    item.setText("compute_tip_position")
-    war.tab_preprocess.list_preproc_applied.addItem(item)
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
     # perform fitting with standard parameters
     # set initial parameters in user interface
     itab = war.tab_fit.table_parameters_initial

@@ -3,6 +3,8 @@ import pkg_resources
 from nanite.preproc import IndentationPreprocessor
 from PyQt5 import uic, QtCore, QtWidgets
 
+from .widget_preprocess_item import WidgetPreprocessItem
+
 
 class TabPreprocess(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
@@ -17,14 +19,13 @@ class TabPreprocess(QtWidgets.QWidget):
 
         self._map_widgets_to_preproc_ids = {}
         for pid in premem:
-            pwidget = QtWidgets.QCheckBox(
-                text=IndentationPreprocessor.get_name(pid),
-                parent=self)
-            meth = IndentationPreprocessor.get_func(pid)
-            pwidget.setToolTip(meth.__doc__)
+            pwidget = WidgetPreprocessItem(identifier=pid, parent=self)
             self._map_widgets_to_preproc_ids[pwidget] = pid
             self.layout_preproc_area.addWidget(pwidget)
             pwidget.stateChanged.connect(self.check_selection)
+            if pid == "correct_tip_offset":
+                idx = pwidget.comboBox.findData("scheme_2020")
+                pwidget.comboBox.setCurrentIndex(idx)
         spacer_item = QtWidgets.QSpacerItem(20, 0,
                                             QtWidgets.QSizePolicy.Minimum,
                                             QtWidgets.QSizePolicy.Expanding)
@@ -59,20 +60,28 @@ class TabPreprocess(QtWidgets.QWidget):
                     if req_stps and pid in req_stps:
                         dwid.setChecked(False)
 
-    def fit_apply_preprocessing(self, fdist):
-        """Apply the preprocessing steps if required"""
+    def current_preprocessing(self):
         # Note: Preprocessing is cached once in `fdist`.
         # Thus calling this method a second time without any
         # change in the GUI is free.
         identifiers = []
+        options = {}
         for pwidget in self._map_widgets_to_preproc_ids:
             pid = self._map_widgets_to_preproc_ids[pwidget]
             if pwidget.isChecked():
                 identifiers.append(pid)
+                popts = pwidget.get_options()
+                if popts:
+                    options[pid] = popts
         # Make sure the order is correct
         identifiers = IndentationPreprocessor.autosort(identifiers)
+        return identifiers, options
+
+    def fit_apply_preprocessing(self, fdist):
+        """Apply the preprocessing steps if required"""
+        identifiers, options = self.current_preprocessing()
         # Perform preprocessing
-        fdist.apply_preprocessing(identifiers)
+        fdist.apply_preprocessing(identifiers, options=options)
 
     @QtCore.pyqtSlot()
     def on_preset_changed(self):
@@ -91,3 +100,16 @@ class TabPreprocess(QtWidgets.QWidget):
         for pwidget in self._map_widgets_to_preproc_ids:
             pid = self._map_widgets_to_preproc_ids[pwidget]
             pwidget.setChecked(pid in used_methods)
+
+    def set_preprocessing(self, preprocessing, options=None):
+        """Set preprocessing (mostly used for testing)"""
+        if options is None:
+            options = {}
+        for pwidget in self._map_widgets_to_preproc_ids:
+            pid = self._map_widgets_to_preproc_ids[pwidget]
+            pwidget.setChecked(pid in preprocessing)
+            if pid in options:
+                opts = options[pid]
+                key = sorted(opts.keys())[0]  # not future-proof
+                idx = pwidget.comboBox.findData(opts[key])
+                pwidget.setCurrentIndex(idx)

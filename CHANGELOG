@@ -1,7 +1,8 @@
-0.9.5
+0.10.0
+ - feat: allow to select point of contact method
  - enh: restructure preprocessing tab and avoid situations where
    preprocessing dependencies are not met
- - setup: bump nanite from 2.0.0 to 2.0.1 (improved preprocessing)
+ - setup: bump nanite from 2.0.0 to 2.1.0 (improved preprocessing)
 0.9.4
  - enh: only show exact sneddon model "sneddon_spher" in developer
    mode to avoid confusion
