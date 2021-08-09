@@ -172,6 +172,8 @@ def test_apply_and_fit_all_with_bad_data(qtbot, monkeypatch):
     main_window = pyjibe.head.PyJibe()
     main_window.load_data(files=files)
     war = main_window.subwindows[0].widget()
+    war.tab_preprocess.set_preprocessing(
+        ["compute_tip_position", "correct_force_offset", "correct_tip_offset"])
 
     # Hit "apply model and fit all"
     qtbot.mouseClick(war.btn_fitall, QtCore.Qt.LeftButton, delay=200)

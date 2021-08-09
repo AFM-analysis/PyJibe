@@ -60,10 +60,9 @@ def test_fit_all(qtbot):
 
 
 @pytest.mark.parametrize("method,contact_point", [
-    ["scheme_2020", 1805],
-    ["gradient_zero_crossing", 1902],
-    ["fit_constant_line", 1838],
-    ["deviation_from_baseline", 1805],
+    ["gradient_zero_crossing", 1895],
+    ["fit_constant_line", 1919],
+    ["deviation_from_baseline", 1908],
     ])
 def test_preprocessing_poc_estimation(method, contact_point):
     main_window = pyjibe.head.PyJibe()

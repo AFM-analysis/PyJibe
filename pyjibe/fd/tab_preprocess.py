@@ -24,7 +24,7 @@ class TabPreprocess(QtWidgets.QWidget):
             self.layout_preproc_area.addWidget(pwidget)
             pwidget.stateChanged.connect(self.check_selection)
             if pid == "correct_tip_offset":
-                idx = pwidget.comboBox.findData("scheme_2020")
+                idx = pwidget.comboBox.findData("deviation_from_baseline")
                 pwidget.comboBox.setCurrentIndex(idx)
         spacer_item = QtWidgets.QSpacerItem(20, 0,
                                             QtWidgets.QSizePolicy.Minimum,
