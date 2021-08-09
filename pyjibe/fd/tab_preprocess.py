@@ -112,4 +112,4 @@ class TabPreprocess(QtWidgets.QWidget):
                 opts = options[pid]
                 key = sorted(opts.keys())[0]  # not future-proof
                 idx = pwidget.comboBox.findData(opts[key])
-                pwidget.setCurrentIndex(idx)
+                pwidget.comboBox.setCurrentIndex(idx)

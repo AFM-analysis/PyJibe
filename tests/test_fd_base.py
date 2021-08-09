@@ -1,5 +1,6 @@
 """Test of data set functionalities"""
 import numpy as np
+import pytest
 
 import pyjibe.head
 
@@ -56,3 +57,26 @@ def test_fit_all(qtbot):
     a1 = war.data_set[0]
     a2 = war.data_set[1]
     assert a1.fit_properties == a2.fit_properties
+
+
+@pytest.mark.parametrize("method,contact_point", [
+    ["scheme_2020", 1805],
+    ["gradient_zero_crossing", 1902],
+    ["fit_constant_line", 1838],
+    ["deviation_from_baseline", 1805],
+    ])
+def test_preprocessing_poc_estimation(method, contact_point):
+    main_window = pyjibe.head.PyJibe()
+    main_window.load_data(files=make_directory_with_data(2))
+    war = main_window.subwindows[0].widget()
+    # clear data
+    war.cb_autosave.setChecked(0)
+    war.tabs.setCurrentIndex(0)
+    # perform simple filter
+    war.tab_preprocess.set_preprocessing(
+        preprocessing=["compute_tip_position", "correct_tip_offset"],
+        options={"correct_tip_offset": {"method": method}}
+    )
+    war.tabs.setCurrentIndex(1)
+    fd = war.data_set[0]
+    assert np.argmin(np.abs(fd["tip position"])) == contact_point
