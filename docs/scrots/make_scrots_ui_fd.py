@@ -54,24 +54,32 @@ war.tabs.setCurrentIndex(0)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_preproc.png")
 
+# fit
 war.tabs.setCurrentIndex(1)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_fit.png")
 
+# edelta
 war.tabs.setCurrentIndex(2)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_edelta.png")
 
+# info
 war.tabs.setCurrentIndex(4)
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_info.png")
 
+# qmap
+# Select all curves (so QMap is fully visible)
+war.sp_rating_thresh.setValue(0.0)
+war.btn_rating_filter.clicked.emit()
 war.tabs.setCurrentIndex(5)
 war.sp_rating_thresh.setValue(0)
 war.btn_rating_filter.clicked.emit()
 QApplication.processEvents()
 war.tabs.grab().save("_ui_fd_tab_qmap.png")
 
+# plot
 war.tabs.setCurrentIndex(3)
 QApplication.processEvents()
 war.tabs.setFixedSize(war.tabs.sizeHint().width(), 300)

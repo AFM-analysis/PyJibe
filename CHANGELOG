@@ -7,7 +7,7 @@
    preprocessing dependencies are not met (#15)
  - enh: visualize contact point estimation algorithms in
    preprocessing tab
- - setup: bump nanite from 2.0.0 to 3.1.0 (improved preprocessing)
+ - setup: bump nanite from 2.0.0 to 3.1.1 (improved preprocessing)
 0.9.4
  - enh: only show exact sneddon model "sneddon_spher" in developer
    mode to avoid confusion

@@ -55,17 +55,14 @@ Tab: Preprocess
     :scale: 65%
 
 Before starting to fit FD data, it is important to perform the correct
-steps. Usually, this includes computing the tip position and correcting
-for a force and tip position offset. The offset corrections are only
-necessary for visualization purposes - Force offset and contact point
-are usually free fitting parameters.
+preprocessing steps. Usually, this includes computing the tip position
+and correcting for a force and tip position offset.
 
-To define a new preprocessing pipeline, click on *Clear Preprocessing*
-at the top of the panel. You may either load predefined presets or
-compile your own preprocessing pipeline via drag&drop from the *Available*
-to the *Applied* list controls. When selecting a preprocessing item in
-on of the list controls, its description is shown in the text control
-at the center.
+The preprocessing pipeline is defined via the checkable options in this
+tab. If you hover over the options, a tool tip is displayed with an
+explanation. If your analysis pipeline strongly depends on a good
+estimate of the contact point, then you have multiple options which are
+described in detail in the :ref:`nanite docs<nanite:sec_fitting_preproc>`.
 
 
 .. _sec_ui_fd_tab_fit:
@@ -83,7 +80,7 @@ and the fitting range.
 
 Range:
     The fitting range can be set to absolute (relative to
-    the X axis after preprocessing or relative to the contact point. In the
+    the X axis after preprocessing) or relative to the contact point. In the
     latter case, the fit is repeated four times, updating the new contact
     point at each iteration.
     You have three option for setting the indentation depth (left part
