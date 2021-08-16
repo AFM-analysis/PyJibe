@@ -1,6 +1,6 @@
 import pkg_resources
 
-from nanite.preproc import IndentationPreprocessor
+from nanite import preproc
 from PyQt5 import uic, QtCore, QtWidgets
 
 from .widget_preprocess_item import WidgetPreprocessItem
@@ -15,7 +15,7 @@ class TabPreprocess(QtWidgets.QWidget):
 
         # Setup everything necessary for the preprocessing tab:
         # Get list of preprocessing methods
-        premem = IndentationPreprocessor.available()
+        premem = preproc.available()
 
         self._map_widgets_to_preproc_ids = {}
         for pid in premem:
@@ -75,7 +75,7 @@ class TabPreprocess(QtWidgets.QWidget):
             pid = self._map_widgets_to_preproc_ids[sender]
             if state:
                 # Enable all steps that this step here requires
-                req_stps = IndentationPreprocessor.get_steps_required(pid)
+                req_stps = preproc.get_steps_required(pid)
                 if req_stps:
                     for pwid in self._map_widgets_to_preproc_ids:
                         if self._map_widgets_to_preproc_ids[pwid] in req_stps:
@@ -84,7 +84,7 @@ class TabPreprocess(QtWidgets.QWidget):
                 # Disable all steps that depend on this one
                 for dwid in self._map_widgets_to_preproc_ids:
                     did = self._map_widgets_to_preproc_ids[dwid]
-                    req_stps = IndentationPreprocessor.get_steps_required(did)
+                    req_stps = preproc.get_steps_required(did)
                     if req_stps and pid in req_stps:
                         dwid.setChecked(False)
 
@@ -102,7 +102,7 @@ class TabPreprocess(QtWidgets.QWidget):
                 if popts:
                     options[pid] = popts
         # Make sure the order is correct
-        identifiers = IndentationPreprocessor.autosort(identifiers)
+        identifiers = preproc.autosort(identifiers)
         return identifiers, options
 
     @QtCore.pyqtSlot()

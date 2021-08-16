@@ -1,6 +1,6 @@
 import pkg_resources
 
-from nanite.preproc import IndentationPreprocessor
+from nanite import preproc
 from PyQt5 import QtCore, QtWidgets, uic
 
 
@@ -17,13 +17,13 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         uic.loadUi(path_ui, self)
 
         # set label text
-        name = IndentationPreprocessor.get_name(identifier)
+        name = preproc.get_name(identifier)
         self.label.setText(name)
 
         self.identifier = identifier
 
         # set tooltip
-        meth = IndentationPreprocessor.get_func(identifier)
+        meth = preproc.get_func(identifier)
         self.setToolTip(meth.__doc__)
 
         # set options
@@ -47,7 +47,7 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         """Return preprocessing options"""
         popts = {}
         if self.comboBox.isEnabled() and not self.comboBox.isHidden():
-            meth = IndentationPreprocessor.get_func(self.identifier)
+            meth = preproc.get_func(self.identifier)
             if meth.options is not None:
                 for opt in meth.options:
                     if "choices" in opt:
