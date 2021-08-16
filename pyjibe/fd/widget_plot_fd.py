@@ -4,10 +4,10 @@ from PyQt5 import QtWidgets
 from .mpl_indent import MPLIndentation
 
 
-class WidgetFDist(QtWidgets.QWidget):
+class WidgetPlotFD(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         """Display force-indentation graph with navigation"""
-        super(WidgetFDist, self).__init__(*args, **kwargs)
+        super(WidgetPlotFD, self).__init__(*args, **kwargs)
 
         self.mplvl = QtWidgets.QVBoxLayout(self)
         # Setup the matplotlib interface for approach retract plotting
@@ -18,7 +18,7 @@ class WidgetFDist(QtWidgets.QWidget):
 
     @property
     def fd(self):
-        return self.parent().parent()
+        return self.parent().parent().parent()
 
     def mpl_curve_update(self, fdist):
         """Update the force-indentation curve"""

@@ -232,9 +232,8 @@ class UiForceDistance(QtWidgets.QWidget):
 
     def autosave(self, fdist):
         """Performs autosaving for all files"""
-        if (self.cb_autosave.checkState() == QtCore.Qt.Checked and
-            fdist.fit_properties and
-                fdist.fit_properties["success"]):
+        if (self.cb_autosave.checkState() == QtCore.Qt.Checked
+                and fdist.fit_properties.get("success", False)):
             # Determine the directory of the current curve
             adir = os.path.dirname(fdist.path)
             model_key = fdist.fit_properties["model_key"]
@@ -248,7 +247,7 @@ class UiForceDistance(QtWidgets.QWidget):
                     # fdist was fitted
                     ar.fit_properties and
                     # fit was successful
-                    ar.fit_properties["success"] and
+                    ar.fit_properties.get("success", False) and
                     # fdist was fitted with same model
                     ar.fit_properties["model_key"] == model_key and
                     # user selected curve for export ("use")
@@ -389,13 +388,13 @@ class UiForceDistance(QtWidgets.QWidget):
         fdist = self.current_curve
         idx = self.current_index
         # perform preprocessing
-        self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_preprocess.apply_preprocessing(fdist)
         # update user interface with initial parameters
         self.tab_fit.fit_update_parameters(fdist)
         # fit data
         self.tab_fit.fit_approach_retract(fdist)
         # set plot data (time consuming)
-        self.widget_fdist.mpl_curve_update(fdist)
+        self.widget_plot_fd.mpl_curve_update(fdist)
         # update info
         self.info_update(fdist)
         # Display new rating
@@ -496,7 +495,7 @@ class UiForceDistance(QtWidgets.QWidget):
             if bar.wasCanceled():
                 break
             try:
-                self.tab_preprocess.fit_apply_preprocessing(fdist)
+                self.tab_preprocess.apply_preprocessing(fdist)
                 self.tab_fit.fit_approach_retract(fdist, update_ui=False)
                 self.curve_list_update(item=ii)
             except BaseException as e:
@@ -522,27 +521,27 @@ class UiForceDistance(QtWidgets.QWidget):
         # have to `fit_update_parameters` in order to display
         # potential new parameter names of the new model.
         fdist = self.current_curve
-        self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_preprocess.apply_preprocessing(fdist)
         self.tab_fit.fit_update_parameters(fdist)
         self.tab_fit.fit_approach_retract(fdist)
-        self.widget_fdist.mpl_curve_update(fdist)
+        self.widget_plot_fd.mpl_curve_update(fdist)
         self.curve_list_update()
         self.tab_qmap.mpl_qmap_update()
 
     @QtCore.pyqtSlot()
     def on_mpl_curve_update(self):
         fdist = self.current_curve
-        self.widget_fdist.mpl_curve_update(fdist)
+        self.widget_plot_fd.mpl_curve_update(fdist)
 
     @QtCore.pyqtSlot()
     def on_params_init(self):
         """Called when the initial parameters are changed"""
         fdist = self.current_curve
         idx = self.current_index
-        self.tab_preprocess.fit_apply_preprocessing(fdist)
+        self.tab_preprocess.apply_preprocessing(fdist)
         self.tab_fit.anc_update_parameters(fdist)
         self.tab_fit.fit_approach_retract(fdist)
-        self.widget_fdist.mpl_curve_update(fdist)
+        self.widget_plot_fd.mpl_curve_update(fdist)
         self.curve_list_update(item=idx)
         self.tab_qmap.mpl_qmap_update()
 
@@ -577,9 +576,20 @@ class UiForceDistance(QtWidgets.QWidget):
             prevtab = self.tabs.currentWidget()
 
         curtab = self.tabs.currentWidget()
-        if curtab == self.tab_fit and prevtab == self.tab_preprocess:
+
+        # stacked plot widget
+        if curtab == self.tab_preprocess:
+            self.stackedWidget.setCurrentWidget(self.widget_plot_preproc)
+            self.tab_preprocess.apply_preprocessing(self.current_curve)
+        else:
+            self.stackedWidget.setCurrentWidget(self.widget_plot_fd)
+
+        # preprocessing probably changed; This means the plot has to
+        # be updated.
+        if curtab != self.tab_preprocess and prevtab == self.tab_preprocess:
             self.on_params_init()
-        elif curtab == self.tab_qmap:
+
+        if curtab == self.tab_qmap:
             # Redraw the current map
             self.tab_qmap.mpl_qmap_update()
         elif curtab == self.tab_edelta:

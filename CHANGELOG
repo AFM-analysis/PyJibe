@@ -2,10 +2,12 @@
  - BREAKING CHANGE: The default contact point estimation method
    changed. This means that your fitted contact points and any
    E(delta)-related results will change!
- - feat: allow to select point of contact method
+ - feat: allow to select point of contact method (#15)
  - enh: restructure preprocessing tab and avoid situations where
-   preprocessing dependencies are not met
- - setup: bump nanite from 2.0.0 to 3.0.0 (improved preprocessing)
+   preprocessing dependencies are not met (#15)
+ - enh: visualize contact point estimation algorithms in
+   preprocessing tab
+ - setup: bump nanite from 2.0.0 to 3.1.0 (improved preprocessing)
 0.9.4
  - enh: only show exact sneddon model "sneddon_spher" in developer
    mode to avoid confusion

@@ -73,6 +73,16 @@ class NavigationToolbarEDelta(NavigationToolbarCustom):
         super(NavigationToolbarEDelta, self).__init__(*args, **kwargs)
 
 
+class NavigationToolbarPreproc(NavigationToolbarCustom):
+    def __init__(self, *args, **kwargs):
+        self.toolitems = (
+            ('Home', 'Reset plot', 'home', 'home'),
+            ('Pan', 'Pan tool', 'move', 'pan'),
+            ('Zoom', 'Zoom tool', 'zoom_to_rect', 'zoom'),
+        )
+        super(NavigationToolbarPreproc, self).__init__(*args, **kwargs)
+
+
 class NavigationToolbarQMap(NavigationToolbarCustom):
     def __init__(self, *args, **kwargs):
         self.toolitems = (

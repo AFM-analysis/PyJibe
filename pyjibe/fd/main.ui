@@ -60,10 +60,9 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="WidgetFDist" name="widget_fdist" native="true">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <widget class="WidgetPlotFD" name="widget_plot_fd"/>
+        <widget class="WidgetPlotPreproc" name="widget_plot_preproc"/>
        </widget>
       </item>
       <item>
@@ -563,15 +562,21 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>WidgetFDist</class>
-   <extends>QWidget</extends>
-   <header>pyjibe.fd.widget_fdist</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TabInfo</class>
    <extends>QWidget</extends>
    <header>pyjibe.fd.tab_info</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WidgetPlotFD</class>
+   <extends>QWidget</extends>
+   <header>pyjibe.fd.widget_plot_fd</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WidgetPlotPreproc</class>
+   <extends>QWidget</extends>
+   <header>pyjibe.fd.widget_plot_preproc</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

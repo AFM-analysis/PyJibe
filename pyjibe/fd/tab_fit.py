@@ -215,7 +215,7 @@ class TabFit(QtWidgets.QWidget):
                         optimal_fit_num_samples=optimal_fit_num_samples,
                         )
         ftab = self.table_parameters_fitted
-        if fdist.fit_properties["success"]:
+        if fdist.fit_properties.get("success", False):
             # Perform automatic saving of results
             self.fd.autosave(fdist)
             # Display automatically detected optimal indentation depth

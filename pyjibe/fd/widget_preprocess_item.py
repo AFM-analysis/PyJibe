@@ -5,8 +5,8 @@ from PyQt5 import QtCore, QtWidgets, uic
 
 
 class WidgetPreprocessItem(QtWidgets.QWidget):
-    #: Pass-through for stateChanged of self.CheckBox
-    stateChanged = QtCore.pyqtSignal(int)
+    #: Triggered whenever the state changes
+    preproc_step_changed = QtCore.pyqtSignal()
 
     def __init__(self, identifier, *args, **kwargs):
         """Special widget for preprocessing options"""
@@ -40,9 +40,8 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         self.update_enabled()
 
         # signal: passthrough stateChanged
-        self.checkBox.stateChanged.connect(self.stateChanged)
-        # signal: enable/disable widget area
-        self.checkBox.stateChanged.connect(self.update_enabled)
+        self.checkBox.stateChanged.connect(self.on_state_changed)
+        self.comboBox.currentIndexChanged.connect(self.on_state_changed)
 
     def get_options(self):
         """Return preprocessing options"""
@@ -57,6 +56,11 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
 
     def isChecked(self):
         return self.checkBox.isChecked()
+
+    @QtCore.pyqtSlot()
+    def on_state_changed(self):
+        self.update_enabled()
+        self.preproc_step_changed.emit()
 
     def setChecked(self, *args, **kwargs):
         self.checkBox.setChecked(*args, **kwargs)
