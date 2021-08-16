@@ -122,6 +122,6 @@ a simple Python script, we can visualize the Young's modulus of the two gels:
 
     Comparison of the hydrogels. Note that the X axes are scaled differently.
 
-The compliant hydrogel has a Young's modulus of 1090 ± 10 Pa (mean ± SD) and
-the stiff hydrogel has a Young's modulus of 27680 ± 270 Pa. These values agree
+The compliant hydrogel has a Young's modulus of 1090 ± 12 Pa (mean ± SD) and
+the stiff hydrogel has a Young's modulus of 27676 ± 270 Pa. These values agree
 well with the values we expected initially.
