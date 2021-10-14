@@ -89,6 +89,7 @@ default_scales = {"deg": "",
                   "m/s": "µ",
                   "m/V": "n",
                   "N": "n",
+                  "N/m": "m",
                   "Pa": "",
                   "Pa·s": "",
                   }
