@@ -13,6 +13,7 @@ from PyQt5 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
 from ..head.custom_widgets import show_wait_cursor
+from .. import units
 
 from . import dlg_export_vals
 from . import export
@@ -124,23 +125,25 @@ class UiForceDistance(QtWidgets.QWidget):
                 # check if the keys are in user_metadata
                 if key not in user_metadata:
                     # show dialog asking for missing metadata
-                    name, unit, _ = afmformats.meta.DEF_ALL[key]
+                    name, si_unit, _ = afmformats.meta.DEF_ALL[key]
+                    hr_unit = units.hrunit(name, si_unit)
+                    scale_unit = units.hrscale(name, si_unit)
                     value, ok_pressed = QtWidgets.QInputDialog.getDouble(
                         self,
                         f"Missing metadata '{name}'",
                         f"Please specify the {name}"
-                        + (f" [{unit}]" if unit else "")
+                        + (f" [{hr_unit}]" if hr_unit else "")
                         + ":",
                         .0,
                         .0,
                         99999,
-                        12,
+                        6,
                         )
                     if not ok_pressed:
                         # if user pressed cancel, raise AbortError
                         raise AbortProgress(f"User did not enter {key}!")
                     # add new keys in user_metadata
-                    user_metadata[key] = value
+                    user_metadata[key] = value / scale_unit
                 # populate custom_metadata with the user_metadata
                 custom_metadata[key] = user_metadata[key]
             # now loading the data should work

@@ -1,5 +1,6 @@
 0.10.1
- - enh: Change default unit for spring constant to mN/m
+ - enh: use human-readable units in missing-metadata entry dialogs
+ - enh: change default unit for spring constant to mN/m
  - ref: IndentationPreprocessor is deprecated in nanite
 0.10.0
  - BREAKING CHANGE: The default contact point estimation method
