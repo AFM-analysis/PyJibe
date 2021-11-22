@@ -1,8 +1,13 @@
+0.11.0
+ - feat: allow custom fit methods with custom keyword arguments
+   in developer mode (#18)
+ - setup: bump nanite from 3.1.3 to 3.2.0 (new POC estimation
+   methods: Frechet distance and linear+polynomial fit)
 0.10.1
  - enh: use human-readable units in missing-metadata entry dialogs
  - enh: change default unit for spring constant to mN/m
  - ref: IndentationPreprocessor is deprecated in nanite
- - setup: bump nanite to version 1.3.1 (ask for missing spring
+ - setup: bump nanite to version 3.1.3 (ask for missing spring
    constant for tip position computation)
 0.10.0
  - BREAKING CHANGE: The default contact point estimation method

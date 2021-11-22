@@ -19,10 +19,11 @@ class TabFit(QtWidgets.QWidget):
         # Model selection
         models_av = list(nmodel.models_available.keys())
         # Exact spherical model is only available in developer mode
-        settings = QtCore.QSettings()
-        settings.setIniCodec("utf-8")
-        if not bool(int(settings.value("developer mode", "0"))):
+        self.settings = QtCore.QSettings()
+        self.settings.setIniCodec("utf-8")
+        if not bool(int(self.settings.value("developer mode", "0"))):
             models_av.remove("sneddon_spher")
+            self.widget_method.hide()
         models_av.sort(key=lambda x: nmodel.models_available[x].model_name)
         for ii, key in enumerate(models_av):
             model = nmodel.models_available[key]
@@ -54,6 +55,7 @@ class TabFit(QtWidgets.QWidget):
         self.cb_weight_cp.stateChanged.connect(self.on_params_init)
         self.sp_weight_cp_um.valueChanged.connect(self.on_update_weights)
         self.sp_weight_cp_perc.valueChanged.connect(self.on_update_weights)
+        self.toolButton_method_apply.clicked.connect(self.on_params_init)
 
     @property
     def current_curve(self):
@@ -202,6 +204,22 @@ class TabFit(QtWidgets.QWidget):
         optimal_fit_num_samples = tab_edelta.sp_delta_num_samples.value()
         # fit parameters
         params = self.fit_parameters()
+        # fit method (if in developer mode)
+        kwargs = {}
+        if bool(int(self.settings.value("developer mode", "0"))):
+            # We are in developer mode.
+            # Populate the user-defined keyword arguments. Note that
+            # these are not passed as "options", but directly to the
+            # minimizer method.
+            # See https://github.com/lmfit/lmfit-py/discussions/766
+            method_kws = {}
+            for item in self.lineEdit_method.text().strip().split():
+                key, val = item.split("=", 1)
+                method_kws[key] = float(val)
+            kwargs = {
+                "method": self.comboBox_method.currentText(),
+                "method_kws": method_kws,
+                }
         # Perform fitting
         fdist.fit_model(model_key=model_key,
                         params_initial=params,
@@ -213,6 +231,7 @@ class TabFit(QtWidgets.QWidget):
                         segment=segment,
                         optimal_fit_edelta=optimal_fit_edelta,
                         optimal_fit_num_samples=optimal_fit_num_samples,
+                        **kwargs
                         )
         ftab = self.table_parameters_fitted
         if fdist.fit_properties.get("success", False):

@@ -166,6 +166,7 @@ class PyJibe(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot(bool)
     def on_developer_mode(self, checked):
+        current_value = bool(int(self.settings.value("developer mode", "0")))
         # remember in settings
         self.settings.setValue("developer mode", str(int(checked)))
         # set nanite
@@ -173,6 +174,14 @@ class PyJibe(QtWidgets.QMainWindow):
             nanite.read.DEFAULT_MODALITY = None
         else:
             nanite.read.DEFAULT_MODALITY = "force-distance"
+        if current_value != checked:
+            # tell the user that changes are not affecting current analyses
+            QtWidgets.QMessageBox.information(
+                self,
+                "You may need to restart PyJibe",
+                "Changing developer mode may not affect current analysis "
+                + "windows. Please restart PyJibe to make sure it is applied "
+                + "correctly.")
 
     @QtCore.pyqtSlot()
     def on_documentation(self):
