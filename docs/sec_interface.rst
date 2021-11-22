@@ -258,3 +258,5 @@ Under *Edit | Developer mode*, you can enable developer mode which will:
   (it is excluded by default, because it is virtually identical to the
   :ref:`sneddon_spher_approx <nanite:sec_ref_model_sneddon_spher_approx>`
   model which is much faster).
+- Enable you to manually set the minimizer method and the corresponding
+  keyword arguments applied by lmfit
