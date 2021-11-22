@@ -3,7 +3,7 @@
    in developer mode (#18)
  - fix: correctly handle dependencies in preprocessing tab
  - fix: set POC method when loading recommended preprocessing (#17)
- - setup: bump nanite from 3.1.3 to 3.2.0 (new POC estimation
+ - setup: bump nanite from 3.1.3 to 3.2.1 (new POC estimation
    methods: Frechet distance and linear+polynomial fit)
 0.10.1
  - enh: use human-readable units in missing-metadata entry dialogs
