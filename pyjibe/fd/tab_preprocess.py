@@ -78,15 +78,26 @@ class TabPreprocess(QtWidgets.QWidget):
                 req_stps = preproc.get_steps_required(pid)
                 if req_stps:
                     for pwid in self._map_widgets_to_preproc_ids:
-                        if self._map_widgets_to_preproc_ids[pwid] in req_stps:
+                        if (self._map_widgets_to_preproc_ids[pwid] in req_stps
+                                and not pwid.isChecked()):
+                            # Prevent every pwid from sending out signals!
+                            # Instead call `check_selection` every time.
+                            pwid.blockSignals(True)
                             pwid.setChecked(True)
+                            pwid.blockSignals(False)
+                            self.check_selection()
             else:
                 # Disable all steps that depend on this one
                 for dwid in self._map_widgets_to_preproc_ids:
                     did = self._map_widgets_to_preproc_ids[dwid]
                     req_stps = preproc.get_steps_required(did)
-                    if req_stps and pid in req_stps:
+                    if req_stps and pid in req_stps and dwid.isChecked():
+                        # Prevent every dwid from sending out signals!
+                        # Instead call `check_selection` every time.
+                        dwid.blockSignals(True)
                         dwid.setChecked(False)
+                        dwid.blockSignals(False)
+                        self.check_selection()
 
     def current_preprocessing(self):
         # Note: Preprocessing is cached once in `fdist`.
