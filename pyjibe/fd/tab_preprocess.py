@@ -22,9 +22,6 @@ class TabPreprocess(QtWidgets.QWidget):
             pwidget = WidgetPreprocessItem(identifier=pid, parent=self)
             self._map_widgets_to_preproc_ids[pwidget] = pid
             self.layout_preproc_area.addWidget(pwidget)
-            if pid == "correct_tip_offset":
-                idx = pwidget.comboBox.findData("deviation_from_baseline")
-                pwidget.comboBox.setCurrentIndex(idx)
             pwidget.preproc_step_changed.connect(self.on_preproc_step_changed)
         spacer_item = QtWidgets.QSpacerItem(20, 0,
                                             QtWidgets.QSizePolicy.Minimum,
@@ -33,6 +30,7 @@ class TabPreprocess(QtWidgets.QWidget):
 
         # Add recommended item (see `self.preproc_set_preset`)
         self.cb_preproc_presel.addItem("Recommended")
+        self.on_preset_changed()
         self.cb_preproc_presel.activated.connect(self.on_preset_changed)
         self.cb_preproc_presel.currentIndexChanged.connect(
             self.on_preset_changed)
@@ -122,11 +120,15 @@ class TabPreprocess(QtWidgets.QWidget):
         text = self.cb_preproc_presel.currentText()
         if text == "None":
             used_methods = []
+            method_options = {}
         elif text == "Recommended":
             used_methods = ["compute_tip_position",
                             "correct_force_offset",
                             "correct_tip_offset",
                             "correct_split_approach_retract"]
+            method_options = {
+                "correct_tip_offset": "deviation_from_baseline",
+            }
         else:
             raise ValueError(f"Unknown text '{text}'!")
 
@@ -134,6 +136,16 @@ class TabPreprocess(QtWidgets.QWidget):
             pwidget.blockSignals(True)
             pid = self._map_widgets_to_preproc_ids[pwidget]
             pwidget.setChecked(pid in used_methods)
+            if pid in method_options:
+                value = method_options[pid]
+                if isinstance(value, str):
+                    idx = pwidget.comboBox.findData(value)
+                    pwidget.comboBox.setCurrentIndex(idx)
+                elif pwidget.comboBox.isVisible():
+                    # be future-proof
+                    pwidget.comboBox.setCurrentIndex(0)
+                else:
+                    raise NotImplementedError("TODO")
             pwidget.blockSignals(False)
         self.apply_preprocessing()
 
