@@ -87,20 +87,20 @@ class TabFit(QtWidgets.QWidget):
                                                             cb_first=True,
                                                             read_only=True)
             row = 0
-            for ii, ak in enumerate(self.fit_model.parameter_anc_keys):
+            for ak in self.fit_model.parameter_anc_keys:
                 if ak not in anc_used:
                     continue
                 # Get the human readable name of the parameter
-                hrname = self.fit_model.parameter_anc_names[ii]
+                hrname = self.fit_model.get_parm_name(ak)
                 # Determine unit scale, e.g. 1e6 [sic] for µm
-                si_unit = self.fit_model.parameter_anc_units[ii]
+                si_unit = self.fit_model.get_parm_unit(ak)
                 # Determine unit scale, e.g. 1e6 [sic] for µm
                 scale = units.hrscale(hrname, si_unit=si_unit)
                 label = units.hrscname(hrname, si_unit=si_unit)
                 atab.verticalHeaderItem(row).setText(label)
                 if rows_changed:
                     atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
-                atab.item(row, 1).setText("{:.5g}".format(anc[ak]*scale))
+                atab.item(row, 1).setText("{:.5g}".format(anc[ak] * scale))
                 # updates initial parameters if "use" is checked
                 if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
                     # update initial parameters
@@ -219,7 +219,7 @@ class TabFit(QtWidgets.QWidget):
             kwargs = {
                 "method": self.comboBox_method.currentText(),
                 "method_kws": method_kws,
-                }
+            }
         # Perform fitting
         fdist.fit_model(model_key=model_key,
                         params_initial=params,
@@ -234,46 +234,43 @@ class TabFit(QtWidgets.QWidget):
                         **kwargs
                         )
         ftab = self.table_parameters_fitted
-        if fdist.fit_properties.get("success", False):
+        success = fdist.fit_properties.get("success", False)
+        if success:
             # Perform automatic saving of results
             self.fd.autosave(fdist)
             # Display automatically detected optimal indentation depth
             if optimal_fit_edelta:
                 # Set guessed indentation depth in GUI
                 val = fdist.fit_properties["optimal_fit_delta"]
-                self.sp_range_1.setValue(val/units.scales["µ"])
-            if update_ui:
-                # Display results in `self.table_parameters_fitted`
-                fitpar = fdist.fit_properties["params_fitted"]
-                # Display all varied parameters and expression parameters
-                # (expression parameters are discouraged, but supported)
-                fps = [p[1] for p in fitpar.items() if p[1].vary or p[1].expr]
-                self.assert_parameter_table_rows(ftab, len(fps),
-                                                 read_only=True)
-                for ii, p in enumerate(fps):
-                    # Get the human readable name of the parameter
-                    idp = self.fit_model.parameter_keys.index(p.name)
-                    hrname = self.fit_model.parameter_names[idp]
-                    # SI unit
-                    si_unit = self.fit_model.parameter_units[idp]
-                    # Determine unit scale, e.g. 1e6 [sic] for µm
-                    scale = units.hrscale(hrname, si_unit=si_unit)
-                    label = units.hrscname(hrname, si_unit=si_unit)
-                    ftab.verticalHeaderItem(ii).setText(label)
-                    ftab.item(ii, 0).setText("{:.5g}".format(p.value*scale))
-        else:
-            if update_ui:
-                inipar = fdist.fit_properties["params_initial"]
-                fps = [p[1] for p in inipar.items() if p[1].vary]
-                self.assert_parameter_table_rows(ftab, len(fps),
-                                                 read_only=True)
-                for ii, p in enumerate(fps):
-                    # Get the human readable name of the parameter
-                    idp = self.fit_model.parameter_keys.index(p.name)
-                    hrname = self.fit_model.parameter_names[idp]
-                    si_unit = self.fit_model.parameter_units[idp]
-                    label = units.hrscname(hrname, si_unit=si_unit)
-                    ftab.verticalHeaderItem(ii).setText(label)
+                self.sp_range_1.setValue(val / units.scales["µ"])
+
+        if update_ui:
+            # Display results in `self.table_parameters_fitted`
+            if success:
+                # use fit parameters
+                showpar = fdist.fit_properties["params_fitted"]
+            else:
+                # use initial parameters
+                showpar = fdist.fit_properties["params_initial"]
+            # Display all varied parameters and expression parameters
+            # (expression parameters are discouraged, but supported)
+            fps = [p[1] for p in showpar.items()
+                   if (p[1].vary or p[1].expr)
+                   and not p[1].name.startswith("_")]
+            self.assert_parameter_table_rows(ftab, len(fps),
+                                             read_only=True)
+            for ii, p in enumerate(fps):
+                # Get the human readable name of the parameter
+                hrname = self.fit_model.get_parm_name(p.name)
+                # SI unit
+                si_unit = self.fit_model.get_parm_unit(p.name)
+                # Determine unit scale, e.g. 1e6 [sic] for µm
+                scale = units.hrscale(hrname, si_unit=si_unit)
+                label = units.hrscname(hrname, si_unit=si_unit)
+                ftab.verticalHeaderItem(ii).setText(label)
+                if success:
+                    ftab.item(ii, 0).setText("{:.5g}".format(p.value * scale))
+                else:
                     ftab.item(ii, 0).setText("nan")
 
     def fit_parameters(self):
@@ -313,9 +310,9 @@ class TabFit(QtWidgets.QWidget):
                             p.vary = True
                         else:
                             p.vary = False
-                        p.set(float(itab.item(rr, 1).text())/scale)
-                        p.min = float(itab.item(rr, 2).text())/scale
-                        p.max = float(itab.item(rr, 3).text())/scale
+                        p.set(float(itab.item(rr, 1).text()) / scale)
+                        p.min = float(itab.item(rr, 2).text()) / scale
+                        p.max = float(itab.item(rr, 3).text()) / scale
                         break
         return params
 
@@ -344,14 +341,18 @@ class TabFit(QtWidgets.QWidget):
         itab.setColumnWidth(3, 70)
         itab.blockSignals(True)
 
-        self.assert_parameter_table_rows(itab, len(params), cb_first=True)
         params.update_constraints()  # in case we have expressions
-        for ii, key in enumerate(list(params.keys())):
+        param_names = list(params.keys())
+        # Remove hidden parameters from the list. These are parameters that
+        # are important for the fit, but that users are not supposed to modify.
+        param_names = [p for p in param_names if not p.startswith("_")]
+        self.assert_parameter_table_rows(itab, len(param_names), cb_first=True)
+        for ii, key in enumerate(param_names):
             p = params[key]
             # Get the human readable name of the parameter
-            hrname = self.fit_model.parameter_names[ii]
+            hrname = self.fit_model.get_parm_name(key)
             # SI unit
-            si_unit = self.fit_model.parameter_units[ii]
+            si_unit = self.fit_model.get_parm_unit(key)
             # Determine unit scale, e.g. 1e6 [sic] for µm
             scale = units.hrscale(hrname, si_unit=si_unit)
             label = units.hrscname(hrname, si_unit=si_unit)
@@ -361,10 +362,10 @@ class TabFit(QtWidgets.QWidget):
             else:
                 state = QtCore.Qt.Checked
             itab.item(ii, 0).setCheckState(state)
-            itab.item(ii, 1).setText("{:.5g}".format(p.value*scale))
-            itab.item(ii, 2).setText(str(p.min*scale))
-            itab.item(ii, 3).setText(str(p.max*scale))
-            # grey out expression parameters
+            itab.item(ii, 1).setText("{:.5g}".format(p.value * scale))
+            itab.item(ii, 2).setText(str(p.min * scale))
+            itab.item(ii, 3).setText(str(p.max * scale))
+            # grey out/disable expression parameters
             if p.expr:
                 for jj in range(4):
                     item = itab.item(ii, jj)
@@ -508,13 +509,13 @@ class TabFit(QtWidgets.QWidget):
                     # set um value
                     perc = self.sp_weight_cp_perc.value()
                     self.sp_weight_cp_um.blockSignals(True)
-                    self.sp_weight_cp_um.setValue(radius*perc/100)
+                    self.sp_weight_cp_um.setValue(radius * perc / 100)
                     self.sp_weight_cp_um.blockSignals(False)
                 else:
                     # set percent value
                     val = self.sp_weight_cp_um.value()
                     self.sp_weight_cp_perc.blockSignals(True)
-                    self.sp_weight_cp_perc.setValue(val/radius*100)
+                    self.sp_weight_cp_perc.setValue(val / radius * 100)
                     self.sp_weight_cp_perc.blockSignals(False)
                 break
         else:
