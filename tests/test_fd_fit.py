@@ -10,31 +10,15 @@ from PyQt5 import QtCore, QtWidgets
 
 import pyjibe.head
 
-from helpers import make_directory_with_data
+from helpers import MockModelModule, make_directory_with_data
 
 
 data_path = pathlib.Path(__file__).parent / "data"
 
 
-class MockModel:
-    def __init__(self, model_key, **kwargs):
-        # rebase on hertz model
-        md = nmodel.models_available["hertz_para"]
-        for key in dir(md):
-            setattr(self, key, getattr(md, key))
-        for kw in kwargs:
-            setattr(self, kw, kwargs[kw])
-        self.model_key = model_key
-
-    def __enter__(self):
-        nmodel.register_model(self, self.__repr__())
-
-    def __exit__(self, a, b, c):
-        nmodel.models_available.pop(self.model_key)
-
 
 def test_ancillary_update_init(qtbot):
-    with MockModel(
+    with MockModelModule(
         compute_ancillaries=lambda x: {
             # take initial fit parameter of E
             "E": x.get_initial_fit_parameters(
@@ -77,7 +61,7 @@ def test_ancillary_update_init(qtbot):
 
 
 def test_ancillary_update_nan(qtbot):
-    with MockModel(
+    with MockModelModule(
         compute_ancillaries=lambda x: {"E": np.nan},
         parameter_anc_keys=["E"],
         parameter_anc_names=["ancillary E guess"],
@@ -105,7 +89,7 @@ def test_ancillary_update_nan(qtbot):
 
 
 def test_ancillary_update_preproc_change(qtbot):
-    with MockModel(
+    with MockModelModule(
         compute_ancillaries=lambda x: {
             # i.e. model works only if there are multiple preproc steps
             "E": np.nan if len(x.preprocessing) == 1 else 2345},
