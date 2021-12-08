@@ -16,7 +16,6 @@ from helpers import MockModelModule, make_directory_with_data
 data_path = pathlib.Path(__file__).parent / "data"
 
 
-
 def test_ancillary_update_init(qtbot):
     with MockModelModule(
         compute_ancillaries=lambda x: {
