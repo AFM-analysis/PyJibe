@@ -1,3 +1,5 @@
+0.11.2
+ - maintenance release
 0.11.1
  - fix: check for identical label when updating parameters
    (previously, a parameter that starts with the label of another
