@@ -303,9 +303,10 @@ class TabFit(QtWidgets.QWidget):
                 hrname = model.parameter_names[ii]
                 si_unit = model.parameter_units[ii]
                 scale = units.hrscale(hrname, si_unit=si_unit)
+                label = units.hrscname(hrname, si_unit=si_unit)
                 for rr in range(itab.rowCount()):
                     # search for a row matching the parameter `p`
-                    if itab.verticalHeaderItem(rr).text().startswith(hrname):
+                    if itab.verticalHeaderItem(rr).text() == label:
                         # update parameter `p`
                         state = itab.item(rr, 0).checkState()
                         if state == QtCore.Qt.Unchecked:
@@ -322,6 +323,7 @@ class TabFit(QtWidgets.QWidget):
         """Update the ancillary and initial parameters in the UI"""
         dev_mode = bool(int(self.settings.value("developer mode", "0")))
         model_key = self.fit_model.model_key
+
         # set the model
         # - resets params_initial if model changed
         # - important for computing ancillary parameters

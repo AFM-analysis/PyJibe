@@ -1,4 +1,7 @@
 0.11.1
+ - fix: check for identical label when updating parameters
+   (previously, a parameter that starts with the label of another
+   parameter got assigned the wrong boundaries)
  - enh: allow to hide model parameters via key names (#20)
  - enh: show hidden parameters in developer mode
  - ref: code-cleanup and simplification using latest nanite version
