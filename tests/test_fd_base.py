@@ -2,9 +2,13 @@
 import numpy as np
 import pytest
 
+import lmfit
+from nanite.model import model_hertz_paraboloidal
+
+import nanite.model.residuals as nres
 import pyjibe.head
 
-from helpers import make_directory_with_data
+from helpers import MockModelModule, make_directory_with_data
 
 
 def test_simple(qtbot):
@@ -57,6 +61,90 @@ def test_fit_all(qtbot):
     a1 = war.data_set[0]
     a2 = war.data_set[1]
     assert a1.fit_properties == a2.fit_properties
+
+
+def test_hidden_parameters(qtbot):
+    def get_parameter_defaults():
+        params = lmfit.Parameters()
+        params.add("E", value=3e3, min=0)
+        params.add("R", value=10e-6, min=0, vary=False)
+        params.add("_nu", value=.5, min=0, max=0.5, vary=False)
+        params.add("contact_point", value=0)
+        params.add("baseline", value=0)
+        return params
+
+    def model_func(delta, E, R, _nu, contact_point=0, baseline=0):
+        return model_hertz_paraboloidal.hertz_paraboloidal(
+            delta=delta,
+            E=E,
+            R=R,
+            nu=_nu,
+            contact_point=contact_point,
+            baseline=baseline)
+    with MockModelModule(
+            model_key="petperpan",
+            parameter_keys=["E", "R", "_nu", "contact_point", "baseline"],
+            model_func=model_func,
+            model=nres.get_default_modeling_wrapper(model_func),
+            residual=nres.get_default_residuals_wrapper(model_func),
+            get_parameter_defaults=get_parameter_defaults) as mod:
+        main_window = pyjibe.head.PyJibe()
+        # disable developer mode
+        main_window.settings.setValue("developer mode", 0)
+        main_window.load_data(files=make_directory_with_data(2))
+        war = main_window.subwindows[0].widget()
+        # clear data
+        war.cb_autosave.setChecked(0)
+        # perform simple filter
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+        # set mock model
+        idx = war.tab_fit.cb_model.findData(mod.model_key)
+        war.tab_fit.cb_model.setCurrentIndex(idx)
+        # Check visibility of Poisson's ratio
+        itab = war.tab_fit.table_parameters_initial
+        assert itab.rowCount() == 4
+
+
+def test_hidden_parameters_control_in_dev_mode(qtbot):
+    def get_parameter_defaults():
+        params = lmfit.Parameters()
+        params.add("E", value=3e3, min=0)
+        params.add("R", value=10e-6, min=0, vary=False)
+        params.add("_nu", value=.5, min=0, max=0.5, vary=False)
+        params.add("contact_point", value=0)
+        params.add("baseline", value=0)
+        return params
+
+    def model_func(delta, E, R, _nu, contact_point=0, baseline=0):
+        return model_hertz_paraboloidal.hertz_paraboloidal(
+            delta=delta,
+            E=E,
+            R=R,
+            nu=_nu,
+            contact_point=contact_point,
+            baseline=baseline)
+    with MockModelModule(
+            model_key="petperpan",
+            parameter_keys=["E", "R", "_nu", "contact_point", "baseline"],
+            model_func=model_func,
+            model=nres.get_default_modeling_wrapper(model_func),
+            residual=nres.get_default_residuals_wrapper(model_func),
+            get_parameter_defaults=get_parameter_defaults) as mod:
+        main_window = pyjibe.head.PyJibe()
+        # disable developer mode
+        main_window.settings.setValue("developer mode", 1)
+        main_window.load_data(files=make_directory_with_data(2))
+        war = main_window.subwindows[0].widget()
+        # clear data
+        war.cb_autosave.setChecked(0)
+        # perform simple filter
+        war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+        # set mock model
+        idx = war.tab_fit.cb_model.findData(mod.model_key)
+        war.tab_fit.cb_model.setCurrentIndex(idx)
+        # Check visibility of Poisson's ratio
+        itab = war.tab_fit.table_parameters_initial
+        assert itab.rowCount() == 5
 
 
 @pytest.mark.parametrize("method,contact_point", [

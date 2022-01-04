@@ -16,7 +16,9 @@ class MockModelModule:
         # rebase on hertz model
         md = nanite.model.models_available["hertz_para"].module
         for akey in dir(md):
-            setattr(self, akey, getattr(md, akey))
+            if akey not in kwargs and not akey.startswith("__"):
+                print("KEYS", akey)
+                setattr(self, akey, getattr(md, akey))
         for kw in kwargs:
             setattr(self, kw, kwargs[kw])
         self.model_key = model_key

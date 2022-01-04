@@ -352,7 +352,7 @@ class TabFit(QtWidgets.QWidget):
         # are important for the fit, but that users are not supposed to modify.
         # Do not remove hidden parameters if in dev mode.
         if not dev_mode:
-            par_names = [p for p in par_names if not p.name.startswith("_")]
+            par_names = [p for p in par_names if not p.startswith("_")]
         self.assert_parameter_table_rows(itab, len(par_names), cb_first=True)
         for ii, key in enumerate(par_names):
             p = params[key]
