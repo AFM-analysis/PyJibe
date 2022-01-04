@@ -168,6 +168,7 @@ class TabFit(QtWidgets.QWidget):
             i.e. displaying the results in
             `self.table_parameters_fitted`.
         """
+        dev_mode = bool(int(self.settings.value("developer mode", "0")))
         # segment
         segment = self.cb_segment.currentText().lower()
         # x axis
@@ -206,7 +207,7 @@ class TabFit(QtWidgets.QWidget):
         params = self.fit_parameters()
         # fit method (if in developer mode)
         kwargs = {}
-        if bool(int(self.settings.value("developer mode", "0"))):
+        if dev_mode:
             # We are in developer mode.
             # Populate the user-defined keyword arguments. Note that
             # these are not passed as "options", but directly to the
@@ -245,22 +246,23 @@ class TabFit(QtWidgets.QWidget):
                 self.sp_range_1.setValue(val / units.scales["µ"])
 
         if update_ui:
-            # Display results in `self.table_parameters_fitted`
+            # Display fit results in `self.table_parameters_fitted`
             if success:
-                # use fit parameters
+                # use fit parameters only
                 showpar = fdist.fit_properties["params_fitted"]
             else:
                 # use initial parameters
                 showpar = fdist.fit_properties["params_initial"]
             # Display all varied parameters and expression parameters
-            # (expression parameters are discouraged, but supported)
-            fps = [p[1] for p in showpar.items()
-                   if (p[1].vary or p[1].expr)
-                   and not p[1].name.startswith("_")]
-            self.assert_parameter_table_rows(ftab, len(fps),
+            # (expression parameters are discouraged, but supported).
+            disp_pars = [p for p in showpar.values() if p.vary or p.expr]
+            # Show hidden parameters only in dev mode
+            if not dev_mode:
+                disp_pars = [p for p in disp_pars if not p.startswith("_")]
+            self.assert_parameter_table_rows(ftab, len(disp_pars),
                                              read_only=True)
-            for ii, p in enumerate(fps):
-                # Get the human readable name of the parameter
+            for ii, p in enumerate(disp_pars):
+                # Get the human-readable name of the parameter
                 hrname = self.fit_model.get_parm_name(p.name)
                 # SI unit
                 si_unit = self.fit_model.get_parm_unit(p.name)
@@ -318,6 +320,7 @@ class TabFit(QtWidgets.QWidget):
 
     def fit_update_parameters(self, fdist):
         """Update the ancillary and initial parameters in the UI"""
+        dev_mode = bool(int(self.settings.value("developer mode", "0")))
         model_key = self.fit_model.model_key
         # set the model
         # - resets params_initial if model changed
@@ -345,7 +348,9 @@ class TabFit(QtWidgets.QWidget):
         param_names = list(params.keys())
         # Remove hidden parameters from the list. These are parameters that
         # are important for the fit, but that users are not supposed to modify.
-        param_names = [p for p in param_names if not p.startswith("_")]
+        # Do not remove hidden parameters if in dev mode.
+        if not dev_mode:
+            param_names = [p for p in param_names if not p.startswith("_")]
         self.assert_parameter_table_rows(itab, len(param_names), cb_first=True)
         for ii, key in enumerate(param_names):
             p = params[key]

@@ -1,5 +1,6 @@
 0.11.1
  - enh: allow to hide model parameters via key names (#20)
+ - enh: show hidden parameters in developer mode
  - ref: code-cleanup and simplification using latest nanite version
  - setup: bump nanite from 3.2.1 to 3.3.0
 0.11.0
