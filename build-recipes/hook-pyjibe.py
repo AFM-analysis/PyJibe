@@ -18,4 +18,5 @@ datas += collect_data_files("pyjibe", subdir="head")
 
 hiddenimports = ["mpl_toolkits",
                  "mpl_toolkits.axes_grid1",
+                 "numpy.distutils",  # Python 3.8 and macos-latest GHA
                  ]
