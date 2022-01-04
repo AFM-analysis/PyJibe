@@ -255,13 +255,13 @@ class TabFit(QtWidgets.QWidget):
                 showpar = fdist.fit_properties["params_initial"]
             # Display all varied parameters and expression parameters
             # (expression parameters are discouraged, but supported).
-            disp_pars = [p for p in showpar.values() if p.vary or p.expr]
+            dispars = [p for p in showpar.values() if p.vary or p.expr]
             # Show hidden parameters only in dev mode
             if not dev_mode:
-                disp_pars = [p for p in disp_pars if not p.startswith("_")]
-            self.assert_parameter_table_rows(ftab, len(disp_pars),
+                dispars = [p for p in dispars if not p.name.startswith("_")]
+            self.assert_parameter_table_rows(ftab, len(dispars),
                                              read_only=True)
-            for ii, p in enumerate(disp_pars):
+            for ii, p in enumerate(dispars):
                 # Get the human-readable name of the parameter
                 hrname = self.fit_model.get_parm_name(p.name)
                 # SI unit
@@ -347,14 +347,14 @@ class TabFit(QtWidgets.QWidget):
         itab.blockSignals(True)
 
         params.update_constraints()  # in case we have expressions
-        param_names = list(params.keys())
+        par_names = list(params.keys())
         # Remove hidden parameters from the list. These are parameters that
         # are important for the fit, but that users are not supposed to modify.
         # Do not remove hidden parameters if in dev mode.
         if not dev_mode:
-            param_names = [p for p in param_names if not p.startswith("_")]
-        self.assert_parameter_table_rows(itab, len(param_names), cb_first=True)
-        for ii, key in enumerate(param_names):
+            par_names = [p for p in par_names if not p.name.startswith("_")]
+        self.assert_parameter_table_rows(itab, len(par_names), cb_first=True)
+        for ii, key in enumerate(par_names):
             p = params[key]
             # Get the human readable name of the parameter
             hrname = self.fit_model.get_parm_name(key)
