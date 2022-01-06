@@ -17,7 +17,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 @pytest.mark.xfail(os.getenv("APPVEYOR") in ["true", "True"],
                    reason="does not always run on Appveyor")
-@pytest.mark.xfail(os.getenv("TRAVIS") == "true",
+@pytest.mark.xfail(os.getenv("CI") == "true",
                    reason="does not always run on travisCI")
 @pytest.mark.skipif(not NET_AVAILABLE, reason="No network connection!")
 def test_update_basic():
