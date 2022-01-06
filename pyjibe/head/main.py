@@ -1,4 +1,5 @@
 # flake8: noqa: E402 (matplotlib.use has to be right after the import)
+import os.path as os_path
 import pathlib
 import pkg_resources
 import signal
@@ -10,6 +11,7 @@ import matplotlib
 matplotlib.use('QT5Agg')
 
 from PyQt5 import uic, QtCore, QtWidgets
+from PyQt5.QtCore import QStandardPaths
 
 import afmformats
 import h5py
@@ -23,6 +25,7 @@ import sklearn
 from . import custom_widgets
 from .dlg_tool_convert import ConvertDialog
 from . import preferences
+from ..extensions import ExtensionManager
 
 from .. import registry
 from .._version import version as __version__
@@ -77,6 +80,20 @@ class PyJibe(QtWidgets.QMainWindow):
         self.actionDocumentation.triggered.connect(self.on_documentation)
         self.actionSoftware.triggered.connect(self.on_software)
         self.actionAbout.triggered.connect(self.on_about)
+
+        #: Extensions
+        store_path = os_path.join(
+            QStandardPaths.writableLocation(
+                QStandardPaths.AppLocalDataLocation), "extensions")
+        try:
+            self.extensions = ExtensionManager(store_path)
+        except BaseException:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Extensions automatically disabled",
+                "Some extensions could not be loaded and were disabled:\n\n"
+                + traceback.format_exc(),
+                )
 
         self.subwindows = []
         self.subwindow_data = []
