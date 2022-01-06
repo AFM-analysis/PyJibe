@@ -25,8 +25,9 @@ import sklearn
 from . import custom_widgets
 from .dlg_tool_convert import ConvertDialog
 from . import preferences
-from ..extensions import ExtensionManager
+from . import update
 
+from ..extensions import ExtensionManager
 from .. import registry
 from .._version import version as __version__
 
@@ -59,6 +60,10 @@ class PyJibe(QtWidgets.QMainWindow):
         #: PyJibe settings
         self.settings = QtCore.QSettings()
         self.settings.setIniCodec("utf-8")
+
+        # update check
+        self._update_thread = None
+        self._update_worker = None
 
         # load ui files
         path_ui = pkg_resources.resource_filename("pyjibe.head", "main.ui")
@@ -105,6 +110,11 @@ class PyJibe(QtWidgets.QMainWindow):
             QtWidgets.QApplication.processEvents(
                 QtCore.QEventLoop.AllEvents, 300)
             sys.exit(0)
+
+        # check for updates
+        do_update = int(self.settings.value("check for updates", 1))
+        self.on_action_check_update(do_update)
+
         self.show()
         self.raise_()
         self.activateWindow()
@@ -178,6 +188,51 @@ class PyJibe(QtWidgets.QMainWindow):
         QtWidgets.QMessageBox.about(self,
                                     "PyJibe {}".format(__version__),
                                     about_text)
+
+    @QtCore.pyqtSlot(bool)
+    def on_action_check_update(self, b):
+        self.settings.setValue("check for updates", int(b))
+        if b and self._update_thread is None:
+            self._update_thread = QtCore.QThread()
+            self._update_worker = update.UpdateWorker()
+            self._update_worker.moveToThread(self._update_thread)
+            self._update_worker.finished.connect(self._update_thread.quit)
+            self._update_worker.data_ready.connect(
+                self.on_action_check_update_finished)
+            self._update_thread.start()
+
+            version = __version__
+            ghrepo = "AFM-analysis/PyJibe"
+
+            QtCore.QMetaObject.invokeMethod(self._update_worker,
+                                            'processUpdate',
+                                            QtCore.Qt.QueuedConnection,
+                                            QtCore.Q_ARG(str, version),
+                                            QtCore.Q_ARG(str, ghrepo),
+                                            )
+
+    @QtCore.pyqtSlot(dict)
+    def on_action_check_update_finished(self, mdict):
+        # cleanup
+        self._update_thread.quit()
+        self._update_thread.wait()
+        self._update_worker = None
+        self._update_thread = None
+        # display message box
+        ver = mdict["version"]
+        web = mdict["releases url"]
+        dlb = mdict["binary url"]
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("PyJibe {} available!".format(ver))
+        msg.setTextFormat(QtCore.Qt.RichText)
+        text = "You can install PyJibe {} ".format(ver)
+        if dlb is not None:
+            text += 'from a <a href="{}">direct download</a>. '.format(dlb)
+        else:
+            text += 'by running `pip install --upgrade pyjibe`. '
+        text += 'Visit the <a href="{}">official release page</a>!'.format(web)
+        msg.setText(text)
+        msg.exec_()
 
     @QtCore.pyqtSlot()
     def on_documentation(self):
