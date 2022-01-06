@@ -168,7 +168,8 @@ class TabFit(QtWidgets.QWidget):
             i.e. displaying the results in
             `self.table_parameters_fitted`.
         """
-        dev_mode = bool(int(self.settings.value("advanced/developer mode", "0")))
+        dev_mode = bool(int(
+            self.settings.value("advanced/developer mode", "0")))
         # segment
         segment = self.cb_segment.currentText().lower()
         # x axis
@@ -321,7 +322,8 @@ class TabFit(QtWidgets.QWidget):
 
     def fit_update_parameters(self, fdist):
         """Update the ancillary and initial parameters in the UI"""
-        dev_mode = bool(int(self.settings.value("advanced/developer mode", "0")))
+        dev_mode = bool(int(
+            self.settings.value("advanced/developer mode", "0")))
         model_key = self.fit_model.model_key
 
         # set the model
