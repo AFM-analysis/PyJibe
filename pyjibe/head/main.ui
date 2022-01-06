@@ -66,7 +66,7 @@
      <x>0</x>
      <y>0</y>
      <width>816</width>
-     <height>22</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -113,7 +113,7 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
-    <addaction name="action_developer_mode"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menuPreferences"/>
@@ -124,7 +124,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_open_bulk">
    <property name="text">
-    <string>Open directory (&amp;single analysis)</string>
+    <string>Open directory (&amp;single analysis)...</string>
    </property>
    <property name="toolTip">
     <string>Open bulk data</string>
@@ -138,7 +138,7 @@
   </action>
   <action name="action_open_single">
    <property name="text">
-    <string>Open &amp;individual files</string>
+    <string>Open &amp;individual files...</string>
    </property>
    <property name="toolTip">
     <string>Open single file</string>
@@ -152,7 +152,7 @@
   </action>
   <action name="action_open_multiple">
    <property name="text">
-    <string>Open directory (&amp;multiple analyses)</string>
+    <string>Open directory (&amp;multiple analyses)....</string>
    </property>
    <property name="toolTip">
     <string>Open multple files</string>
@@ -178,7 +178,7 @@
   </action>
   <action name="actionConvert_AFM_data">
    <property name="text">
-    <string>Convert AFM data</string>
+    <string>Convert AFM data...</string>
    </property>
   </action>
   <action name="action_developer_mode">
@@ -187,6 +187,11 @@
    </property>
    <property name="text">
     <string>&amp;Developer mode</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences...</string>
    </property>
   </action>
  </widget>

@@ -90,7 +90,7 @@ def test_hidden_parameters(qtbot):
             get_parameter_defaults=get_parameter_defaults) as mod:
         main_window = pyjibe.head.PyJibe()
         # disable developer mode
-        main_window.settings.setValue("developer mode", 0)
+        main_window.settings.setValue("advanced/developer mode", 0)
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
@@ -132,7 +132,7 @@ def test_hidden_parameters_control_in_dev_mode(qtbot):
             get_parameter_defaults=get_parameter_defaults) as mod:
         main_window = pyjibe.head.PyJibe()
         # disable developer mode
-        main_window.settings.setValue("developer mode", 1)
+        main_window.settings.setValue("advanced/developer mode", 1)
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data

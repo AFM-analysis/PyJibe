@@ -22,6 +22,7 @@ import sklearn
 
 from . import custom_widgets
 from .dlg_tool_convert import ConvertDialog
+from . import preferences
 
 from .. import registry
 from .._version import version as __version__
@@ -69,10 +70,7 @@ class PyJibe(QtWidgets.QMainWindow):
         self.action_open_single.triggered.connect(self.on_open_single)
         self.action_open_multiple.triggered.connect(self.on_open_multiple)
         # Edit menu
-        is_dev_mode = bool(int(self.settings.value("developer mode", "0")))
-        self.action_developer_mode.setChecked(is_dev_mode)
-        self.on_developer_mode(is_dev_mode)
-        self.action_developer_mode.triggered.connect(self.on_developer_mode)
+        self.actionPreferences.triggered.connect(self.on_preferences)
         # Tool menu
         self.actionConvert_AFM_data.triggered.connect(self.on_tool_convert)
         # Help menu
@@ -164,25 +162,6 @@ class PyJibe(QtWidgets.QMainWindow):
                                     "PyJibe {}".format(__version__),
                                     about_text)
 
-    @QtCore.pyqtSlot(bool)
-    def on_developer_mode(self, checked):
-        current_value = bool(int(self.settings.value("developer mode", "0")))
-        # remember in settings
-        self.settings.setValue("developer mode", str(int(checked)))
-        # set nanite
-        if checked:
-            nanite.read.DEFAULT_MODALITY = None
-        else:
-            nanite.read.DEFAULT_MODALITY = "force-distance"
-        if current_value != checked:
-            # tell the user that changes are not affecting current analyses
-            QtWidgets.QMessageBox.information(
-                self,
-                "You may need to restart PyJibe",
-                "Changing developer mode may not affect current analysis "
-                + "windows. Please restart PyJibe to make sure it is applied "
-                + "correctly.")
-
     @QtCore.pyqtSlot()
     def on_documentation(self):
         webbrowser.open("https://pyjibe.readthedocs.io")
@@ -235,6 +214,12 @@ class PyJibe(QtWidgets.QMainWindow):
             self.load_data(files=n, retry_open=self.on_open_single)
             self.settings.setValue("paths/load data",
                                    str(pathlib.Path(n[0]).parent))
+
+    @QtCore.pyqtSlot()
+    def on_preferences(self):
+        """Show the DCOR import dialog"""
+        dlg = preferences.Preferences(self)
+        dlg.exec()
 
     @QtCore.pyqtSlot()
     def on_software(self):
