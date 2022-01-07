@@ -1,4 +1,4 @@
-0.13.1
+0.13.0
  - feat: allow to specify the geometrical correction factor for
    non-single-contact experiments (#16)
  - fix: export fitting method and method kwargs with initial

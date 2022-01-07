@@ -22,6 +22,9 @@ def cleanup_autosave(jpkfile):
 app = QApplication(sys.argv)
 QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
 mw = PyJibe()
+mw.settings.setValue("check for updates", 0)
+mw.settings.setValue("advanced/developer mode", 0)
+mw.settings.setValue("advanced/expert mode", 0)
 
 cleanup_autosave(jpkfile=jpkfile)
 
@@ -37,7 +40,7 @@ QApplication.processEvents()
 QApplication.processEvents()
 war.grab().save("_qg_import_ts.png")
 
-print("Screenshot must be taken manually")
+print("Screenshot must be taken manually (closing in 10s)")
 time.sleep(10)
 
 mw.close()

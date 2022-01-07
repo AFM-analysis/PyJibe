@@ -15,6 +15,8 @@ QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
 
 mw = PyJibe()
 mw.settings.setValue("check for updates", 0)
+mw.settings.setValue("advanced/developer mode", 0)
+mw.settings.setValue("advanced/expert mode", 0)
 
 mw.extensions.import_extension_from_path(
     data_path / "model_external_basic.py")
