@@ -25,8 +25,9 @@ class TabFit(QtWidgets.QWidget):
             self.settings.value("advanced/developer mode", "0")))
         exp_mode = bool(int(
             self.settings.value("advanced/expert mode", "0")))
-        if not (dev_mode or exp_mode):
+        if not dev_mode:
             models_av.remove("sneddon_spher")
+        if not (dev_mode or exp_mode):
             self.widget_method.hide()
         models_av.sort(key=lambda x: nmodel.models_available[x].model_name)
         for ii, key in enumerate(models_av):
@@ -139,7 +140,7 @@ class TabFit(QtWidgets.QWidget):
         Returns
         -------
         rows_changed: bool
-            Whether or not the number of rows changed
+            Whether the number of rows changed
         """
         rows_changed = (table.rowCount() - rows) != 0
         table.setRowCount(rows)

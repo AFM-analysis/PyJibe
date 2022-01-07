@@ -1,3 +1,5 @@
+0.13.1
+ - fix: do not show "sneddon_spher" model in expert mode
 0.13.0
  - feat: allow to specify the geometrical correction factor for
    non-single-contact experiments (#16)
