@@ -1,6 +1,9 @@
 0.13.1
  - feat: allow to specify the geometrical correction factor for
    non-single-contact experiments
+ - fix: export fitting method and method kwargs with initial
+   parameters
+
 0.12.1
  - build: fixed testing pipeline
 0.12.0

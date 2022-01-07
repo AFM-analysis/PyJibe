@@ -8,14 +8,14 @@ def si2hr(name, value, si_unit=None):
     ----------
     name: str
         The parameter name string, see `human_units`.
-    value: float or array
+    value: numbers.Number or array
         The value of the parameters that will be converted
-        to a human readable scale.
+        to a human-readable scale.
 
     Returns
     -------
     hr_value: float
-        The human readable value.
+        The human-readable value.
     scaleunit: str
         The unit including the scale, e.g. "µm".
     """

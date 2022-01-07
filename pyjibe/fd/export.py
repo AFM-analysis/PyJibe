@@ -32,6 +32,7 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
     if np.sum([k not in EXPORT_CHOICES for k in which]):
         raise ValueError("Found invalid export choices.")
 
+    size = len(fdist_list)
     columns = OrderedDict()
     # Metadata
     for ii, fdist in enumerate(fdist_list):
@@ -41,9 +42,7 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 for kk in meta[topic]:
                     label, hrvalue = get_unitname_value_meta(
                         key=kk, value=meta[topic][kk])
-                    if label not in columns:
-                        columns[label] = [np.nan] * len(fdist_list)
-                    columns[label][ii] = hrvalue
+                    set_odict_list_value(columns, label, size, ii, hrvalue)
 
         # Parameters
         if "model_key" in fdist.fit_properties:
@@ -57,9 +56,7 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                         name=nmodel.get_parm_name(model_key, kk),
                         value=anc_dict[kk],
                         unit=nmodel.get_parm_unit(model_key, kk))
-                    if label not in columns:
-                        columns[label] = [np.nan] * len(fdist_list)
-                    columns[label][ii] = hrvalue
+                    set_odict_list_value(columns, label, size, ii, hrvalue)
 
             # Initial
             if "params_initial" in which:
@@ -71,9 +68,8 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                                 name=nmodel.get_parm_name(model_key, ki),
                                 value=fp[ki].value,
                                 unit=nmodel.get_parm_unit(model_key, ki))
-                            if label not in columns:
-                                columns[label] = [np.nan] * len(fdist_list)
-                            columns[label][ii] = hrvalue
+                            set_odict_list_value(
+                                columns, label, size, ii, hrvalue)
 
             # Fitted
             if "params_fitted" in which:
@@ -85,9 +81,8 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                                 name=nmodel.get_parm_name(model_key, ki),
                                 value=fp[ki].value,
                                 unit=nmodel.get_parm_unit(model_key, ki))
-                            if label not in columns:
-                                columns[label] = [np.nan] * len(fdist_list)
-                            columns[label][ii] = hrvalue
+                            set_odict_list_value(
+                                columns, label, size, ii, hrvalue)
 
                     # Additional fit parameters
                     props = {"xmin": ("Fit interval minimum", "m"),
@@ -95,22 +90,22 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                              "segment": ("Fit segment", ""),
                              "weight_cp": ("Fit weight contact point", "m"),
                              "model_key": ("Fit model", ""),
+                             "gcf_k": ("Geometrical correction factor", ""),
+                             "method": ("Fit method", ""),
+                             "method_kws": ("Fit method kwargs", ""),
                              }
                     for prop in props:
                         label, hrvalue = get_unitname_value(
                             name=props[prop][0],
                             value=fdist.fit_properties[prop],
                             unit=props[prop][1])
-                        if label not in columns:
-                            columns[label] = [np.nan] * len(fdist_list)
-                        columns[label][ii] = hrvalue
+                        set_odict_list_value(columns, label, size, ii, hrvalue)
 
             if "rating" in which:
                 rdict = fdist.get_rating_parameters()
                 for label in ["Regressor", "Training set", "Rating"]:
-                    if label not in columns:
-                        columns[label] = [np.nan] * len(fdist_list)
-                    columns[label][ii] = rdict[label]
+                    set_odict_list_value(
+                        columns, label, size, ii, rdict[label])
 
     save_tsv(filename, columns)
 
@@ -173,6 +168,13 @@ def get_unitname_value(name, value, unit):
         hrvalue = value
         header = name
     return header, hrvalue
+
+
+def set_odict_list_value(odict, label, size, index, value):
+    """Convenience method for setting list-values in a dictionary"""
+    if label not in odict:
+        odict[label] = [np.nan] * size
+    odict[label][index] = value
 
 
 def transpose_list(m):
