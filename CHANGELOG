@@ -1,9 +1,10 @@
 0.13.1
  - feat: allow to specify the geometrical correction factor for
-   non-single-contact experiments
+   non-single-contact experiments (#16)
  - fix: export fitting method and method kwargs with initial
    parameters
  - enh: add links to docs in two places (#19)
+ - setup: bump nanite from 3.4.0 to 3.5.0 (#16)
 0.12.1
  - build: fixed testing pipeline
 0.12.0
