@@ -128,7 +128,10 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Model</string>
+            <string>&lt;a href=&quot;https://nanite.readthedocs.io/en/latest/sec_fitting_guide.html#models&quot;&gt;Model&lt;/a&gt;</string>
+           </property>
+           <property name="openExternalLinks">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

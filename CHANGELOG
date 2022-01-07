@@ -3,7 +3,7 @@
    non-single-contact experiments
  - fix: export fitting method and method kwargs with initial
    parameters
-
+ - enh: add links to docs in two places (#19)
 0.12.1
  - build: fixed testing pipeline
 0.12.0
