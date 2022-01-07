@@ -44,6 +44,7 @@ class Preferences(QtWidgets.QDialog):
         #: configuration keys, corresponding widgets, and defaults
         self.config_pairs = [
             ["advanced/developer mode", self.advanced_developer_mode, 0],
+            ["advanced/expert mode", self.advanced_expert_mode, 0],
             ["check for updates", self.general_check_for_updates, 1],
         ]
 

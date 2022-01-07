@@ -243,20 +243,36 @@ to the nanite rating workflow. If you would like to import your own training
 set, please read the quick guide :ref:`sec_qg_import_ts`.
 
 
-Developer mode
-==============
-Under *Edit | Developer mode*, you can enable developer mode which will:
+Advanced options
+================
 
-- Allow you to open experimental data that were not recorded via
-  force-distance modality (e.g. creep-compliance). Related issues are
-  `nanite #11 <https://github.com/AFM-analysis/nanite/issues/11>`_ and
-  `afmformats #15 <https://github.com/AFM-analysis/afmformats/issues/15>`_.
-- Slow down loading of large datasets (because the modality has to be
-  determined first).
-- Add the force-distance fitting model :ref:`sneddon_spher
-  <nanite:sec_ref_model_sneddon_spher>` to the list of available fit models
-  (it is excluded by default, because it is virtually identical to the
-  :ref:`sneddon_spher_approx <nanite:sec_ref_model_sneddon_spher_approx>`
-  model which is much faster).
-- Enable you to manually set the minimizer method and the corresponding
-  keyword arguments applied by lmfit
+Extensions
+----------
+Under *Edit | Preferences | Extensions*, you may import your own custom
+fit models. See :ref:`sec_qg_extensions` for more information.
+
+Expert and Developer mode
+-------------------------
+
+Under *Edit | Preferences | Advanced*, you can enable expert and developer
+mode.
+
+- Expert mode:
+
+  - Enables you to manually set the minimizer method and the corresponding
+    keyword arguments applied by lmfit.
+
+- Developer mode:
+
+  - Everything that is available in expert mode.
+  - Allows you to open experimental data that were not recorded via
+    force-distance modality (e.g. creep-compliance). Related issues are
+    `nanite #11 <https://github.com/AFM-analysis/nanite/issues/11>`_ and
+    `afmformats #15 <https://github.com/AFM-analysis/afmformats/issues/15>`_.
+  - Slows down loading of large datasets (because the modality has to be
+    determined first).
+  - Adds the force-distance fitting model :ref:`sneddon_spher
+    <nanite:sec_ref_model_sneddon_spher>` to the list of available fit models
+    (it is excluded by default, because it is virtually identical to the
+    :ref:`sneddon_spher_approx <nanite:sec_ref_model_sneddon_spher_approx>`
+    model which is much faster).

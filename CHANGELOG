@@ -1,6 +1,7 @@
 0.13.1
  - feat: allow to specify the geometrical correction factor for
    non-single-contact experiments (#16)
+ - enh: add expert mode which is just a parital developer mode (#22)
  - fix: export fitting method and method kwargs with initial
    parameters
  - enh: add links to docs in two places (#19)

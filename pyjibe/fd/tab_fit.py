@@ -21,7 +21,11 @@ class TabFit(QtWidgets.QWidget):
         # Exact spherical model is only available in developer mode
         self.settings = QtCore.QSettings()
         self.settings.setIniCodec("utf-8")
-        if not bool(int(self.settings.value("advanced/developer mode", "0"))):
+        dev_mode = bool(int(
+            self.settings.value("advanced/developer mode", "0")))
+        exp_mode = bool(int(
+            self.settings.value("advanced/expert mode", "0")))
+        if not (dev_mode or exp_mode):
             models_av.remove("sneddon_spher")
             self.widget_method.hide()
         models_av.sort(key=lambda x: nmodel.models_available[x].model_name)
@@ -171,6 +175,8 @@ class TabFit(QtWidgets.QWidget):
         """
         dev_mode = bool(int(
             self.settings.value("advanced/developer mode", "0")))
+        exp_mode = bool(int(
+            self.settings.value("advanced/expert mode", "0")))
         # segment
         segment = self.cb_segment.currentText().lower()
         # x axis
@@ -211,8 +217,8 @@ class TabFit(QtWidgets.QWidget):
         params = self.fit_parameters()
         # fit method (if in developer mode)
         kwargs = {}
-        if dev_mode:
-            # We are in developer mode.
+        if dev_mode or exp_mode:
+            # We are in developer or expert mode.
             # Populate the user-defined keyword arguments. Note that
             # these are not passed as "options", but directly to the
             # minimizer method.

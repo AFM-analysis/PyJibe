@@ -21,7 +21,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_general">
       <attribute name="title">
@@ -212,6 +212,13 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
+        <widget class="QCheckBox" name="advanced_expert_mode">
+         <property name="text">
+          <string>Expert mode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="advanced_developer_mode">
          <property name="text">
           <string>Developer mode</string>
@@ -281,6 +288,38 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>advanced_developer_mode</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>advanced_expert_mode</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>351</x>
+     <y>59</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>advanced_developer_mode</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>advanced_expert_mode</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>351</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>351</x>
+     <y>59</y>
     </hint>
    </hints>
   </connection>
