@@ -100,24 +100,25 @@ class TabFit(QtWidgets.QWidget):
             for ak in self.fit_model.parameter_anc_keys:
                 if ak not in anc_used:
                     continue
-                # Get the human readable name of the parameter
+                # Get the human-readable name of the parameter
                 hrname = self.fit_model.get_parm_name(ak)
                 # Determine unit scale, e.g. 1e6 [sic] for µm
                 si_unit = self.fit_model.get_parm_unit(ak)
                 # Determine unit scale, e.g. 1e6 [sic] for µm
                 scale = units.hrscale(hrname, si_unit=si_unit)
                 label = units.hrscname(hrname, si_unit=si_unit)
+                value_text = "{:.5g}".format(anc[ak] * scale)
                 atab.verticalHeaderItem(row).setText(label)
                 if rows_changed:
                     atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
-                atab.item(row, 1).setText("{:.5g}".format(anc[ak] * scale))
+                atab.item(row, 1).setText(value_text)
                 # updates initial parameters if "use" is checked
                 if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
                     # update initial parameters
-                    idx = self.fit_model.parameter_keys.index(ak)
-                    text = atab.item(row, 1).text()
-                    if text != "nan":
-                        itab.item(idx, 1).setText(text)
+                    for rr in range(itab.rowCount()):
+                        if itab.verticalHeaderItem(rr).text() == label:
+                            if value_text != "nan":
+                                itab.item(rr, 1).setText(value_text)
                 row += 1
             atab.blockSignals(False)
         else:
@@ -292,7 +293,7 @@ class TabFit(QtWidgets.QWidget):
                     ftab.item(ii, 0).setText("nan")
 
     def fit_parameters(self):
-        """Returns parameters currently set in the GUI
+        """Return initial fit parameters currently set in the GUI
 
         The parameter data is read out from
         `self.table_parameters_initial`. If the model that was
@@ -517,31 +518,27 @@ class TabFit(QtWidgets.QWidget):
         radio button.
         """
         # First get the tip radius
-        params = self.fit_model.get_parameter_defaults()
-        itab = self.table_parameters_initial
-        for ii, key in enumerate(list(params.keys())):
-            if key == "R":
-                radius = float(itab.item(ii, 1).text())
-                # Make sure the "% tip radius" radio button is enabled,
-                # because it could have been disabled for a fit model that
-                # does not contain the parameter "R".
-                self.rd_weigt_perc.setEnabled(True)
-                # Did the user select "% tip radius"?
-                percent = self.rd_weigt_perc.isChecked()
-
-                if percent:
-                    # set um value
-                    perc = self.sp_weight_cp_perc.value()
-                    self.sp_weight_cp_um.blockSignals(True)
-                    self.sp_weight_cp_um.setValue(radius * perc / 100)
-                    self.sp_weight_cp_um.blockSignals(False)
-                else:
-                    # set percent value
-                    val = self.sp_weight_cp_um.value()
-                    self.sp_weight_cp_perc.blockSignals(True)
-                    self.sp_weight_cp_perc.setValue(val / radius * 100)
-                    self.sp_weight_cp_perc.blockSignals(False)
-                break
+        params = self.fit_parameters()
+        if "R" in params:
+            radius = params["R"].value * units.hrscale("tip radius")
+            # Make sure the "% tip radius" radio button is enabled,
+            # because it could have been disabled for a fit model that
+            # does not contain the parameter "R".
+            self.rd_weigt_perc.setEnabled(True)
+            # Did the user select "% tip radius"?
+            percent = self.rd_weigt_perc.isChecked()
+            if percent:
+                # set um value
+                perc = self.sp_weight_cp_perc.value()
+                self.sp_weight_cp_um.blockSignals(True)
+                self.sp_weight_cp_um.setValue(radius * perc / 100)
+                self.sp_weight_cp_um.blockSignals(False)
+            else:
+                # set percent value
+                val = self.sp_weight_cp_um.value()
+                self.sp_weight_cp_perc.blockSignals(True)
+                self.sp_weight_cp_perc.setValue(val / radius * 100)
+                self.sp_weight_cp_perc.blockSignals(False)
         else:
             # The key "R" could not be found. This means we
             # have a model that does not allow to compute the

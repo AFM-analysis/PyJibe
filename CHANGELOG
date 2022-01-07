@@ -1,4 +1,7 @@
 0.13.1
+ - fix: make sure fit parameters are identified by their label
+   instead of by an index (which can be wrong, now that we have
+   hidden parameters)
  - fix: do not show "sneddon_spher" model in expert mode
 0.13.0
  - feat: allow to specify the geometrical correction factor for
