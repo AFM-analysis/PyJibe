@@ -25,7 +25,7 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["afmformats>=0.16.4",
-                      "nanite>=3.4.0",
+                      "nanite>=3.5.0",
                       "matplotlib>=3",  # NavigationToolbar2QT mod
                       "pyqt5"],
     python_requires='>=3.6, <4',

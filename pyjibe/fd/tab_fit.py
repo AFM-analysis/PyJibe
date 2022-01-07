@@ -56,6 +56,7 @@ class TabFit(QtWidgets.QWidget):
         self.sp_weight_cp_um.valueChanged.connect(self.on_update_weights)
         self.sp_weight_cp_perc.valueChanged.connect(self.on_update_weights)
         self.toolButton_method_apply.clicked.connect(self.on_params_init)
+        self.sp_gcfk.valueChanged.connect(self.on_params_init)
 
     @property
     def current_curve(self):
@@ -178,6 +179,8 @@ class TabFit(QtWidgets.QWidget):
         y_axis = self.cb_yaxis.currentText()
         # Get model key from dropdown list
         model_key = self.fit_model.model_key
+        # Geometric factor
+        gcf_k = self.sp_gcfk.value()
         # Determine range type
         if self.cb_range_type.currentText() == "absolute":
             range_type = "absolute"
@@ -233,6 +236,7 @@ class TabFit(QtWidgets.QWidget):
                         segment=segment,
                         optimal_fit_edelta=optimal_fit_edelta,
                         optimal_fit_num_samples=optimal_fit_num_samples,
+                        gcf_k=gcf_k,
                         **kwargs
                         )
         ftab = self.table_parameters_fitted
