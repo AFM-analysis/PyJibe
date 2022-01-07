@@ -1,10 +1,11 @@
 0.13.1
  - feat: allow to specify the geometrical correction factor for
    non-single-contact experiments (#16)
- - enh: add expert mode which is just a parital developer mode (#22)
  - fix: export fitting method and method kwargs with initial
    parameters
+ - enh: add expert mode which is just a parital developer mode (#22)
  - enh: add links to docs in two places (#19)
+ - enh: show "Axes" in fitting tab only in developer mode (#21)
  - setup: bump nanite from 3.4.0 to 3.5.0 (#16)
 0.12.1
  - build: fixed testing pipeline

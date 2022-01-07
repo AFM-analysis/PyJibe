@@ -48,6 +48,10 @@ class TabFit(QtWidgets.QWidget):
         # i.e. `self.cb_delta_select.currentIndex == 1`)
         self.cb_right_individ.setVisible(False)
 
+        # Show axes selection only in developer mode
+        for wid in [self.label_axes, self.widget_axes]:
+            wid.setVisible(dev_mode)
+
         # signals
         self.cb_segment.currentIndexChanged.connect(self.on_params_init)
         self.cb_xaxis.currentIndexChanged.connect(self.on_params_init)
