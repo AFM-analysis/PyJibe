@@ -1,5 +1,6 @@
 0.13.2
  - fix: model parameters defined via expressions were not exported
+ - fix: only export hidden parameters in developer mode
  - enh: export ancillary parameters in autosave
 0.13.1
  - fix: make sure fit parameters are identified by their label

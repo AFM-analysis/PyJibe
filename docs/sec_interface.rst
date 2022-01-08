@@ -276,3 +276,5 @@ mode.
     (it is excluded by default, because it is virtually identical to the
     :ref:`sneddon_spher_approx <nanite:sec_ref_model_sneddon_spher_approx>`
     model which is much faster).
+  - Displays and exports hidden model parameters (parameters whose name
+    starts with an underscore ``_``).

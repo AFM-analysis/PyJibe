@@ -6,6 +6,7 @@ import numpy as np
 
 from afmformats import meta
 import nanite.model as nmodel
+from PyQt5 import QtCore
 
 from .. import units
 
@@ -31,6 +32,10 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
     """
     if np.sum([k not in EXPORT_CHOICES for k in which]):
         raise ValueError("Found invalid export choices.")
+
+    settings = QtCore.QSettings()
+    settings.setIniCodec("utf-8")
+    dev_mode = bool(int(settings.value("advanced/developer mode", "0")))
 
     size = len(fdist_list)
     columns = OrderedDict()
@@ -63,6 +68,9 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 if "params_initial" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_initial"]
                     for ki in fp:
+                        if ki.startswith("_") and not dev_mode:
+                            # ignore hidden parameters in normal mode
+                            continue
                         if not (fp[ki].vary or fp[ki].expr):
                             label, hrvalue = get_unitname_value(
                                 name=nmodel.get_parm_name(model_key, ki),
@@ -76,6 +84,9 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 if "params_fitted" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_fitted"]
                     for ki in fp:
+                        if ki.startswith("_") and not dev_mode:
+                            # ignore hidden parameters in normal mode
+                            continue
                         if fp[ki].vary or fp[ki].expr:
                             label, hrvalue = get_unitname_value(
                                 name=nmodel.get_parm_name(model_key, ki),
