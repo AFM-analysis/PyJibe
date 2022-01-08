@@ -63,7 +63,7 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 if "params_initial" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_initial"]
                     for ki in fp:
-                        if not fp[ki].vary:
+                        if not (fp[ki].vary or fp[ki].expr):
                             label, hrvalue = get_unitname_value(
                                 name=nmodel.get_parm_name(model_key, ki),
                                 value=fp[ki].value,
@@ -76,7 +76,7 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
                 if "params_fitted" in fdist.fit_properties:
                     fp = fdist.fit_properties["params_fitted"]
                     for ki in fp:
-                        if fp[ki].vary:
+                        if fp[ki].vary or fp[ki].expr:
                             label, hrvalue = get_unitname_value(
                                 name=nmodel.get_parm_name(model_key, ki),
                                 value=fp[ki].value,
