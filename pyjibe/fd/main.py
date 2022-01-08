@@ -299,7 +299,7 @@ class UiForceDistance(QtWidgets.QWidget):
                         )
                         fname = os.path.join(adir, newbase)
                 # Export data
-                which = ["params_fitted", "rating"]
+                which = ["params_fitted", "params_ancillary", "rating"]
                 export.save_tsv_metadata_results(filename=fname,
                                                  fdist_list=exp_curv,
                                                  which=which)
