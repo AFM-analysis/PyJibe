@@ -1,5 +1,6 @@
 # Use large clone depth so that a tag is included for versioning
 clone_depth: 256
+image: Visual Studio 2019
 
 notifications:
   - provider: Email
@@ -12,7 +13,7 @@ environment:
     - PYTHON: "C:\\Python39-x64"
 
 init:
-  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+  - ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
 
 install:
   # Install InnoSetup and add to path
