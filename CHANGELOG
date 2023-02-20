@@ -1,3 +1,9 @@
+0.13.3
+ - setup: bump afmformats from 0.16.4 to 0.16.7
+ - setup: bump nanite from 3.5.0 to 3.5.2
+ - setup: require Python 3.10
+ - ci: update build pipelines
+ - tests: loosen allclose call
 0.13.2
  - fix: model parameters defined via expressions were not exported
  - fix: only export hidden parameters in developer mode

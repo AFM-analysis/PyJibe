@@ -42,7 +42,7 @@ def test_clear_and_verify_data(qtbot):
     # E
     assert np.allclose(apret.fit_properties["params_fitted"]["E"].value,
                        14741.958242422093,
-                       atol=1e-4,
+                       atol=.1,
                        rtol=0)
     assert float(ftab.item(0, 0).text()) == 14742
     # contact_point

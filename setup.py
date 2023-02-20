@@ -24,11 +24,11 @@ setup(
     license="GPL v3",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["afmformats>=0.16.4",
-                      "nanite>=3.5.0",
+    install_requires=["afmformats>=0.16.7",
+                      "nanite>=3.5.2",
                       "matplotlib>=3",  # NavigationToolbar2QT mod
                       "pyqt5"],
-    python_requires='>=3.6, <4',
+    python_requires='>=3.10, <4',
     entry_points={"gui_scripts": ['pyjibe = pyjibe.__main__:main']},
     keywords=["atomic force microscopy", "biomechanics"],
     classifiers=[

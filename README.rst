@@ -35,7 +35,7 @@ Testing
 .. |PyJibe| image:: https://raw.github.com/AFM-analysis/PyJibe/master/docs/logo/PyJibe.png
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/PyJibe.svg
    :target: https://pypi.python.org/pypi/PyJibe
-.. |Tests Status Unix| image:: https://img.shields.io/github/workflow/status/AFM-analysis/PyJibe/Checks
+.. |Tests Status Unix| image:: https://img.shields.io/github/actions/workflow/status/AFM-analysis/PyJibe/check.yml
    :target: https://github.com/AFM-analysis/PyJibe/actions?query=workflow%3AChecks
 .. |Tests Status Win| image:: https://img.shields.io/appveyor/ci/paulmueller/PyJibe?label=tests_win
    :target: https://ci.appveyor.com/project/paulmueller/PyJibe
