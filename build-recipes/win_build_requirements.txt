@@ -4,5 +4,3 @@
 pyinstaller==5.3
 setuptools
 scipy<=1.9.1
-# nanite needs scikit-learn>0.23.0
-scikit-learn==0.23.1
