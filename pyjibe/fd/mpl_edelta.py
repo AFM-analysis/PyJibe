@@ -92,7 +92,7 @@ class MPLEDelta(object):
 
     def update_delta(self, delta):
         """Updates the vertical line for indentation depth"""
-        self.opt_auto.set_data(delta, (0, 1))
+        self.opt_auto.set_data((delta, delta), (0, 1))
         self.canvas.draw()
 
     def update_plot(self, emoduli, indentations,
