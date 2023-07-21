@@ -23,7 +23,7 @@ jobs:
         pip install -e .
     - name: Build and publish
       env:
-        TWINE_USERNAME: ci_afm
+        TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PWD }}
       run: |
         python setup.py sdist bdist_wheel
