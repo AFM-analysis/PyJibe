@@ -1,4 +1,3 @@
 # Any additional requirements for building the application
-# Issues with setuptools._distutils
-pyinstaller==5.3
+pyinstaller
 setuptools
