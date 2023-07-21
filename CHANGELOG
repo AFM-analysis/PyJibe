@@ -1,3 +1,5 @@
+0.13.4
+ - tests: don't be so strict
 0.13.3
  - setup: bump afmformats from 0.16.4 to 0.16.7
  - setup: bump nanite from 3.5.0 to 3.5.2

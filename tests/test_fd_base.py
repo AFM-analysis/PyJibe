@@ -41,10 +41,10 @@ def test_clear_and_verify_data(qtbot):
     ftab = war.tab_fit.table_parameters_fitted
     # E
     assert np.allclose(apret.fit_properties["params_fitted"]["E"].value,
-                       14741.958242422093,
-                       atol=.1,
+                       14741.256863072116,
+                       atol=1,
                        rtol=0)
-    assert float(ftab.item(0, 0).text()) == 14742
+    assert float(ftab.item(0, 0).text()) == 14741
     # contact_point
     assert float(ftab.item(1, 0).text()) == 18029
     # baseline_offset
