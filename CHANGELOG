@@ -1,5 +1,6 @@
 0.13.4
  - ref: don't use deprecated matplotlib.cm.get_cmap
+ - ref: use packaging.version.parse to compare versions
  - tests: don't be so strict
 0.13.3
  - setup: bump afmformats from 0.16.4 to 0.16.7

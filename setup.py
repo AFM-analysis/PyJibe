@@ -27,6 +27,7 @@ setup(
     install_requires=["afmformats>=0.16.7",
                       "nanite>=3.5.4",
                       "matplotlib>=3",  # NavigationToolbar2QT mod
+                      "packaging",  # for version checking during update
                       "pyqt5",
                       ],
     python_requires='>=3.9, <4',

@@ -1,4 +1,3 @@
-from distutils.version import LooseVersion, StrictVersion
 import json
 import os
 import struct
@@ -6,6 +5,7 @@ import sys
 import traceback
 import urllib.request
 
+from packaging.version import parse as parse_version
 from PyQt5 import QtCore
 
 
@@ -58,12 +58,8 @@ def check_release(ghrepo="user/repo", version=None, timeout=20):
         newversion = j["tag_name"]
 
         if version is not None:
-            try:
-                new = StrictVersion(newversion)
-                old = StrictVersion(version)
-            except ValueError:
-                new = LooseVersion(newversion)
-                old = LooseVersion(version)
+            new = parse_version(newversion)
+            old = parse_version(version)
             if new > old:
                 update = True
                 new_version = newversion
