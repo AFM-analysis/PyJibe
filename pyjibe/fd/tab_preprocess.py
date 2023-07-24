@@ -127,7 +127,9 @@ class TabPreprocess(QtWidgets.QWidget):
                             "correct_tip_offset",
                             "correct_split_approach_retract"]
             method_options = {
-                "correct_tip_offset": "deviation_from_baseline",
+                "correct_tip_offset": [
+                    {"method": "deviation_from_baseline"},
+                ],
             }
         else:
             raise ValueError(f"Unknown text '{text}'!")
@@ -136,16 +138,12 @@ class TabPreprocess(QtWidgets.QWidget):
             pwidget.blockSignals(True)
             pid = self._map_widgets_to_preproc_ids[pwidget]
             pwidget.setChecked(pid in used_methods)
+            # Set default values
             if pid in method_options:
-                value = method_options[pid]
-                if isinstance(value, str):
-                    idx = pwidget.comboBox.findData(value)
-                    pwidget.comboBox.setCurrentIndex(idx)
-                elif pwidget.comboBox.isVisible():
-                    # be future-proof
-                    pwidget.comboBox.setCurrentIndex(0)
-                else:
-                    raise NotImplementedError("TODO")
+                for item in method_options[pid]:
+                    for name in item:
+                        pwidget.set_option(name=name,
+                                           value=item[name])
             pwidget.blockSignals(False)
         self.apply_preprocessing()
 
@@ -158,6 +156,5 @@ class TabPreprocess(QtWidgets.QWidget):
             pwidget.setChecked(pid in preprocessing)
             if pid in options:
                 opts = options[pid]
-                key = sorted(opts.keys())[0]  # not future-proof
-                idx = pwidget.comboBox.findData(opts[key])
-                pwidget.comboBox.setCurrentIndex(idx)
+                name = sorted(opts.keys())[0]  # not future-proof
+                pwidget.set_option(name=name, value=opts[name])

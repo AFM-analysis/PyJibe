@@ -10,6 +10,7 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
 
     def __init__(self, identifier, *args, **kwargs):
         """Special widget for preprocessing options"""
+        self.identifier = identifier
         super(WidgetPreprocessItem, self).__init__(*args, **kwargs)
 
         path_ui = pkg_resources.resource_filename("pyjibe.fd",
@@ -20,7 +21,7 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         name = preproc.get_name(identifier)
         self.label.setText(name)
 
-        self.identifier = identifier
+        self.comboboxes = {}
 
         # set tooltip
         meth = preproc.get_func(identifier)
@@ -29,30 +30,40 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         # set options
         if meth.options is not None:
             for opt in meth.options:
+                cb = QtWidgets.QComboBox(self)
+                self.layout_items.addWidget(cb)
                 choices = opt.get("choices", [])
                 choices_hr = opt.get("choices_human_readable", choices)
                 for text, data in zip(choices_hr, choices):
-                    self.comboBox.addItem(text, data)
-        else:
-            self.comboBox.hide()
+                    cb.addItem(text, data)
+                cb.currentIndexChanged.connect(self.on_state_changed)
+                self.comboboxes[opt["name"]] = cb
 
         # initially set-up enabled/disabled
         self.update_enabled()
 
         # signal: passthrough stateChanged
         self.checkBox.stateChanged.connect(self.on_state_changed)
-        self.comboBox.currentIndexChanged.connect(self.on_state_changed)
+
+    def __repr__(self):
+        return f"<WidgetPreprocessItem '{self.identifier}' at {hex(id(self))}>"
 
     def get_options(self):
         """Return preprocessing options"""
         popts = {}
-        if self.comboBox.isEnabled() and not self.comboBox.isHidden():
+        if self.comboboxes:
             meth = preproc.get_func(self.identifier)
             if meth.options is not None:
                 for opt in meth.options:
                     if "choices" in opt:
-                        popts[opt["name"]] = self.comboBox.currentData()
+                        cb = self.comboboxes[opt["name"]]
+                        popts[opt["name"]] = cb.currentData()
         return popts
+
+    def set_option(self, name, value):
+        cb = self.comboboxes[name]
+        idx = cb.findData(value)
+        cb.setCurrentIndex(idx)
 
     def isChecked(self):
         return self.checkBox.isChecked()
