@@ -30,7 +30,7 @@ setup(
                       "packaging",  # for version checking during update
                       "pyqt5",
                       ],
-    python_requires='>=3.9, <4',
+    python_requires='>=3.10, <4',
     entry_points={"gui_scripts": ['pyjibe = pyjibe.__main__:main']},
     keywords=["atomic force microscopy", "biomechanics"],
     classifiers=[
