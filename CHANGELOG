@@ -3,7 +3,7 @@
  - ref: generalize the view of preprocessing insights
  - ref: support multiple options for nanite preprocessors
  - setup: bump nanite from 3.5.2 to 3.7.0
- - setup: bumpy Python version to 3.10
+ - setup: bump Python version to 3.10
 0.13.4
  - ref: don't use deprecated matplotlib.cm.get_cmap
  - ref: use packaging.version.parse to compare versions
