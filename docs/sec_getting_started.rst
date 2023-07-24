@@ -15,7 +15,7 @@ PyJibe can be installed via multiple channels:
    (``PyJibeApp_X.Y.Z.dmg``) from the official
    `release page <https://github.com/AFM-analysis/PyJibe/releases/latest>`__. 
 
-3. **Python 3.6 or later with pip:** PyJibe can easily be installed with
+3. **Python 3 with pip:** PyJibe can easily be installed with
    `pip <https://pip.pypa.io/en/stable/quickstart/>`__:
 
    .. code:: bash
