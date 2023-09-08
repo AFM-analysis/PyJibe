@@ -1,3 +1,5 @@
+0.14.1
+ - maintenance release
 0.14.0
  - feat: support baseline corrections with linear slope (drift or shift)
  - ref: generalize the view of preprocessing insights
