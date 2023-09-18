@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>532</width>
-    <height>477</height>
+    <width>536</width>
+    <height>535</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -70,7 +70,7 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="1" column="0">
+     <item row="1" column="0" alignment="Qt::AlignTop">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>File grouping:</string>
@@ -79,7 +79,7 @@
      </item>
      <item row="1" column="1">
       <widget class="QWidget" name="widget_group" native="true">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="leftMargin">
          <number>0</number>
         </property>
@@ -93,12 +93,9 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QRadioButton" name="radioButton_unaltered">
-          <property name="toolTip">
-           <string>Each input file is converted to one output file</string>
-          </property>
+         <widget class="QRadioButton" name="radioButton_mirror">
           <property name="text">
-           <string>unaltered</string>
+           <string>mirror original file names and directory structure</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -106,12 +103,15 @@
          </widget>
         </item>
         <item>
-         <widget class="QRadioButton" name="radioButton_merge">
+         <widget class="QRadioButton" name="radioButton_unaltered">
           <property name="toolTip">
-           <string>All input data are merged into one output file</string>
+           <string>Each input file is converted to one output file</string>
           </property>
           <property name="text">
-           <string>merge all</string>
+           <string>save all files into one directory</string>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -121,7 +121,17 @@
            <string>Input files with more than one dataset produce more output files</string>
           </property>
           <property name="text">
-           <string>one file per curve</string>
+           <string>save all files into one directory, one file per curve</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButton_merge">
+          <property name="toolTip">
+           <string>All input data are merged into one output file</string>
+          </property>
+          <property name="text">
+           <string>merge all files into one HDF5 file</string>
           </property>
          </widget>
         </item>
@@ -279,7 +289,7 @@
   <connection>
    <sender>radioButton_hdf5</sender>
    <signal>toggled(bool)</signal>
-   <receiver>radioButton_unaltered</receiver>
+   <receiver>radioButton_mirror</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -287,8 +297,8 @@
      <y>366</y>
     </hint>
     <hint type="destinationlabel">
-     <x>166</x>
-     <y>395</y>
+     <x>299</x>
+     <y>366</y>
     </hint>
    </hints>
   </connection>

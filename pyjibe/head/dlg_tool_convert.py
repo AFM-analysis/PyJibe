@@ -24,6 +24,7 @@ class ConvertDialog(QtWidgets.QDialog):
         self.toolButton_clear.clicked.connect(self._file_list.clear)
 
     def _convert_merge(self):
+        """Merge all curves into one HDF5 file"""
         file, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent(),
             "Output file",
@@ -43,7 +44,55 @@ class ConvertDialog(QtWidgets.QDialog):
                                  fmt="hdf5")
         return True
 
+    def _convert_mirror(self):
+        """Mirror input file and directory strucutre to output (HDF5 only)"""
+        out_dir = QtWidgets.QFileDialog.getExistingDirectory(
+            self.parent(), "Select output directory", "")
+        if out_dir:
+            out_dir = pathlib.Path(out_dir)
+            # Determine the common input path of all files
+            # TODO:
+            #  This will not work with files on different drives under
+            #  Windows.
+            pc = str(self.file_list[0])
+            for pp in self.file_list[1:]:
+                pc = "".join(
+                    [a for (a, b) in zip(str(pp[:len(pc)]), pc) if a == b])
+            pc = pathlib.Path(pc)
+            if not pc.exists():
+                # There is probably just a piece of a file name stem left
+                pc = pc.parent
+            assert pc.exists()
+            # Create a output path list
+            out_list = []
+            for pp in self.file_list:
+                pp = pathlib.Path(pp)
+                relp = pp.relative_to(pc)
+                outp = (out_dir / relp).with_suffix(".h5")
+                if outp in out_list:
+                    ii = 2
+                    while True:
+                        new = outp.with_name(f"{outp.stem}-{ii}.h5")
+                        if new not in out_list:
+                            outp = new
+                            break
+                        ii += 1
+                out_list.append(outp)
+            # Perform the export
+            for pin, pout in zip(self.file_list, out_list):
+                pout.parent.mkdir(parents=True, exist_ok=True)
+                with h5py.File(pout, mode="w") as h5:
+                    fdlist = afmformats.load_data(pin)
+                    for fdist in fdlist:
+                        fdist.export(h5,
+                                     metadata=self.get_metadata_keys(fdist),
+                                     fmt="hdf5")
+            return True
+        else:
+            return False
+
     def _convert_curve(self):
+        """Output all files into one directory, one file per curve"""
         out_dir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent(), "Select output directory", "")
         if out_dir:
@@ -64,6 +113,7 @@ class ConvertDialog(QtWidgets.QDialog):
             return False  # do not close the dialog
 
     def _convert_unaltered(self):
+        """Output all files into one directory (HDF5 only)"""
         out_dir = QtWidgets.QFileDialog.getExistingDirectory(
             self.parent(), "Select output directory", "")
         if out_dir:
@@ -109,6 +159,8 @@ class ConvertDialog(QtWidgets.QDialog):
             return self._convert_unaltered()
         elif self.radioButton_merge.isChecked():
             return self._convert_merge()
+        elif self.radioButton_mirror.isChecked():
+            return self._convert_mirror()
         else:
             return self._convert_curve()
 
