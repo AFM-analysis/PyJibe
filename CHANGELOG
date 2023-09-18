@@ -1,6 +1,7 @@
 0.14.2
  - enh: support mirroring the input directory structure in the data
    conversion tool (#29)
+ - docs: add info about data conversion tool
 0.14.1
  - maintenance release
 0.14.0

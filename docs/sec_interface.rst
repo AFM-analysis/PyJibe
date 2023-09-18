@@ -242,6 +242,15 @@ The button at the bottom starts the PyJibe curve rater which is compatible
 to the nanite rating workflow. If you would like to import your own training
 set, please read the quick guide :ref:`sec_qg_import_ts`.
 
+Tools
+=====
+
+Data conversion
+---------------
+Under *Tools | Convert AFM data...*, you can select raw AFM data files and
+convert them to the CSV or HDF5 file formats. PyJibe uses the :ref:`afmformats
+<afmformats:index>` library to load and save AFM data.
+
 
 Advanced options
 ================

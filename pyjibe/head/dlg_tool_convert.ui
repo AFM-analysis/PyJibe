@@ -45,7 +45,7 @@
      <item>
       <widget class="QToolButton" name="toolButton_browse">
        <property name="text">
-        <string>Browse</string>
+        <string>Browse files</string>
        </property>
       </widget>
      </item>
@@ -57,6 +57,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;You may also drag and drop files and directories into the box below.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QListWidget" name="listWidget">
