@@ -1,3 +1,7 @@
+0.14.3
+ - setup: bump afmformats from 0.16.7 to 0.18.0 (support for specifying
+   custom metadata when opening JPK files)
+ - ci: maintenance
 0.14.2
  - enh: support mirroring the input directory structure in the data
    conversion tool (#29)
