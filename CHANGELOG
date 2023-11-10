@@ -1,3 +1,11 @@
+0.15.0
+ - BREAKING CHANGE: Due to the upgrade of nanite, the rating values,
+   e.g. for the "zef18" dataset might change slightly (on average by
+   about 0.1). If you are excluding curves from your analysis based on
+   rating, please rerun your analysis.
+ - setup: bump nanite from 3.7.0 to 4.0.0 (support training sets that
+   contain nan-values for zero responses and infinity values; minor
+   other fixes)
 0.14.3
  - setup: bump afmformats from 0.16.7 to 0.18.0 (support for specifying
    custom metadata when opening JPK files)
