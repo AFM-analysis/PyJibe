@@ -213,7 +213,7 @@ class Extension:
             # do not load disabled extensions or extensions already loaded
             return
         try:
-            # import the file
+            # import the file and register it
             mod = nmodel.load_model_from_file(self.path, register=True)
             self.data["model"] = mod
         except BaseException:
@@ -225,7 +225,7 @@ class Extension:
     def unload(self):
         """Unload the extension"""
         if "model" in self.data:
-            nmodel.deregister_model(self.data["model"])
+            nmodel.deregister_model(self.data.pop("model"))
 
     def destroy(self):
         """Unload and remove the extension"""
