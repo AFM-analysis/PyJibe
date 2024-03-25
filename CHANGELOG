@@ -1,7 +1,7 @@
 0.15.1
  - fix: properly deregister a model
  - ref: remove iterative "sneddon_spher" model in developer mode
- - setup: bump nanite from 4.0.0 to 4.1.0
+ - setup: bump nanite from 4.0.0 to 4.1.1
 0.15.0
  - BREAKING CHANGE: Due to the upgrade of nanite, the rating values,
    e.g. for the "zef18" dataset might change slightly (on average by
