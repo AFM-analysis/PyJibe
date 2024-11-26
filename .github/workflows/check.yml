@@ -12,24 +12,25 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10']
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     env:
       # Display must be available globally for linux to know where xvfb is
       DISPLAY: :0
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@main
       with:
         fetch-depth: 0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@main
       with:
         python-version: ${{ matrix.python-version }}
     - name: Setup xvfb (Linux)
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+        # Stuff copied wildly from several stackoverflow posts
+        sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 libxcb-shape0 libglib2.0-0 libgl1-mesa-dev
+        sudo apt-get install '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
         # start xvfb in the background
         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
     - name: Install Python dependencies
@@ -37,24 +38,26 @@ jobs:
         # prerequisites
         python -m pip install --upgrade pip wheel
         python -m pip install coverage flake8
-        pip install -r tests/requirements.txt
         # install dependencies
-        pip install -e .
+        pip install .
+        pip install -r tests/requirements.txt
         # show installed packages
         pip freeze
     - name: Start application and print version
+      env:
+        # Display must be available globally for linux to know where xvfb is
+        QT_DEBUG_PLUGINS: 1
       run: |
-        QT_DEBUG_PLUGINS=1 python -m pyjibe --version
+        python -m pyjibe --version
     - name: Test with pytest
       run: |
-        coverage run --source=pyjibe -m pytest tests
+        coverage run --source=pyjibe -m pytest -x tests
     - name: Lint with flake8
       run: |
         flake8 --exclude _version.py .
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-    - name: Create app and check if it runs (macOS)
-      if: runner.os == 'macOS'
-      working-directory: ./build-recipes
-      run: |
-        bash ./macos_build_app.sh PyJibe $(python -m pyjibe --version)
+      uses: codecov/codecov-action@v4
+      # FIXME Limit runtime until
+      # https://github.com/codecov/codecov-action/issues/1316 is resolved
+      timeout-minutes: 1
+      continue-on-error: true

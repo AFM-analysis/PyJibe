@@ -1,5 +1,6 @@
 0.15.2
  - setup: pin matplotlib>=3,3.7.5 until #32 is resolved
+ - build: migrate from appveyor to GHActions
 0.15.1
  - fix: properly deregister a model
  - ref: remove iterative "sneddon_spher" model in developer mode
