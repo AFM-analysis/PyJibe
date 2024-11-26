@@ -50,6 +50,9 @@ jobs:
       run: |
         python -m pyjibe --version
     - name: Test with pytest
+      env:
+        # github token required for testing update.py
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage run --source=pyjibe -m pytest -x tests
     - name: Lint with flake8
