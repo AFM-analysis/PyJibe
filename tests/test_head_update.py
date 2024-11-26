@@ -1,5 +1,4 @@
 import encodings.idna  # noqa: F401
-import os
 import socket
 
 import pytest
