@@ -26,7 +26,8 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["afmformats>=0.18.0",
                       "nanite>=4.1.1",
-                      "matplotlib>=3",  # NavigationToolbar2QT mod
+                      # https://github.com/AFM-analysis/PyJibe/issues/32
+                      "matplotlib>=3,3.7.5",  # NavigationToolbar2QT mod
                       "packaging",  # for version checking during update
                       "pyqt5",
                       ],
