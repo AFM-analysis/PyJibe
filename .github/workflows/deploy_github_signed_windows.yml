@@ -47,9 +47,6 @@ jobs:
       shell: bash
       run: |
         rm ./build-recipes/dist/PyJibe/PyJibe.exe
-        echo ${{ toJSON('0.1.2') }}
-        echo "${{ env.RELEASE_VERSION }}"
-        echo '${{ env.RELEASE_VERSION }}'
     - name: Sign Windows executable
       uses: signpath/github-action-submit-signing-request@v1
       with:
@@ -89,11 +86,6 @@ jobs:
         output-artifact-directory: 'build-recipes/Output'
         parameters: |
           Version: "${{ env.RELEASE_VERSION }}"
-    - name: Rename windows installer to signed
-      shell: bash
-      run: |
-        pushd ./build-recipes/Output/
-        for file in *.exe ; do mv $file ${file//PyJibe/PyJibe_signed} ; done
     - name: Release Assets
       uses: softprops/action-gh-release@v1
       with:
@@ -101,6 +93,4 @@ jobs:
         draft: true
         prerelease: false
         files: |
-          ./build-recipes/dist/*.dmg
-          ./build-recipes/dist/*.pkg
           ./build-recipes/Output/*.exe

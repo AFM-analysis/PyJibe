@@ -21,7 +21,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={localappdata}\{#MyAppPublisher}{#MyAppName}
+DefaultDirName={autopf}\{#MyAppName}
 DisableDirPage=yes
 UsePreviousAppDir=false
 DefaultGroupName={#MyAppName}
@@ -31,7 +31,8 @@ Compression=lzma
 SolidCompression=yes
 ChangesAssociations=yes
 PrivilegesRequired=lowest
-
+PrivilegesRequiredOverridesAllowed=dialog
+WizardStyle=modern
 
 [Registry]
 Root: HKCU; Subkey: ".jpk-force"; ValueType: string; ValueName: ""; ValueData: "{#MyAppName}"; Flags: uninsdeletevalue

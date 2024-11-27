@@ -3,9 +3,7 @@ Code Signing Policy
 
 PyJibe uses free code signing provided by `SignPath.io <https://about.signpath.io/>`_,
 certificate by `SignPath Foundation <https://signpath.org/>`_. These binaries
-are named `PyJibe_signed` on the `release page <https://github.com/AFM-analysis/PyJibe/releases>`_.
-You should prefer downloading these signed binaries for a smooth installation
-process and an uninterrupted user experience.
+can be downloaded from the `release page <https://github.com/AFM-analysis/PyJibe/releases>`_.
 
 
 Project Integrity

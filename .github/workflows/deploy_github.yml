@@ -58,4 +58,4 @@ jobs:
         files: |
           ./build-recipes/dist/*.dmg
           ./build-recipes/dist/*.pkg
-          ./build-recipes/Output/*.exe
+#          ./build-recipes/Output/*.exe

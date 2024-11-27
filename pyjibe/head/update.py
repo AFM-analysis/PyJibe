@@ -66,11 +66,7 @@ def check_release(ghrepo="user/repo", version=None, timeout=20):
                 if hasattr(sys, "frozen"):
                     # determine which binary URL we need
                     if sys.platform == "win32":
-                        nbit = 8 * struct.calcsize("P")
-                        if nbit == 32:
-                            dlid = "win_32bit_setup.exe"
-                        else:
-                            dlid = "win_64bit_setup.exe"
+                        dlid = "win_64bit_setup.exe"
                     elif sys.platform == "darwin":
                         dlid = ".pkg"
                     else:
