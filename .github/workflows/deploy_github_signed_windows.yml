@@ -76,6 +76,7 @@ jobs:
         name: pyjibe-installer
         path: ./build-recipes/Output/*.exe
     - name: Remove unsigned windows installer
+      shell: bash
       run: |
         rm -rf ./build-recipes/Output/*.exe
     - name: Sign Windows installer
