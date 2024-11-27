@@ -1,3 +1,5 @@
+0.15.4
+ - build: fix signpath integration with test certificate
 0.15.3
  - build: finish signpath integration with test certificate
 0.15.2
