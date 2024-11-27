@@ -62,6 +62,7 @@ jobs:
         output-artifact-directory: 'build-recipes/dist/PyJibe'
         parameters: |
           Version: ${{ toJSON('0.15.2') }}
+          Release_Tag: "0.15.2"
 #          Version: ${{ toJSON(env.RELEASE_VERSION) }}
     - name: Create Windows installer
       working-directory: ./build-recipes
@@ -89,6 +90,7 @@ jobs:
         output-artifact-directory: 'build-recipes/Output'
         parameters: |
           Version: ${{ toJSON('0.15.2') }}
+          Release_Tag: "0.15.2"
 #          Version: ${{ toJSON(env.RELEASE_VERSION) }}
     - name: Rename windows installer to signed
       shell: bash
