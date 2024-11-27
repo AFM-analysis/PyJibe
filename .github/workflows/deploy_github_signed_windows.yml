@@ -5,6 +5,7 @@ name: Deploy Signed Windows Installer to GitHub Releases
 #    workflows: [Deploy to GitHub Releases]
 #    types:
 #      - completed
+
 on:
   push:
 
