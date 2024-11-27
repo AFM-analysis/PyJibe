@@ -26,6 +26,7 @@ Documentation
 .. toctree::
    :maxdepth: 1
 
+   sec_code_signing
    sec_changelog
    z_bib
 

@@ -10,27 +10,22 @@ microscopy data.
 
 Documentation
 -------------
-
 The documentation, including the code reference and examples, is available at
 `pyjibe.readthedocs.io <https://pyjibe.readthedocs.io/en/stable/>`__.
 
 
 Installation
 ------------
+You can find pre-built binaries on the `release page <https://github.com/AFM-analysis/PyJibe/releases/latest>`__.
+If you have Python installed, you may also install via
 
 ::
 
+    # install PyJibe
     pip install pyjibe
+    # start PyJibe
+    python -m pyjibe
 
-
-Testing
--------
-
-::
-
-    pip install -e .
-    python setup.py test
-    
 
 .. |PyJibe| image:: https://raw.github.com/AFM-analysis/PyJibe/master/docs/logo/PyJibe.png
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/PyJibe.svg
