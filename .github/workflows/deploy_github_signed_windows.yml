@@ -57,7 +57,6 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/dist/PyJibe'
         parameters: |
-          # must be JSON, but we cannot nest env in a `toJSON` call
           Version: '"${{ env.RELEASE_VERSION }}"'
           Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Create Windows installer
@@ -86,7 +85,6 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/Output'
         parameters: |
-          # must be JSON, but we cannot nest env in a `toJSON` call
           Version: '"${{ env.RELEASE_VERSION }}"'
           Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Rename windows installer to signed
