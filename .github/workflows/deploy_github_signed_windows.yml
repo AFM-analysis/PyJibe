@@ -1,10 +1,13 @@
 name: Deploy Signed Windows Installer to GitHub Releases
 
+#on:
+#  workflow_run:
+#    workflows: [Deploy to GitHub Releases]
+#    types:
+#      - completed
+
 on:
-  workflow_run:
-    workflows: [Deploy to GitHub Releases]
-    types:
-      - completed
+  push:
 
 env:
   PYINSTALLER_COMPILE_BOOTLOADER: 1
@@ -43,10 +46,10 @@ jobs:
       uses: actions/upload-artifact@v4.4.3
       with:
         name: pyjibe-executable
-        path: dist/PyJibe/PyJibe.exe
+        path: ./build-recipes/dist/PyJibe/PyJibe.exe
     - name: Remove unsigned windows binary
       run: |
-        rm dist/PyJibe/PyJibe.exe
+        rm ./build-recipes/dist/PyJibe/PyJibe.exe
     - name: Sign Windows executable
       uses: signpath/github-action-submit-signing-request@v1
       with:
@@ -56,7 +59,7 @@ jobs:
         signing-policy-slug: 'test-signing'
         github-artifact-id: '${{steps.uploadBinaryArtifact.outputs.artifact-id}}'
         wait-for-completion: true
-        output-artifact-directory: 'dist/PyJibe'
+        output-artifact-directory: 'build-recipes/dist/PyJibe'
         parameters: |
           Version: ${{ toJSON(vars.version) }}
     - name: Create Windows installer
@@ -90,15 +93,15 @@ jobs:
       run: |
         pushd ./build-recipes/Output/
         for file in *.exe ; do mv $file ${file//PyJibe/PyJibe_signed} ; done
-    - name: Release Assets
-      uses: softprops/action-gh-release@v1
-      with:
-        name: PyJibe ${{ env.RELEASE_VERSION }}
-        draft: true
-        prerelease: false
-        append_body: |
-            For signed installers, please read the [Code Signing Policy](https://pyjibe.readthedocs.io/en/stable/code_signing.html).
-        files: |
-          ./build-recipes/dist/*.dmg
-          ./build-recipes/dist/*.pkg
-          ./build-recipes/Output/*.exe
+#    - name: Release Assets
+#      uses: softprops/action-gh-release@v1
+#      with:
+#        name: PyJibe ${{ env.RELEASE_VERSION }}
+#        draft: true
+#        prerelease: false
+#        append_body: |
+#            For signed installers, please read the [Code Signing Policy](https://pyjibe.readthedocs.io/en/stable/code_signing.html).
+#        files: |
+#          ./build-recipes/dist/*.dmg
+#          ./build-recipes/dist/*.pkg
+#          ./build-recipes/Output/*.exe
