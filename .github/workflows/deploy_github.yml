@@ -53,6 +53,8 @@ jobs:
         prerelease: false
         body: |
             ![](https://img.shields.io/github/downloads/AFM-analysis/PyJibe/${{ env.RELEASE_VERSION }}/total.svg)
+
+            For signed installers, please read the [Code Signing Policy](https://pyjibe.readthedocs.io/en/stable/code_signing.html).
         files: |
           ./build-recipes/dist/*.dmg
           ./build-recipes/dist/*.pkg

@@ -1,10 +1,9 @@
 name: Deploy Signed Windows Installer to GitHub Releases
 
 on:
-  workflow_run:
-    workflows: [Deploy to GitHub Releases]
-    types:
-      - completed
+  push:
+    tags:
+      - '*'
 
 env:
   PYINSTALLER_COMPILE_BOOTLOADER: 1
@@ -58,8 +57,9 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/dist/PyJibe'
         parameters: |
-          Version: ${{ toJSON(env.RELEASE_VERSION) }}
-          Release_Tag: env.RELEASE_VERSION
+          # must be JSON, but we cannot nest env in a `toJSON` call
+          Version: '"${{ env.RELEASE_VERSION }}"'
+          Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Create Windows installer
       working-directory: ./build-recipes
       run: |
@@ -86,8 +86,9 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/Output'
         parameters: |
-          Version: ${{ toJSON(env.RELEASE_VERSION) }}
-          Release_Tag: env.RELEASE_VERSION
+          # must be JSON, but we cannot nest env in a `toJSON` call
+          Version: '"${{ env.RELEASE_VERSION }}"'
+          Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Rename windows installer to signed
       shell: bash
       run: |
@@ -99,8 +100,6 @@ jobs:
         name: PyJibe ${{ env.RELEASE_VERSION }}
         draft: true
         prerelease: false
-        append_body: |
-            For signed installers, please read the [Code Signing Policy](https://pyjibe.readthedocs.io/en/stable/code_signing.html).
         files: |
           ./build-recipes/dist/*.dmg
           ./build-recipes/dist/*.pkg
