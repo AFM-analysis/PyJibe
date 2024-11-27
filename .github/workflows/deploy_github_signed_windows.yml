@@ -44,8 +44,12 @@ jobs:
         name: pyjibe-executable
         path: ./build-recipes/dist/PyJibe/PyJibe.exe
     - name: Remove unsigned windows binary
+      shell: bash
       run: |
         rm ./build-recipes/dist/PyJibe/PyJibe.exe
+        echo ${{ toJSON('0.1.2') }}
+        echo "${{ env.RELEASE_VERSION }}"
+        echo '${{ env.RELEASE_VERSION }}'
     - name: Sign Windows executable
       uses: signpath/github-action-submit-signing-request@v1
       with:
@@ -57,7 +61,7 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/dist/PyJibe'
         parameters: |
-          Version: '"${{ env.RELEASE_VERSION }}"'
+          Version: "${{ env.RELEASE_VERSION }}"
           Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Create Windows installer
       working-directory: ./build-recipes
@@ -85,7 +89,7 @@ jobs:
         wait-for-completion: true
         output-artifact-directory: 'build-recipes/Output'
         parameters: |
-          Version: '"${{ env.RELEASE_VERSION }}"'
+          Version: "${{ env.RELEASE_VERSION }}"
           Release_Tag: ${{ env.RELEASE_VERSION }}
     - name: Rename windows installer to signed
       shell: bash
