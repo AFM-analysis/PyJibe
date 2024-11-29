@@ -22,7 +22,7 @@ requires-python = ">=3.10, <4"
 keywords = ["atomic force microscopy", "biomechanics"]
 classifiers = [
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3',
     'Topic :: Scientific/Engineering :: Visualization',
     'Intended Audience :: Science/Research'
 ]
