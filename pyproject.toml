@@ -1,0 +1,51 @@
+[build-system]
+# Defined by PEP 518:
+requires = [
+    # for version management
+    "setuptools>=45",
+    "setuptools_scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyjibe"
+authors = [
+    # In alphabetical order.
+    {name = "Paul Müller"},
+]
+maintainers = [
+    {name = "Paul Müller", email="dev@craban.de"},
+]
+description = "Graphical user interface for Bio-AFM analysis"
+readme = "README.rst"
+requires-python = ">=3.10, <4"
+keywords = ["atomic force microscopy", "biomechanics"]
+classifiers = [
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3',
+    'Topic :: Scientific/Engineering :: Visualization',
+    'Intended Audience :: Science/Research'
+]
+license = {text = "GPL version 3.0 or later"}
+dependencies = [
+    "afmformats>=0.18.0",
+    "nanite>=4.1.1",
+    # https://github.com/AFM-analysis/PyJibe/issues/32
+    "matplotlib>=3,<3.7.5",  # NavigationToolbar2QT mod
+    "packaging",  # for version checking during update
+    "pyqt5",
+]
+dynamic = ["version"]
+
+[project.scripts]
+pyjibe = "pyjibe.__main__:main"
+
+[project.urls]
+source = "https://github.com/AFM-analysis/PyJibe"
+tracker = "https://github.com/AFM-analysis/PyJibe/Issues"
+documentation = "https://pyjibe.readthedocs.io/en/stable/"
+changelog = "https://pyjibe.readthedocs.io/en/stable/sec_changelog.html"
+
+[tool.setuptools_scm]
+write_to = "pyjibe/_version.py"
+version_scheme = "post-release"

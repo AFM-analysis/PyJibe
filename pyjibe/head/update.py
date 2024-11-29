@@ -1,6 +1,5 @@
 import json
 import os
-import struct
 import sys
 import traceback
 import urllib.request

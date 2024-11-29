@@ -106,3 +106,5 @@ _version_save.py
 *.bib.bak
 
 .idea
+
+pyjibe/_version.py
