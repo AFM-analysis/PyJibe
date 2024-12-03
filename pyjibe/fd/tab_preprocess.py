@@ -1,7 +1,7 @@
 import pkg_resources
 
 from nanite import preproc
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt6 import uic, QtCore, QtWidgets
 
 from .widget_preprocess_item import WidgetPreprocessItem
 
@@ -23,9 +23,11 @@ class TabPreprocess(QtWidgets.QWidget):
             self._map_widgets_to_preproc_ids[pwidget] = pid
             self.layout_preproc_area.addWidget(pwidget)
             pwidget.preproc_step_changed.connect(self.on_preproc_step_changed)
-        spacer_item = QtWidgets.QSpacerItem(20, 0,
-                                            QtWidgets.QSizePolicy.Minimum,
-                                            QtWidgets.QSizePolicy.Expanding)
+        spacer_item = QtWidgets.QSpacerItem(
+            20, 0,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding
+        )
         self.layout_preproc_area.addItem(spacer_item)
 
         # Add recommended item (see `self.preproc_set_preset`)

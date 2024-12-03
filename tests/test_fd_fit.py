@@ -6,7 +6,7 @@ import tempfile
 import nanite.model as nmodel
 import numpy as np
 import pytest
-from PyQt5 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 
 import pyjibe.head
 
@@ -35,7 +35,7 @@ def test_ancillary_update_init(qtbot):
         # perform simple filter
         war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
-        war.tab_fit.cb_weight_cp.setCheckState(0)
+        war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
         # set mock model
         idx = war.tab_fit.cb_model.findData("test1")
         war.tab_fit.cb_model.setCurrentIndex(idx)
@@ -75,7 +75,7 @@ def test_ancillary_update_nan(qtbot):
         # perform simple filter
         war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
-        war.tab_fit.cb_weight_cp.setCheckState(0)
+        war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
         # set mock model
         idx = war.tab_fit.cb_model.findData("test1")
         war.tab_fit.cb_model.setCurrentIndex(idx)
@@ -105,7 +105,7 @@ def test_ancillary_update_preproc_change(qtbot):
         # perform simple filter
         war.tab_preprocess.set_preprocessing(["compute_tip_position"])
         # disable weighting
-        war.tab_fit.cb_weight_cp.setCheckState(0)
+        war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
         # set mock model
         idx = war.tab_fit.cb_model.findData("test1")
         war.tab_fit.cb_model.setCurrentIndex(idx)
@@ -159,7 +159,8 @@ def test_apply_and_fit_all_with_bad_data(qtbot, monkeypatch):
         ["compute_tip_position", "correct_force_offset", "correct_tip_offset"])
 
     # Hit "apply model and fit all"
-    qtbot.mouseClick(war.btn_fitall, QtCore.Qt.LeftButton, delay=200)
+    qtbot.mouseClick(war.btn_fitall, QtCore.Qt.MouseButton.LeftButton,
+                     delay=200)
 
     # make sure that we got that message
     assert message_list
@@ -207,9 +208,9 @@ def test_remember_initial_params(qtbot):
     # set initial parameters in user interface
     itab = war.tab_fit.table_parameters_initial
     # disable weighting
-    war.tab_fit.cb_weight_cp.setCheckState(0)
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
     # enable fitting of force offset
-    itab.item(4, 0).setCheckState(0)
+    itab.item(4, 0).setCheckState(QtCore.Qt.CheckState.Unchecked)
     # set better value for contact point
     itab.item(3, 1).setText(str(18000))
     # change standard tip radius from 10 to 5

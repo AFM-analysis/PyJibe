@@ -1,7 +1,7 @@
 import pkg_resources
 
 import numpy as np
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt6 import uic, QtCore, QtWidgets
 
 from .. import units
 from .mpl_edelta import MPLEDelta

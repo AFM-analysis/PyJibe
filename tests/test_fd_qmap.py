@@ -1,5 +1,5 @@
 """Test of data set functionalities"""
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 import pyjibe.head
 
@@ -13,6 +13,6 @@ def test_qmap_with_unused_curves(qtbot):
     war = main_window.subwindows[0].widget()
     # uncheck first curve
     cl1 = war.list_curves.currentItem()
-    cl1.setCheckState(3, QtCore.Qt.Unchecked)
+    cl1.setCheckState(3, QtCore.Qt.CheckState.Unchecked)
     war.tabs.setCurrentIndex(5)
     QtWidgets.QApplication.processEvents()

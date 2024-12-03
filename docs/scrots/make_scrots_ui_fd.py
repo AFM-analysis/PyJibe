@@ -2,8 +2,8 @@
 import pathlib
 import sys
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 
 jpkfiles = [pathlib.Path("map-data-2015.05.21-18.16.49.170.jpk-force-map")]
@@ -18,7 +18,7 @@ def cleanup_autosave(jpkfile):
 
 
 app = QApplication(sys.argv)
-QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
+QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Language.C))
 mw = PyJibe()
 mw.settings.setValue("check for updates", 0)
 mw.settings.setValue("advanced/developer mode", "0")

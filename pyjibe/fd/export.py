@@ -6,7 +6,7 @@ import numpy as np
 
 from afmformats import meta
 import nanite.model as nmodel
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 from .. import units
 
@@ -34,7 +34,6 @@ def save_tsv_metadata_results(filename, fdist_list, which=EXPORT_CHOICES):
         raise ValueError("Found invalid export choices.")
 
     settings = QtCore.QSettings()
-    settings.setIniCodec("utf-8")
     dev_mode = bool(int(settings.value("advanced/developer mode", "0")))
 
     size = len(fdist_list)

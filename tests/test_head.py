@@ -39,7 +39,7 @@ def test_rem_subwindow(qtbot):
 
     mw = pyjibe.head.PyJibe()
 
-    with mock.patch("PyQt5.QtWidgets.QFileDialog.getOpenFileNames",
+    with mock.patch("PyQt6.QtWidgets.QFileDialog.getOpenFileNames",
                     mock_get_open_filenames):
         mw.on_open_single()
 
@@ -56,7 +56,7 @@ def test_rem_subwindow(qtbot):
 
 @pytest.mark.skipif(sys.version_info < (3, 8), reason="requires python>=3.8")
 def test_on_about(qtbot):
-    with mock.patch("PyQt5.QtWidgets.QMessageBox.about") as mock_about:
+    with mock.patch("PyQt6.QtWidgets.QMessageBox.about") as mock_about:
         mw = pyjibe.head.PyJibe()
         mw.on_about()
         mw.close()
@@ -92,7 +92,7 @@ def test_on_open_bulk(qtbot):
                     "DirectoryDialogMultiSelect.selectedFiles",
                     mock_selected_files):
         with mock.patch("pyjibe.head.custom_widgets."
-                        "DirectoryDialogMultiSelect.exec_"):
+                        "DirectoryDialogMultiSelect.exec"):
             mw.on_open_bulk()
 
     assert len(mw.subwindows) == 1
@@ -112,8 +112,8 @@ def test_on_open_bulk_no_data(qtbot):
                     "DirectoryDialogMultiSelect.selectedFiles",
                     mock_selected_files):
         with mock.patch("pyjibe.head.custom_widgets."
-                        "DirectoryDialogMultiSelect.exec_"):
-            with mock.patch("PyQt5.QtWidgets.QMessageBox.warning") as warn:
+                        "DirectoryDialogMultiSelect.exec"):
+            with mock.patch("PyQt6.QtWidgets.QMessageBox.warning") as warn:
                 mw.on_open_bulk()
                 assert warn.call_args.args[1] == "No AFM data found!"
 
@@ -140,7 +140,7 @@ def test_on_open_multiple(qtbot):
                     "DirectoryDialogMultiSelect.selectedFiles",
                     mock_selected_files):
         with mock.patch("pyjibe.head.custom_widgets."
-                        "DirectoryDialogMultiSelect.exec_"):
+                        "DirectoryDialogMultiSelect.exec"):
             mw.on_open_multiple()
 
     assert len(mw.subwindows) == 3
@@ -158,7 +158,7 @@ def test_on_open_single(qtbot):
 
     mw = pyjibe.head.PyJibe()
 
-    with mock.patch("PyQt5.QtWidgets.QFileDialog.getOpenFileNames",
+    with mock.patch("PyQt6.QtWidgets.QFileDialog.getOpenFileNames",
                     mock_get_open_filenames):
         mw.on_open_single()
 
@@ -172,7 +172,7 @@ def test_on_open_single(qtbot):
 def test_on_software(qtbot):
     mw = pyjibe.head.PyJibe()
 
-    with mock.patch("PyQt5.QtWidgets.QMessageBox.information") as info:
+    with mock.patch("PyQt6.QtWidgets.QMessageBox.information") as info:
         mw.on_software()
         assert info.call_args.args[1] == "Software"
         assert info.call_args.args[2].count(f"PyJibe {pyjibe.__version__}")

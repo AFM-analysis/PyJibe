@@ -2,8 +2,8 @@
 import pathlib
 import sys
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 from pyjibe.head import preferences
 
@@ -11,7 +11,7 @@ data_path = pathlib.Path(__file__).resolve().parent / ".." / "data"
 
 app = QApplication(sys.argv)
 
-QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
+QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Language.C))
 
 mw = PyJibe()
 mw.settings.setValue("check for updates", 0)

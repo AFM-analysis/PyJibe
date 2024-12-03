@@ -6,8 +6,8 @@ from matplotlib.backends.backend_qt5agg import (
 
 import nanite.fit as nfit
 import numpy as np
-from PyQt5.QtWidgets import QApplication
-from PyQt5 import QtCore
+from PyQt6.QtWidgets import QApplication
+from PyQt6 import QtCore
 
 
 from .. import units
@@ -76,7 +76,7 @@ class MPLEDelta(object):
         self._update_in_progress_active = fdist
         if fdist in self._update_in_progress_locks:
             QApplication.instance().processEvents(
-                QtCore.QEventLoop.AllEvents, 300)
+                QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
         else:
             self._update_in_progress_locks[fdist] = True
             def cbfdist(e, d): return self.update_plot(e, d, fdist=fdist)
@@ -123,4 +123,5 @@ class MPLEDelta(object):
             self.plot_data[:, 0] = indentations
             self.plot_data[:, 1] = emoduli
 
-            QApplication.processEvents(QtCore.QEventLoop.AllEvents, 300)
+            QApplication.processEvents(
+                QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
