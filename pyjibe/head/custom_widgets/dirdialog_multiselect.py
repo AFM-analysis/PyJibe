@@ -1,26 +1,28 @@
 import pathlib
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 
 class DirectoryDialogMultiSelect(QtWidgets.QFileDialog):
     def __init__(self, *args):
         """A dialog that lets the user select multiple directories"""
         QtWidgets.QFileDialog.__init__(self, *args)
-        self.setOption(self.DontUseNativeDialog, True)
-        self.setFileMode(self.DirectoryOnly)
+        self.setOption(self.Option.DontUseNativeDialog, True)
+        self.setFileMode(self.FileMode.Directory)
 
         self.tree = self.findChild(QtWidgets.QTreeView)
-        self.tree.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.tree.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         self.list = self.findChild(QtWidgets.QListView)
-        self.list.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.list.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         for view in self.findChildren((QtWidgets.QListView,
                                        QtWidgets.QTreeView)):
-            if isinstance(view.model(), QtWidgets.QFileSystemModel):
+            if isinstance(view.model(), QtGui.QFileSystemModel):
                 view.setSelectionMode(
-                    QtWidgets.QAbstractItemView.MultiSelection)
+                    QtWidgets.QAbstractItemView.SelectionMode.MultiSelection)
 
         # Add common directories in the sidebar
         sidebar_urls = self.sidebarUrls()

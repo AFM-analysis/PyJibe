@@ -2,7 +2,7 @@ import shutil
 import tempfile
 import time
 
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 TMPDIR = tempfile.mkdtemp(prefix=time.strftime(
     "pyjibe_test_%H.%M_"))
@@ -18,9 +18,8 @@ def pytest_configure(config):
     QtCore.QCoreApplication.setOrganizationName("AFM-Analysis")
     QtCore.QCoreApplication.setOrganizationDomain("pyjibe.mpl.mpg.de")
     QtCore.QCoreApplication.setApplicationName("PyJibe")
-    QtCore.QSettings.setDefaultFormat(QtCore.QSettings.IniFormat)
+    QtCore.QSettings.setDefaultFormat(QtCore.QSettings.Format.IniFormat)
     settings = QtCore.QSettings()
-    settings.setIniCodec("utf-8")
     settings.setValue("check for updates", 0)
     settings.sync()
     # set global temp directory
@@ -34,8 +33,6 @@ def pytest_unconfigure(config):
     QtCore.QCoreApplication.setOrganizationName("AFM-Analysis")
     QtCore.QCoreApplication.setOrganizationDomain("pyjibe.mpl.mpg.de")
     QtCore.QCoreApplication.setApplicationName("PyJibe")
-    QtCore.QSettings.setDefaultFormat(QtCore.QSettings.IniFormat)
-    settings = QtCore.QSettings()
-    settings.setIniCodec("utf-8")
+    QtCore.QSettings.setDefaultFormat(QtCore.QSettings.Format.IniFormat)
     # clear global temp directory
     shutil.rmtree(TMPDIR, ignore_errors=True)

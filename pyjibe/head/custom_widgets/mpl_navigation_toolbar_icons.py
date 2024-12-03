@@ -1,7 +1,7 @@
 import os
 import pkg_resources
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import cbook

@@ -1,6 +1,6 @@
 import numpy as np
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt6 import QtWidgets, QtCore
 
 
 class InfDoubleSlider(QtWidgets.QSlider):

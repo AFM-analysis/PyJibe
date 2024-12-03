@@ -9,7 +9,7 @@ from matplotlib.backends.backend_qt5agg import (
 import matplotlib.patches as mpatches
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 
 from ..head import custom_widgets

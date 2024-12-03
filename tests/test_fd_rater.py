@@ -5,7 +5,7 @@ import tempfile
 from unittest import mock
 
 import h5py
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 import pyjibe.head
 
@@ -22,7 +22,7 @@ def test_rater_basic(qtbot):
     war = mw.subwindows[0].widget()
 
     h5out = pathlib.Path(tempfile.mkdtemp(prefix="rate_")) / "rate.h5"
-    with mock.patch("PyQt5.QtWidgets.QFileDialog.getSaveFileName",
+    with mock.patch("PyQt6.QtWidgets.QFileDialog.getSaveFileName",
                     lambda *args, **kwargs: (str(h5out), None)):
         war.on_user_rate()
 
@@ -31,16 +31,16 @@ def test_rater_basic(qtbot):
     # fill in a few values
     assert rater.sp_rating.value() == -1
     rater.sp_rating.setValue(8)
-    qtbot.mouseClick(rater.btn_next, QtCore.Qt.LeftButton)
+    qtbot.mouseClick(rater.btn_next, QtCore.Qt.MouseButton.LeftButton)
     assert rater.curve_index.value() == 2
     assert rater.sp_rating.value() == -1
     rater.text_comment.setPlainText("peter")
-    qtbot.mouseClick(rater.btn_prev, QtCore.Qt.LeftButton)
+    qtbot.mouseClick(rater.btn_prev, QtCore.Qt.MouseButton.LeftButton)
     assert rater.curve_index.value() == 1
     assert rater.sp_rating.value() == 8
     assert rater.text_comment.toPlainText() == ""
-    qtbot.mouseClick(rater.btn_next, QtCore.Qt.LeftButton)
-    qtbot.mouseClick(rater.btn_next, QtCore.Qt.LeftButton)
+    qtbot.mouseClick(rater.btn_next, QtCore.Qt.MouseButton.LeftButton)
+    qtbot.mouseClick(rater.btn_next, QtCore.Qt.MouseButton.LeftButton)
     assert rater.curve_index.value() == 3
     assert rater.sp_rating.value() == -1
     mw.close()

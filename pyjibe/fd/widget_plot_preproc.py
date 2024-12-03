@@ -1,6 +1,6 @@
 """Widget containing preprocessing plot"""
 from nanite import preproc
-from PyQt5 import QtWidgets
+from PyQt6 import QtWidgets
 
 from .mpl_preproc import MPLPreproc
 

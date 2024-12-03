@@ -2,7 +2,7 @@ import pkg_resources
 
 import nanite.model as nmodel
 import numpy as np
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt6 import uic, QtCore, QtWidgets
 
 from .. import units
 
@@ -20,7 +20,6 @@ class TabFit(QtWidgets.QWidget):
         models_av = list(nmodel.models_available.keys())
         # Exact spherical model is only available in developer mode
         self.settings = QtCore.QSettings()
-        self.settings.setIniCodec("utf-8")
         dev_mode = bool(int(
             self.settings.value("advanced/developer mode", "0")))
         exp_mode = bool(int(
@@ -108,10 +107,12 @@ class TabFit(QtWidgets.QWidget):
                 value_text = "{:.5g}".format(anc[ak] * scale)
                 atab.verticalHeaderItem(row).setText(label)
                 if rows_changed:
-                    atab.item(row, 0).setCheckState(QtCore.Qt.Checked)
+                    atab.item(row, 0).setCheckState(
+                        QtCore.Qt.CheckState.Checked)
                 atab.item(row, 1).setText(value_text)
                 # updates initial parameters if "use" is checked
-                if atab.item(row, 0).checkState() == QtCore.Qt.Checked:
+                if (atab.item(row, 0).checkState() ==
+                        QtCore.Qt.CheckState.Checked):
                     # update initial parameters
                     for rr in range(itab.rowCount()):
                         if itab.verticalHeaderItem(rr).text() == label:
@@ -154,14 +155,14 @@ class TabFit(QtWidgets.QWidget):
                 else:
                     item = table.item(rr, cc)
                 if cc == 0 and cb_first:
-                    item.setFlags(QtCore.Qt.ItemIsUserCheckable
-                                  | QtCore.Qt.ItemIsEnabled
-                                  | QtCore.Qt.ItemIsEditable)
+                    item.setFlags(QtCore.Qt.ItemFlag.ItemIsUserCheckable
+                                  | QtCore.Qt.ItemFlag.ItemIsEnabled
+                                  | QtCore.Qt.ItemFlag.ItemIsEditable)
                 elif read_only:
-                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled)
                 else:
-                    item.setFlags(QtCore.Qt.ItemIsEnabled
-                                  | QtCore.Qt.ItemIsEditable)
+                    item.setFlags(QtCore.Qt.ItemFlag.ItemIsEnabled
+                                  | QtCore.Qt.ItemFlag.ItemIsEditable)
 
         return rows_changed
 
@@ -324,7 +325,7 @@ class TabFit(QtWidgets.QWidget):
                     if itab.verticalHeaderItem(rr).text() == label:
                         # update parameter `p`
                         state = itab.item(rr, 0).checkState()
-                        if state == QtCore.Qt.Unchecked:
+                        if state == QtCore.Qt.CheckState.Unchecked:
                             p.vary = True
                         else:
                             p.vary = False
@@ -381,9 +382,9 @@ class TabFit(QtWidgets.QWidget):
             label = units.hrscname(hrname, si_unit=si_unit)
             itab.verticalHeaderItem(ii).setText(label)
             if p.vary:
-                state = QtCore.Qt.Unchecked
+                state = QtCore.Qt.CheckState.Unchecked
             else:
-                state = QtCore.Qt.Checked
+                state = QtCore.Qt.CheckState.Checked
             itab.item(ii, 0).setCheckState(state)
             itab.item(ii, 1).setText("{:.5g}".format(p.value * scale))
             itab.item(ii, 2).setText(str(p.min * scale))
@@ -393,8 +394,8 @@ class TabFit(QtWidgets.QWidget):
                 for jj in range(4):
                     item = itab.item(ii, jj)
                     if jj == 0:  # check box
-                        item.setCheckState(QtCore.Qt.Unchecked)
-                    item.setFlags(QtCore.Qt.NoItemFlags)
+                        item.setCheckState(QtCore.Qt.CheckState.Unchecked)
+                    item.setFlags(QtCore.Qt.ItemFlag.NoItemFlags)
 
         itab.blockSignals(False)
 

@@ -4,7 +4,7 @@ import pkg_resources
 from afmformats import meta
 from nanite import model
 import numpy as np
-from PyQt5 import uic, QtWidgets
+from PyQt6 import uic, QtWidgets
 
 from .. import units
 

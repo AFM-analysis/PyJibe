@@ -1,6 +1,7 @@
 """Test of data set functionalities"""
 import numpy as np
 import pytest
+from PyQt6.QtCore import Qt
 
 import lmfit
 from nanite.model import model_hertz_paraboloidal
@@ -30,9 +31,9 @@ def test_clear_and_verify_data(qtbot):
     # set initial parameters in user interface
     itab = war.tab_fit.table_parameters_initial
     # disable weighting
-    war.tab_fit.cb_weight_cp.setCheckState(0)
+    war.tab_fit.cb_weight_cp.setCheckState(Qt.CheckState.Unchecked)
     # enable fitting of force offset
-    itab.item(4, 0).setCheckState(0)
+    itab.item(4, 0).setCheckState(Qt.CheckState.Unchecked)
     # set better value for contact point
     itab.item(3, 1).setText(str(18000))
     apret = war.data_set[0]

@@ -1,7 +1,7 @@
 import pkg_resources
 
 import nanite
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt6 import uic, QtCore, QtWidgets
 
 from .mpl_qmap import MPLQMap
 
