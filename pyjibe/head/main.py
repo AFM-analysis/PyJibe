@@ -1,7 +1,7 @@
 # flake8: noqa: E402 (matplotlib.use has to be right after the import)
 import os.path as os_path
 import pathlib
-import pkg_resources
+import importlib.resources
 import signal
 import sys
 import traceback
@@ -66,8 +66,9 @@ class PyJibe(QtWidgets.QMainWindow):
         self._update_worker = None
 
         # load ui files
-        path_ui = pkg_resources.resource_filename("pyjibe.head", "main.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.head") / "main.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         self.setWindowTitle("PyJibe {}".format(__version__))
         # Disable native menubar (e.g. on Mac)

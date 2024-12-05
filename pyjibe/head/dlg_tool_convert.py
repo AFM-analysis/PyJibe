@@ -1,7 +1,7 @@
 import codecs
 import hashlib
 import pathlib
-import pkg_resources
+import importlib.resources
 
 import afmformats
 import h5py
@@ -14,9 +14,9 @@ class ConvertDialog(QtWidgets.QDialog):
     def __init__(self, parent, *args, **kwargs):
         """Data conversion dialog"""
         super(ConvertDialog, self).__init__(parent=parent, *args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.head",
-                                                  "dlg_tool_convert.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.head") / "head.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         self._file_list = []
 

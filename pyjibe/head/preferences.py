@@ -1,5 +1,5 @@
 import os.path as os_path
-import pkg_resources
+import importlib.resources
 import traceback
 
 import nanite
@@ -35,9 +35,9 @@ class Preferences(QtWidgets.QDialog):
 
     def __init__(self, parent, *args, **kwargs):
         QtWidgets.QWidget.__init__(self, parent=parent, *args, **kwargs)
-        path_ui = pkg_resources.resource_filename(
-            "pyjibe.head", "preferences.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.head") / "preferences.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
         self.settings = QtCore.QSettings()
         self.parent = parent
 

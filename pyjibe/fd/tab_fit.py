@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 import nanite.model as nmodel
 import numpy as np
@@ -10,9 +10,10 @@ from .. import units
 class TabFit(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabFit, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "tab_fit.ui")
-        uic.loadUi(path_ui, self)
+
+        ref = importlib.resources.files("pyjibe.fd") / "tab_fit.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         # Setup the fitting tab
         id_para = 0
