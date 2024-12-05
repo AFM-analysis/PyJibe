@@ -29,7 +29,7 @@ def main(splash=True):
     # Set Application Icon
     ref = importlib.resources.files("pyjibe.img") / "icon.png"
     with importlib.resources.as_file(ref) as icon_path:
-        app.setWindowIcon(QtGui.QIcon(icon_path))
+        app.setWindowIcon(QtGui.QIcon(str(icon_path)))
 
     # Use dots as decimal separators
     QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
