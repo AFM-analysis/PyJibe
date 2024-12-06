@@ -12,7 +12,7 @@ class ExportDialog(QtWidgets.QDialog):
         """Base class for force-indentation analysis"""
         super(ExportDialog, self).__init__(parent=parent, *args, **kwargs)
 
-        ref = importlib.resources.files("pyjibe.fd") / "ana_filter.ui"
+        ref = importlib.resources.files("pyjibe.fd") / "dlg_export_vals.ui"
         with importlib.resources.as_file(ref) as path_ui:
             uic.loadUi(path_ui, self)
 
