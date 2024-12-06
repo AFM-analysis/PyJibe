@@ -21,8 +21,9 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
         name = name.replace('.png', '_large.png')
         impath = cbook._get_data_path('images', name)
         if not os.path.exists(impath):
-            impath = importlib.resources.files("pyjibe.img") / name
-        pm = QtGui.QPixmap(str(impath))
+            ref = importlib.resources.files("pyjibe.img") / name
+            with importlib.resources.as_file(ref) as impath:
+                pm = QtGui.QPixmap(str(impath))
         pm.setDevicePixelRatio(self.devicePixelRatioF() or 1)
         if self.palette().color(self.backgroundRole()).value() < 128:
             icon_color = self.palette().color(self.foregroundRole())
