@@ -6,10 +6,6 @@ def main(splash=True):
     from PyQt5.QtCore import QEventLoop
 
     app = QApplication(sys.argv)
-    # Note:
-    # Having the image file *not* in a submodule of PyJibe
-    # seems to cause the splash to display earlier, because
-    # presumably `importlib.resources` internally imports modules.
 
     if splash:
         from PyQt5.QtWidgets import QSplashScreen
