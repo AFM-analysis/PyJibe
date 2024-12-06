@@ -14,7 +14,7 @@ class ConvertDialog(QtWidgets.QDialog):
     def __init__(self, parent, *args, **kwargs):
         """Data conversion dialog"""
         super(ConvertDialog, self).__init__(parent=parent, *args, **kwargs)
-        ref = importlib.resources.files("pyjibe.head") / "head.ui"
+        ref = importlib.resources.files("pyjibe.head") / "dlg_tool_convert.ui"
         with importlib.resources.as_file(ref) as path_ui:
             uic.loadUi(path_ui, self)
 
