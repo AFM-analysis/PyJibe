@@ -1,3 +1,5 @@
+0.15.10
+ - ref: migrate from pkg_resources to importlib.resources (#33)
 0.15.9
  - build: fix installation directory
  - build: disable unsigned installer

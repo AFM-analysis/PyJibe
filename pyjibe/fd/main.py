@@ -2,7 +2,7 @@ import hashlib
 import io
 import os
 import pathlib
-import pkg_resources
+import importlib.resources
 import time
 
 import afmformats.errors
@@ -22,9 +22,9 @@ from . import rating_iface
 
 
 # load QWidget from ui file
-dlg_autosave_path = pkg_resources.resource_filename("pyjibe.fd",
-                                                    "dlg_autosave_design.ui")
-DlgAutosave = uic.loadUiType(dlg_autosave_path)[0]
+dlg_ref = importlib.resources.files("pyjibe.fd") / "dlg_autosave_design.ui"
+with importlib.resources.as_file(dlg_ref) as dlg_autosave_path:
+    DlgAutosave = uic.loadUiType(dlg_autosave_path)[0]
 
 
 class UiForceDistance(QtWidgets.QWidget):
@@ -33,8 +33,9 @@ class UiForceDistance(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         """Base class for force-indentation analysis"""
         super(UiForceDistance, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd", "main.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.fd") / "main.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         self.settings = QtCore.QSettings()
         self.settings.setIniCodec("utf-8")
