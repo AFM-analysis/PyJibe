@@ -20,11 +20,12 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
         """Override matplotlibs `_icon` function to get custom icons"""
         name = name.replace('.png', '_large.png')
         impath = cbook._get_data_path('images', name)
-        if not os.path.exists(impath):
+        if os.path.exists(impath):
+            pm = QtGui.QPixmap(str(impath))
+        else:
             ref = importlib.resources.files("pyjibe.img") / name
             with importlib.resources.as_file(ref) as ref_path:
-                impath = ref_path
-        pm = QtGui.QPixmap(str(impath))
+                pm = QtGui.QPixmap(str(ref_path))
         pm.setDevicePixelRatio(self.devicePixelRatioF() or 1)
         if self.palette().color(self.backgroundRole()).value() < 128:
             icon_color = self.palette().color(self.foregroundRole())
