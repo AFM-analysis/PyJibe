@@ -28,7 +28,7 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
             with importlib.resources.as_file(ref) as ref_path:
                 pm = QtGui.QPixmap(str(ref_path))
         if pm is None or pm.isNull():
-            raise ValueError(f"Loaded QPixmap is invalid for: {name}")
+            raise ValueError(f"Could not find image '{name}'")
         pm.setDevicePixelRatio(self.devicePixelRatioF() or 1)
         if self.palette().color(self.backgroundRole()).value() < 128:
             icon_color = self.palette().color(self.foregroundRole())
