@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 import nanite
 from PyQt6 import uic, QtCore, QtWidgets
@@ -23,9 +23,9 @@ class QMapCache:
 class TabQMap(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabQMap, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "tab_qmap.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.fd") / "tab_qmap.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         # Setup the matplotlib interface for 2D map plotting
         self.mpl_qmap = MPLQMap()

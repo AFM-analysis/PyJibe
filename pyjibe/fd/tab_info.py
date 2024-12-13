@@ -1,5 +1,5 @@
 import numbers
-import pkg_resources
+import importlib.resources
 
 from afmformats import meta
 from nanite import model
@@ -12,9 +12,9 @@ from .. import units
 class TabInfo(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabInfo, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "tab_info.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.fd") / "tab_info.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
     def update_info(self, fdist):
         hr_info = {}

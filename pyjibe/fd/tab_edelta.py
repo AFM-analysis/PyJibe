@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 import numpy as np
 from PyQt6 import uic, QtCore, QtWidgets
@@ -10,9 +10,9 @@ from .mpl_edelta import MPLEDelta
 class TabEdelta(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabEdelta, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "tab_edelta.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.fd") / "tab_edelta.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         self.mpl_edelta_setup()
 

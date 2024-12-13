@@ -1,15 +1,15 @@
 import os
 import pathlib
-import pkg_resources
+import importlib.resources
 
 from nanite.rate import io as nio
 from PyQt6 import uic, QtCore, QtWidgets
 
 
 # load QWidget from ui file
-ui_path = pkg_resources.resource_filename("pyjibe.fd",
-                                          "rating_iface.ui")
-UiUserRatingBase = uic.loadUiType(ui_path)[0]
+ui_ref = importlib.resources.files("pyjibe.fd") / "rating_iface.ui"
+with importlib.resources.as_file(ui_ref) as path_ui:
+    UiUserRatingBase = uic.loadUiType(path_ui)[0]
 
 
 class Rater(QtWidgets.QWidget, UiUserRatingBase):

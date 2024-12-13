@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 from nanite import preproc
 from PyQt6 import QtCore, QtWidgets, uic
@@ -12,10 +12,10 @@ class WidgetPreprocessItem(QtWidgets.QWidget):
         """Special widget for preprocessing options"""
         self.identifier = identifier
         super(WidgetPreprocessItem, self).__init__(*args, **kwargs)
-
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "widget_preprocess_item.ui")
-        uic.loadUi(path_ui, self)
+        ref = (importlib.resources.files("pyjibe.fd") /
+               "widget_preprocess_item.ui")
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         # set label text
         name = preproc.get_name(identifier)
