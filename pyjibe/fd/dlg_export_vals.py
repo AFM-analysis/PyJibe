@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 from PyQt5 import uic, QtWidgets
 
@@ -11,9 +11,10 @@ class ExportDialog(QtWidgets.QDialog):
     def __init__(self, parent, fdist_list, identifier, *args, **kwargs):
         """Base class for force-indentation analysis"""
         super(ExportDialog, self).__init__(parent=parent, *args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "dlg_export_vals.ui")
-        uic.loadUi(path_ui, self)
+
+        ref = importlib.resources.files("pyjibe.fd") / "dlg_export_vals.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         self.fdist_list = fdist_list
         self.identifier = identifier

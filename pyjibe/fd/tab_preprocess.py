@@ -1,4 +1,4 @@
-import pkg_resources
+import importlib.resources
 
 from nanite import preproc
 from PyQt5 import uic, QtCore, QtWidgets
@@ -9,9 +9,9 @@ from .widget_preprocess_item import WidgetPreprocessItem
 class TabPreprocess(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(TabPreprocess, self).__init__(*args, **kwargs)
-        path_ui = pkg_resources.resource_filename("pyjibe.fd",
-                                                  "tab_preprocess.ui")
-        uic.loadUi(path_ui, self)
+        ref = importlib.resources.files("pyjibe.fd") / "tab_preprocess.ui"
+        with importlib.resources.as_file(ref) as path_ui:
+            uic.loadUi(path_ui, self)
 
         # Setup everything necessary for the preprocessing tab:
         # Get list of preprocessing methods
