@@ -66,7 +66,7 @@ class Preferences(QtWidgets.QDialog):
             QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.btn_ok.clicked.connect(self.on_settings_apply)
         self.btn_restore = self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.RestoreDefaults)
+            QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults)
         self.btn_restore.clicked.connect(self.on_settings_restore)
         # extension buttons
         self.checkBox_ext_enabled.clicked.connect(self.on_ext_enabled)
