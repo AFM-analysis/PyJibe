@@ -20,7 +20,7 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
         """Override matplotlibs `_icon` function to get custom icons"""
         name = name.replace('.png', '_large.png')
         impath = cbook._get_data_path('images', name)
-        pm = None # Initialize pm to None
+        pm = None  # Initialize pm to None
         if os.path.exists(impath):
             pm = QtGui.QPixmap(str(impath))
         else:
