@@ -3,8 +3,8 @@ import importlib.resources
 import traceback
 
 import nanite
-from PyQt5 import uic, QtCore, QtWidgets
-from PyQt5.QtCore import QStandardPaths
+from PyQt6 import uic, QtCore, QtWidgets
+from PyQt6.QtCore import QStandardPaths
 
 from ..extensions import ExtensionManager, SUPPORTED_FORMATS
 
@@ -51,21 +51,22 @@ class Preferences(QtWidgets.QDialog):
         # extensions
         store_path = os_path.join(
             QStandardPaths.writableLocation(
-                QStandardPaths.AppDataLocation), "extensions")
+                QStandardPaths.StandardLocation.AppDataLocation), "extensions")
         self.extensions = ExtensionManager(store_path)
 
         self.reload()
 
         # signals
         self.btn_apply = self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.Apply)
+            QtWidgets.QDialogButtonBox.StandardButton.Apply)
         self.btn_apply.clicked.connect(self.on_settings_apply)
         self.btn_cancel = self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.Cancel)
-        self.btn_ok = self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.StandardButton.Cancel)
+        self.btn_ok = self.buttonBox.button(
+            QtWidgets.QDialogButtonBox.StandardButton.Ok)
         self.btn_ok.clicked.connect(self.on_settings_apply)
         self.btn_restore = self.buttonBox.button(
-            QtWidgets.QDialogButtonBox.RestoreDefaults)
+            QtWidgets.QDialogButtonBox.StandardButton.RestoreDefaults)
         self.btn_restore.clicked.connect(self.on_settings_restore)
         # extension buttons
         self.checkBox_ext_enabled.clicked.connect(self.on_ext_enabled)
@@ -112,10 +113,10 @@ class Preferences(QtWidgets.QDialog):
             for ii, ext in enumerate(self.extensions):
                 lwitem = QtWidgets.QListWidgetItem(ext.title,
                                                    self.listWidget_ext)
-                lwitem.setFlags(QtCore.Qt.ItemIsEditable
-                                | QtCore.Qt.ItemIsSelectable
-                                | QtCore.Qt.ItemIsEnabled
-                                | QtCore.Qt.ItemIsUserCheckable)
+                lwitem.setFlags(QtCore.Qt.ItemFlag.ItemIsEditable
+                                | QtCore.Qt.ItemFlag.ItemIsSelectable
+                                | QtCore.Qt.ItemFlag.ItemIsEnabled
+                                | QtCore.Qt.ItemFlag.ItemIsUserCheckable)
                 lwitem.setCheckState(2 if ext.enabled else 0)
                 lwitem.setData(100, ext.hash)
             self.listWidget_ext.setCurrentRow(0)
@@ -198,11 +199,11 @@ class Preferences(QtWidgets.QDialog):
                         "advanced/developer mode", 0))
                     if devmode != value:
                         msg = QtWidgets.QMessageBox()
-                        msg.setIcon(QtWidgets.QMessageBox.Information)
+                        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                         msg.setText("Please restart PyJibe for the changes "
                                     + "to take effect.")
                         msg.setWindowTitle("Restart PyJibe")
-                        msg.exec_()
+                        msg.exec()
             elif isinstance(widget, QtWidgets.QLineEdit):
                 value = widget.text().strip()
             elif widget is self.dcor_servers:

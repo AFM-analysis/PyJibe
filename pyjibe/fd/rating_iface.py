@@ -3,7 +3,7 @@ import pathlib
 import importlib.resources
 
 from nanite.rate import io as nio
-from PyQt5 import uic, QtCore, QtWidgets
+from PyQt6 import uic, QtCore, QtWidgets
 
 
 # load QWidget from ui file

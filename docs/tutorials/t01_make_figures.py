@@ -8,15 +8,15 @@ import matplotlib.pylab as plt
 import numpy as np
 import pandas
 import seaborn as sns
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import QApplication
 from pyjibe.head.main import PyJibe
 
 
 datapath = pathlib.Path("figshare_AFM-PAAm-gels_11637675.v3")
 
 app = QApplication(sys.argv)
-QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
+QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Language.C))
 mw = PyJibe()
 
 
@@ -50,7 +50,7 @@ for war in [warc, wars]:
     war.tab_fit.cb_model.setCurrentIndex(idm)
     war.tab_fit.sp_range_2.setValue(2)
     war.tab_fit.table_parameters_initial.item(1, 1).setText("5")
-    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.Unchecked)
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
     war.btn_fitall.clicked.emit()
 
 QApplication.processEvents()

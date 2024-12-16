@@ -1,6 +1,6 @@
 import importlib.resources
 
-from PyQt5 import uic, QtWidgets
+from PyQt6 import uic, QtWidgets
 
 from . import export
 

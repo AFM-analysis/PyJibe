@@ -32,7 +32,7 @@ dependencies = [
     # https://github.com/AFM-analysis/PyJibe/issues/32
     "matplotlib>=3,<3.7.5",  # NavigationToolbar2QT mod
     "packaging",  # for version checking during update
-    "pyqt5",
+    "pyqt6",
 ]
 dynamic = ["version"]
 

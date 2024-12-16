@@ -10,8 +10,8 @@ import webbrowser
 import matplotlib
 matplotlib.use('QT5Agg')
 
-from PyQt5 import uic, QtCore, QtWidgets
-from PyQt5.QtCore import QStandardPaths
+from PyQt6 import uic, QtCore, QtWidgets
+from PyQt6.QtCore import QStandardPaths
 
 import afmformats
 import h5py
@@ -56,10 +56,9 @@ class PyJibe(QtWidgets.QMainWindow):
         QtCore.QCoreApplication.setOrganizationName("AFM-Analysis")
         QtCore.QCoreApplication.setOrganizationDomain("pyjibe.mpl.mpg.de")
         QtCore.QCoreApplication.setApplicationName("PyJibe")
-        QtCore.QSettings.setDefaultFormat(QtCore.QSettings.IniFormat)
+        QtCore.QSettings.setDefaultFormat(QtCore.QSettings.Format.IniFormat)
         #: PyJibe settings
         self.settings = QtCore.QSettings()
-        self.settings.setIniCodec("utf-8")
 
         # update check
         self._update_thread = None
@@ -90,7 +89,7 @@ class PyJibe(QtWidgets.QMainWindow):
         #: Extensions
         store_path = os_path.join(
             QStandardPaths.writableLocation(
-                QStandardPaths.AppLocalDataLocation), "extensions")
+                QStandardPaths.StandardLocation.AppLocalDataLocation), "extensions")
         try:
             self.extensions = ExtensionManager(store_path)
         except BaseException:
@@ -109,7 +108,7 @@ class PyJibe(QtWidgets.QMainWindow):
         if "--version" in sys.argv:
             print(__version__)
             QtWidgets.QApplication.processEvents(
-                QtCore.QEventLoop.AllEvents, 300)
+                QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
             sys.exit(0)
 
         # check for updates
@@ -133,9 +132,9 @@ class PyJibe(QtWidgets.QMainWindow):
                 self,
                 "No AFM data found!",
                 "No AFM data files could be found in the location specified.",
-                QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Retry
+                QtWidgets.QMessageBox.StandardButton.Ok | QtWidgets.QMessageBox.StandardButton.Retry
             )
-            if retry_open is not None and ret == QtWidgets.QMessageBox.Retry:
+            if retry_open is not None and ret == QtWidgets.QMessageBox.StandardButton.Retry:
                 retry_open()
         else:
             # Make sure there are no duplicate files (#12)
@@ -207,7 +206,7 @@ class PyJibe(QtWidgets.QMainWindow):
 
             QtCore.QMetaObject.invokeMethod(self._update_worker,
                                             'processUpdate',
-                                            QtCore.Qt.QueuedConnection,
+                                            QtCore.Qt.ConnectionType.QueuedConnection,
                                             QtCore.Q_ARG(str, version),
                                             QtCore.Q_ARG(str, ghrepo),
                                             )
@@ -225,7 +224,7 @@ class PyJibe(QtWidgets.QMainWindow):
         dlb = mdict["binary url"]
         msg = QtWidgets.QMessageBox()
         msg.setWindowTitle("PyJibe {} available!".format(ver))
-        msg.setTextFormat(QtCore.Qt.RichText)
+        msg.setTextFormat(QtCore.Qt.TextFormat.RichText)
         text = "You can install PyJibe {} ".format(ver)
         if dlb is not None:
             text += 'from a <a href="{}">direct download</a>. '.format(dlb)
@@ -233,7 +232,7 @@ class PyJibe(QtWidgets.QMainWindow):
             text += 'by running `pip install --upgrade pyjibe`. '
         text += 'Visit the <a href="{}">official release page</a>!'.format(web)
         msg.setText(text)
-        msg.exec_()
+        msg.exec()
 
     @QtCore.pyqtSlot()
     def on_documentation(self):
@@ -244,7 +243,7 @@ class PyJibe(QtWidgets.QMainWindow):
         dlg = custom_widgets.DirectoryDialogMultiSelect(self)
         search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
-        if dlg.exec_():
+        if dlg.exec():
             files = dlg.selectedFiles()
             if files:
                 self.load_data(files=files, retry_open=self.on_open_bulk,
@@ -258,7 +257,7 @@ class PyJibe(QtWidgets.QMainWindow):
         search_dir = self.settings.value("paths/load data", "")
         dlg.setDirectory(search_dir)
 
-        if dlg.exec_():
+        if dlg.exec():
             files = dlg.selectedFiles()
             if files:
                 self.load_data(files=files, retry_open=self.on_open_multiple,
@@ -310,7 +309,7 @@ class PyJibe(QtWidgets.QMainWindow):
         sw_text += "Modules:\n"
         for lib in libs:
             sw_text += "- {} {}\n".format(lib.__name__, lib.__version__)
-        sw_text += "- PyQt5 {}\n".format(QtCore.QT_VERSION_STR)
+        sw_text += "- PyQt6 {}\n".format(QtCore.QT_VERSION_STR)
         if hasattr(sys, 'frozen'):
             sw_text += "\nThis executable has been created using PyInstaller."
         QtWidgets.QMessageBox.information(self,
@@ -343,11 +342,11 @@ def excepthook(etype, value, trace):
 
     errorbox = QtWidgets.QMessageBox()
     errorbox.addButton(QtWidgets.QPushButton('Close'),
-                       QtWidgets.QMessageBox.YesRole)
+                       QtWidgets.QMessageBox.ButtonRole.YesRole)
     errorbox.addButton(QtWidgets.QPushButton(
-        'Copy text && Close'), QtWidgets.QMessageBox.NoRole)
+        'Copy text && Close'), QtWidgets.QMessageBox.ButtonRole.NoRole)
     errorbox.setText(exception)
-    ret = errorbox.exec_()
+    ret = errorbox.exec()
     if ret == 1:
         cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)

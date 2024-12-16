@@ -1,7 +1,7 @@
 import os
 import importlib.resources
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import cbook
@@ -33,7 +33,7 @@ class NavigationToolbarCustom(NavigationToolbar2QT):
         if self.palette().color(self.backgroundRole()).value() < 128:
             icon_color = self.palette().color(self.foregroundRole())
             mask = pm.createMaskFromColor(QtGui.QColor('black'),
-                                          QtCore.Qt.MaskOutColor)
+                                          QtCore.Qt.MaskMode.MaskOutColor)
             pm.fill(icon_color)
             pm.setMask(mask)
         return QtGui.QIcon(pm)

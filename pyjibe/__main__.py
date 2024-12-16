@@ -2,14 +2,14 @@ def main(splash=True):
     import importlib.resources
     import sys
 
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtCore import QEventLoop
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtCore import QEventLoop
 
     app = QApplication(sys.argv)
 
     if splash:
-        from PyQt5.QtWidgets import QSplashScreen
-        from PyQt5.QtGui import QPixmap
+        from PyQt6.QtWidgets import QSplashScreen
+        from PyQt6.QtGui import QPixmap
         ref = importlib.resources.files("pyjibe.img") / "splash.png"
         with importlib.resources.as_file(ref) as splash_path:
             splash_pix = QPixmap(str(splash_path))
@@ -17,9 +17,9 @@ def main(splash=True):
         splash.setMask(splash_pix.mask())
         splash.show()
         # make sure Qt really displays the splash screen
-        app.processEvents(QEventLoop.AllEvents, 300)
+        app.processEvents(QEventLoop.ProcessEventsFlag.AllEvents, 300)
 
-    from PyQt5 import QtCore, QtGui
+    from PyQt6 import QtCore, QtGui
     from .head import PyJibe
 
     # Set Application Icon
@@ -28,14 +28,14 @@ def main(splash=True):
         app.setWindowIcon(QtGui.QIcon(str(icon_path)))
 
     # Use dots as decimal separators
-    QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.C))
+    QtCore.QLocale.setDefault(QtCore.QLocale(QtCore.QLocale.Language.C))
 
     window = PyJibe()
 
     if splash:
         splash.finish(window)
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

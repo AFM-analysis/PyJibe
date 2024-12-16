@@ -1,6 +1,6 @@
 import numpy as np
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui
 
 
 class InfDoubleSpinBox(QtWidgets.QDoubleSpinBox):
@@ -43,22 +43,22 @@ class FloatValidator(QtGui.QValidator):
             a, b = string.split(".", 1)
             string = ".".join([a, b.replace(".", "")])
 
-            return self.Acceptable, string, position
+            return self.State.Acceptable, string, position
         elif (previous is not None and previous.count(".")
                 and not string.count(".") and position == previous.index(".")):
             # make sure removing decimal point does not lead to large numbers
             # (1.003 -> 1003)
             string = string[:position]
-            return self.Acceptable, string, position
+            return self.State.Acceptable, string, position
         elif string == "":
-            return self.Intermediate, string, position
+            return self.State.Intermediate, string, position
         elif string and string[position-1] in '.e-+':
             # remove trailing numbers
-            return self.Intermediate, string.rstrip("0"), position
+            return self.State.Intermediate, string.rstrip("0"), position
         elif valid_float_string(string):
-            return self.Acceptable, string, position
+            return self.State.Acceptable, string, position
         else:
-            return self.Invalid, string, position
+            return self.State.Invalid, string, position
 
     def fixup(self, text):
         try:

@@ -1,7 +1,7 @@
 import importlib.resources
 
 from nanite import preproc
-from PyQt5 import QtCore, QtWidgets, uic
+from PyQt6 import QtCore, QtWidgets, uic
 
 
 class WidgetPreprocessItem(QtWidgets.QWidget):

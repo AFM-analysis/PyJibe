@@ -9,7 +9,7 @@ import afmformats.errors
 import nanite
 import nanite.fit as nfit
 import numpy as np
-from PyQt5 import uic, QtCore, QtGui, QtWidgets
+from PyQt6 import uic, QtCore, QtGui, QtWidgets
 
 from .. import colormap
 from ..head.custom_widgets import show_wait_cursor
@@ -38,10 +38,9 @@ class UiForceDistance(QtWidgets.QWidget):
             uic.loadUi(path_ui, self)
 
         self.settings = QtCore.QSettings()
-        self.settings.setIniCodec("utf-8")
         if not self.settings.value("force-distance/rate ts path", ""):
             dataloc = pathlib.Path(QtCore.QStandardPaths.writableLocation(
-                QtCore.QStandardPaths.AppDataLocation))
+                QtCore.QStandardPaths.StandardLocation.AppDataLocation))
             ts_import_path = dataloc / "force-distance_rate-ts-user"
             self.settings.setValue("force-distance/rate ts path",
                                    str(ts_import_path))
@@ -175,7 +174,7 @@ class UiForceDistance(QtWidgets.QWidget):
         for ar in self.data_set:
             idx = self.data_set.index(ar)
             item = self.list_curves.topLevelItem(idx)
-            if item.checkState(3) == QtCore.Qt.Checked:
+            if item.checkState(3) == QtCore.Qt.CheckState.Checked:
                 curves.append(ar)
         return curves
 
@@ -213,7 +212,7 @@ class UiForceDistance(QtWidgets.QWidget):
                 """
                 bar.setValue(int((ii+partial)*mult))
                 QtCore.QCoreApplication.instance().processEvents(
-                    QtCore.QEventLoop.AllEvents, 300)
+                    QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
                 if bar.wasCanceled():
                     # Raise a custom `AbortProgress` error, such that
                     # we can exit the parent for-loop.
@@ -237,7 +236,7 @@ class UiForceDistance(QtWidgets.QWidget):
 
     def autosave(self, fdist):
         """Performs autosaving for all files"""
-        if (self.cb_autosave.checkState() == QtCore.Qt.Checked
+        if (self.cb_autosave.checkState() == QtCore.Qt.CheckState.Checked
                 and fdist.fit_properties.get("success", False)):
             # Determine the directory of the current curve
             adir = os.path.dirname(fdist.path)
@@ -256,7 +255,7 @@ class UiForceDistance(QtWidgets.QWidget):
                     # fdist was fitted with same model
                     ar.fit_properties["model_key"] == model_key and
                     # user selected curve for export ("use")
-                    it.checkState(3) == QtCore.Qt.Checked
+                    it.checkState(3) == QtCore.Qt.CheckState.Checked
                 ):
                     exp_curv.append(ar)
             # The file to export
@@ -271,10 +270,11 @@ class UiForceDistance(QtWidgets.QWidget):
                     if oride == -1:
                         # Ask user what to do
                         dlgwin = QtWidgets.QDialog(self)
-                        dlgwin.setWindowModality(QtCore.Qt.ApplicationModal)
+                        dlgwin.setWindowModality(
+                            QtCore.Qt.WindowModality.ApplicationModal)
                         dlgui = DlgAutosave()
                         dlgui.setupUi(dlgwin)
-                        if dlgwin.exec_():
+                        if dlgwin.exec():
                             if dlgui.btn_nothing.isChecked():
                                 oride = 0
                             elif dlgui.btn_override.isChecked():
@@ -310,7 +310,8 @@ class UiForceDistance(QtWidgets.QWidget):
         """Add items to the tree widget"""
         header = self.list_curves.header()
         header.setStretchLastSection(False)
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(0,
+                                    QtWidgets.QHeaderView.ResizeMode.Stretch)
         self.list_curves.setColumnWidth(1, 70)
         self.list_curves.setColumnWidth(2, 70)
         self.list_curves.setColumnWidth(3, 40)
@@ -320,7 +321,7 @@ class UiForceDistance(QtWidgets.QWidget):
                                             str(ar.enum),
                                             "{:.1f}".format(-1)])
             self.list_curves.addTopLevelItem(it)
-            it.setCheckState(3, QtCore.Qt.Checked)
+            it.setCheckState(3, QtCore.Qt.CheckState.Checked)
         # Connect signals:
         # Selection of curves
         self.list_curves.itemSelectionChanged.connect(self.on_curve_list)
@@ -462,7 +463,7 @@ class UiForceDistance(QtWidgets.QWidget):
                 else:
                     res += [d, e]
                 QtCore.QCoreApplication.instance().processEvents(
-                    QtCore.QEventLoop.AllEvents, 300)
+                    QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
                 bar.setValue(ii+1)
 
             # export curves with numpy
@@ -496,7 +497,7 @@ class UiForceDistance(QtWidgets.QWidget):
         errored = []
         for ii, fdist in enumerate(self.data_set):
             QtCore.QCoreApplication.instance().processEvents(
-                QtCore.QEventLoop.AllEvents, 300)
+                QtCore.QEventLoop.ProcessEventsFlag.AllEvents, 300)
             if bar.wasCanceled():
                 break
             try:
@@ -562,9 +563,9 @@ class UiForceDistance(QtWidgets.QWidget):
             it = self.list_curves.topLevelItem(ii)
             if not np.isnan(rating):
                 if rating >= thresh:
-                    it.setCheckState(3, QtCore.Qt.Checked)
+                    it.setCheckState(3, QtCore.Qt.CheckState.Checked)
                 else:
-                    it.setCheckState(3, QtCore.Qt.Unchecked)
+                    it.setCheckState(3, QtCore.Qt.CheckState.Unchecked)
         self.list_curves.blockSignals(False)
         # TODO:
         # - make this more efficient. There is a lot written to disk here.
@@ -614,8 +615,8 @@ class UiForceDistance(QtWidgets.QWidget):
             caption="Please select a rating container",
             directory="",
             filter="Rating containers (*.h5)",
-            options=QtWidgets.QFileDialog.DontConfirmOverwrite
-                    | QtWidgets.QFileDialog.DontUseNativeDialog)
+            options=QtWidgets.QFileDialog.Option.DontConfirmOverwrite
+                    | QtWidgets.QFileDialog.Option.DontUseNativeDialog)
 
         path = cont[0]
         if path:
