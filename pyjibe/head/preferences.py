@@ -118,8 +118,8 @@ class Preferences(QtWidgets.QDialog):
                                 | QtCore.Qt.ItemFlag.ItemIsEnabled
                                 | QtCore.Qt.ItemFlag.ItemIsUserCheckable)
                 lwitem.setCheckState(
-                QtCore.Qt.CheckState.Checked if ext.enabled
-                else QtCore.Qt.CheckState.Unchecked)
+                    QtCore.Qt.CheckState.Checked if ext.enabled
+                    else QtCore.Qt.CheckState.Unchecked)
                 lwitem.setData(100, ext.hash)
             self.listWidget_ext.setCurrentRow(0)
             if row + 1 > self.listWidget_ext.count() or row < 0:
