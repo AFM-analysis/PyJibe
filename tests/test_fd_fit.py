@@ -28,6 +28,7 @@ def test_ancillary_update_init(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
+        qtbot.addWidget(main_window)
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
@@ -57,6 +58,7 @@ def test_ancillary_update_init(qtbot):
         war.list_curves.setCurrentItem(it)
         assert itab.item(0, 1).text() == "2000"
         assert atab.item(0, 1).text() == "2000"
+        main_window.close()
 
 
 def test_ancillary_update_nan(qtbot):
@@ -68,6 +70,7 @@ def test_ancillary_update_nan(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
+        qtbot.addWidget(main_window)
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
@@ -85,6 +88,7 @@ def test_ancillary_update_nan(qtbot):
         atab = war.tab_fit.table_parameters_anc
         assert atab.item(0, 1).text() == "nan"
         assert itab.item(0, 1).text() == "3000"
+        main_window.close()
 
 
 def test_ancillary_update_preproc_change(qtbot):
@@ -98,6 +102,7 @@ def test_ancillary_update_preproc_change(qtbot):
             model_key="test1"):
 
         main_window = pyjibe.head.PyJibe()
+        qtbot.addWidget(main_window)
         main_window.load_data(files=make_directory_with_data(2))
         war = main_window.subwindows[0].widget()
         # clear data
@@ -130,6 +135,7 @@ def test_ancillary_update_preproc_change(qtbot):
         assert len(war.tab_preprocess.current_preprocessing()[0]) == 2
         assert atab.item(0, 1).text() == "2345"
         assert itab.item(0, 1).text() == "2345"
+        main_window.close()
 
 
 @pytest.mark.filterwarnings('ignore::UserWarning')
@@ -153,6 +159,7 @@ def test_apply_and_fit_all_with_bad_data(qtbot, monkeypatch):
 
     # initialize
     main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
     main_window.load_data(files=files)
     war = main_window.subwindows[0].widget()
     war.tab_preprocess.set_preprocessing(
@@ -173,10 +180,12 @@ def test_apply_and_fit_all_with_bad_data(qtbot, monkeypatch):
     assert float(bad.data(2, 0)) == -1  # column 2 shows the rating
     good2 = war.list_curves.topLevelItem(2)
     assert float(good2.data(2, 0)) > 0  # column 2 shows the rating
+    main_window.close()
 
 
 def test_change_model_keep_parms(qtbot):
     main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
     main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
@@ -194,10 +203,12 @@ def test_change_model_keep_parms(qtbot):
     war.tab_fit.cb_model.setCurrentIndex(pyr_idx)
     # check that contact point is still the same
     assert float(itab.item(3, 1).text()) == 12345
+    main_window.close()
 
 
 def test_remember_initial_params(qtbot):
     main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
     main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # clear data
@@ -220,10 +231,12 @@ def test_remember_initial_params(qtbot):
     cl2 = war.list_curves.itemBelow(cl1)
     war.list_curves.setCurrentItem(cl2)
     assert float(itab.item(1, 1).text()) == 5
+    main_window.close()
 
 
 def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
     main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
     main_window.load_data(files=make_directory_with_data(2))
     war = main_window.subwindows[0].widget()
     # perform fitting with standard parameters
@@ -248,3 +261,4 @@ def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
         war.tab_fit.sp_range_1.clear()
         qtbot.keyClicks(war.tab_fit.sp_range_1, text_entered)
         assert war.tab_fit.sp_range_1.value() == resulting_value
+    main_window.close()

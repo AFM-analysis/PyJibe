@@ -1,9 +1,11 @@
 import hashlib
+import importlib.resources
 import io
+import logging
 import os
 import pathlib
-import importlib.resources
 import time
+import traceback
 
 import afmformats.errors
 import nanite
@@ -20,6 +22,8 @@ from . import export
 from . import rating_base
 from . import rating_iface
 
+
+logger = logging.getLogger(__name__)
 
 # load QWidget from ui file
 dlg_ref = importlib.resources.files("pyjibe.fd") / "dlg_autosave_design.ui"
@@ -501,12 +505,21 @@ class UiForceDistance(QtWidgets.QWidget):
             if bar.wasCanceled():
                 break
             try:
+                # preprocessing could fail for bad data
                 self.tab_preprocess.apply_preprocessing(fdist)
+                # external fitting model could fail
                 self.tab_fit.fit_approach_retract(fdist, update_ui=False)
             except BaseException as e:
+                logger.error(traceback.format_exc())
                 errored.append([fdist.path, e.__class__.__name__, e.args])
             finally:
-                self.curve_list_update(item=ii)
+                try:
+                    # updating curve list may not be possible
+                    self.curve_list_update(item=ii)
+                except BaseException as e:
+                    logger.error(traceback.format_exc())
+                    errored.append([fdist.path, e.__class__.__name__, e.args])
+
             bar.setValue(ii+1)
 
         # display qmap
