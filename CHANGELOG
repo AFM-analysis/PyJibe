@@ -1,4 +1,5 @@
 0.16.0
+ - enh: update curve list even when ancillary computation fails
  - ref: migrate from pyqt5 to pyqt6 (#35)
  - setup: bump nanite to 4.2.1
 0.15.10

@@ -503,10 +503,12 @@ class UiForceDistance(QtWidgets.QWidget):
             try:
                 self.tab_preprocess.apply_preprocessing(fdist)
                 self.tab_fit.fit_approach_retract(fdist, update_ui=False)
-                self.curve_list_update(item=ii)
             except BaseException as e:
                 errored.append([fdist.path, e.__class__.__name__, e.args])
+            finally:
+                self.curve_list_update(item=ii)
             bar.setValue(ii+1)
+
         # display qmap
         self.tab_qmap.mpl_qmap_update()
         if errored:
