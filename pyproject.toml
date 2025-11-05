@@ -10,6 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "pyjibe"
 authors = [
     # In alphabetical order.
+    {name = "Eoghan O'Connell"},
     {name = "Paul Müller"},
 ]
 maintainers = [
@@ -25,13 +26,13 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Visualization',
     'Intended Audience :: Science/Research'
 ]
-license = {text = "GPL version 3.0 or later"}
+license = { text = "GPL version 3.0 or later" }
 dependencies = [
     "afmformats>=0.18.0",
     "nanite>=4.2.1",
     # https://github.com/AFM-analysis/PyJibe/issues/32
-    "matplotlib>=3,<3.7.5",  # NavigationToolbar2QT mod
-    "packaging",  # for version checking during update
+    "matplotlib>=3,<3.7.5", # NavigationToolbar2QT mod
+    "packaging", # for version checking during update
     "pyqt6",
 ]
 dynamic = ["version"]
@@ -44,6 +45,9 @@ source = "https://github.com/AFM-analysis/PyJibe"
 tracker = "https://github.com/AFM-analysis/PyJibe/Issues"
 documentation = "https://pyjibe.readthedocs.io/en/stable/"
 changelog = "https://pyjibe.readthedocs.io/en/stable/sec_changelog.html"
+
+[tool.setuptools]
+packages = ["pyjibe"]
 
 [tool.setuptools_scm]
 write_to = "pyjibe/_version.py"

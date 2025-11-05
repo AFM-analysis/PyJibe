@@ -22,8 +22,8 @@ class WidgetPlotFD(QtWidgets.QWidget):
 
     def mpl_curve_update(self, fdist):
         """Update the force-indentation curve"""
-        autoscale_x = self.fd.cb_mpl_rescale_plot_x.checkState() == 2
-        autoscale_y = self.fd.cb_mpl_rescale_plot_y.checkState() == 2
+        autoscale_x = self.fd.cb_mpl_rescale_plot_x.checkState().value == 2
+        autoscale_y = self.fd.cb_mpl_rescale_plot_y.checkState().value == 2
         if autoscale_x:
             rescale_x = None
         else:
