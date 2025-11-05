@@ -1,3 +1,5 @@
+0.16.1
+ - fix: plot extent does not match user settings (#42)
 0.16.0
  - enh: update curve list even when ancillary computation fails
  - ref: migrate from pyqt5 to pyqt6 (#35)
