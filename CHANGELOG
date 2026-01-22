@@ -1,3 +1,5 @@
+0.16.2
+ - setup: bump afmformats to 0.18.5 (chiaro file format)
 0.16.1
  - fix: plot extent does not match user settings (#42)
 0.16.0
