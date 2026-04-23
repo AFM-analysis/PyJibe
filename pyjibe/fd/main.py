@@ -33,6 +33,9 @@ with importlib.resources.as_file(dlg_ref) as dlg_autosave_path:
 
 class UiForceDistance(QtWidgets.QWidget):
     _instance_counter = 0
+    # Remember the user's autosave overwrite choice for the current app run
+    # (across multiple analysis subwindows), but do not persist it across restarts.
+    _autosave_override_session = -1
 
     def __init__(self, *args, **kwargs):
         """Base class for force-indentation analysis"""
@@ -101,7 +104,7 @@ class UiForceDistance(QtWidgets.QWidget):
         #  0: do not override existing files
         #  1: override existing files
         #  2: create additional file with date
-        self._autosave_override = -1
+        self._autosave_override = UiForceDistance._autosave_override_session
         # Filenames that were created by this instance
         self._autosave_original_files = []
 
@@ -287,6 +290,7 @@ class UiForceDistance(QtWidgets.QWidget):
                                 oride = 2
                             if dlgui.cb_remember.isChecked():
                                 self._autosave_override = oride
+                                UiForceDistance._autosave_override_session = oride
                             if dlgui.cb_disableauto.isChecked():
                                 self.cb_autosave.setChecked(0)
                     if oride == 0:
