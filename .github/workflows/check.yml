@@ -55,6 +55,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage run --source=pyjibe -m pytest -x tests
+      env:
+        COVERAGE_CORE: sysmon  # for py>=3.12 this is much faster
     - name: Lint with flake8
       run: |
         flake8 --exclude _version.py .
