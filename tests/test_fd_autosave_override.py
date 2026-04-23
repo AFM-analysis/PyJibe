@@ -17,7 +17,7 @@ def test_autosave_override_remembered_across_instances(qtbot, tmp_path):
     existing.write_text("existing\n", encoding="utf-8")
 
     class DummyCurve:
-        # Minimal stub matching the attributes used by `UiForceDistance.autosave`.
+        # minimal stub matching the `UiForceDistance.autosave` attributes
         def __init__(self, path):
             self.path = str(path)
             self.fit_properties = {"success": True, "model_key": "dummy"}
@@ -42,7 +42,7 @@ def test_autosave_override_remembered_across_instances(qtbot, tmp_path):
             return self._checked
 
     class StubDlgAutosave:
-        # UI stub that selects "Override" and checks "Remember this choice for now".
+        # UI stub that selects "Override" and "Remember this choice for now".
         def setupUi(self, _dlgwin):
             self.btn_nothing = _Checked(False)
             self.btn_override = _Checked(True)
