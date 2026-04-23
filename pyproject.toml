@@ -30,8 +30,9 @@ license = { text = "GPL version 3.0 or later" }
 dependencies = [
     "afmformats>=0.18.6",
     "nanite>=4.2.3",
-    # https://github.com/AFM-analysis/PyJibe/issues/32
-    "matplotlib>=3,<3.7.5", # NavigationToolbar2QT mod
+    # Historically pinned due to Matplotlib/toolbar API changes (#32). The
+    # codebase now supports newer Matplotlib releases again.
+    "matplotlib>=3,<4",
     "packaging", # for version checking during update
     "pyqt6",
 ]

@@ -108,3 +108,6 @@ _version_save.py
 .idea
 
 pyjibe/_version.py
+
+# uv
+uv.lock

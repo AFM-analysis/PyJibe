@@ -104,13 +104,27 @@ class MPLIndentation(object):
             self.plots["residuals"].set_data(fdist["tip position"]*xscale,
                                              (fdist["fit residuals"])*yscale)
             # fit range
-            xy = self.plots["fit range"].get_xy()
             fitrange = (fdist[xaxis]*xscale)[fdist["fit range"]]
             fitmin = np.min(fitrange)
             fitmax = np.max(fitrange)
-            xy[:, 0] = fitmax
-            xy[2:4, 0] = fitmin
-            self.plots["fit range"].set_xy(xy)
+            fr_patch = self.plots["fit range"]
+            # Matplotlib changed `Axes.axvspan` from returning a
+            # Polygon (3.7.x) to returning a Rectangle (>=3.8).
+            if hasattr(fr_patch, "set_x") and hasattr(fr_patch, "set_width"):
+                fr_patch.set_x(fitmin)
+                fr_patch.set_width(fitmax - fitmin)
+            else:
+                xy = np.asarray(fr_patch.get_xy(), dtype=float).copy()
+                if xy.ndim == 2 and xy.shape[1] == 2 and xy.shape[0] >= 4:
+                    # Expected vertex order:
+                    # (xmin,0),(xmin,1),(xmax,1),(xmax,0),...
+                    xy[0, 0] = fitmin
+                    xy[1, 0] = fitmin
+                    xy[2, 0] = fitmax
+                    xy[3, 0] = fitmax
+                    if xy.shape[0] >= 5:
+                        xy[4, 0] = fitmin
+                fr_patch.set_xy(xy)
 
             self.update_plot(rescale_x=rescale_x,
                              rescale_y=rescale_y)
