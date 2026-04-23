@@ -1,3 +1,6 @@
+0.16.4
+ - setup: support latest python versions (#32, #46)
+ - setup: support latest matplotlib versions (#32, #46)
 0.16.3
  - setup: bump afmformats to 0.18.6
  - setup: bump nanite to 4.2.3
