@@ -3,7 +3,7 @@ import importlib.resources
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from matplotlib import cbook
 
 # TODO:
