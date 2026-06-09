@@ -48,6 +48,10 @@ changelog = "https://pyjibe.readthedocs.io/en/stable/sec_changelog.html"
 [tool.setuptools]
 packages = ["pyjibe"]
 
+[tool.coverage.run]
+# sysmon is faster on py>=3.12 and avoids pytest collection hangs
+core = "sysmon"
+
 [tool.setuptools_scm]
 write_to = "pyjibe/_version.py"
 version_scheme = "post-release"
