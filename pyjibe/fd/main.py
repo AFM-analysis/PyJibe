@@ -83,6 +83,7 @@ class UiForceDistance(QtWidgets.QWidget):
             self.on_cb_rating_scheme)
         self.btn_rater.clicked.connect(self.on_user_rate)
         # plotting parameters
+        self.cb_show_fit_line.stateChanged.connect(self.on_mpl_curve_update)
         self.cb_mpl_rescale_plot_x.stateChanged.connect(
             self.on_mpl_curve_update)
         self.cb_mpl_rescale_plot_x_min.valueChanged.connect(
@@ -512,6 +513,8 @@ class UiForceDistance(QtWidgets.QWidget):
             try:
                 # preprocessing could fail for bad data
                 self.tab_preprocess.apply_preprocessing(fdist)
+                # update model key and ancillary parameters before fitting
+                self.tab_fit.fit_update_parameters(fdist)
                 # external fitting model could fail
                 self.tab_fit.fit_approach_retract(fdist, update_ui=False)
             except BaseException as e:

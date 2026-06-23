@@ -36,6 +36,8 @@ class WidgetPlotFD(QtWidgets.QWidget):
             rescale_y = (self.fd.cb_mpl_rescale_plot_y_min.value(),
                          self.fd.cb_mpl_rescale_plot_y_max.value())
 
+        show_fit = self.fd.cb_show_fit_line.isChecked()
         self.mpl_curve.update(fdist,
                               rescale_x=rescale_x,
-                              rescale_y=rescale_y)
+                              rescale_y=rescale_y,
+                              show_fit=show_fit)
