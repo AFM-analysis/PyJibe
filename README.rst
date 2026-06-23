@@ -36,3 +36,8 @@ If you have Python installed, you may also install via
    :target: https://codecov.io/gh/AFM-analysis/PyJibe
 .. |Docs Status| image:: https://readthedocs.org/projects/pyjibe/badge/?version=latest
    :target: https://readthedocs.org/projects/pyjibe/builds/
+
+Use of AI
+---------
+
+The model Claude Sonnet 4.6 was used to fix bugs such as #47.
