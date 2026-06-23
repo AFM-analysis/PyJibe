@@ -512,6 +512,8 @@ class UiForceDistance(QtWidgets.QWidget):
             try:
                 # preprocessing could fail for bad data
                 self.tab_preprocess.apply_preprocessing(fdist)
+                # update model key and ancillary parameters before fitting
+                self.tab_fit.fit_update_parameters(fdist)
                 # external fitting model could fail
                 self.tab_fit.fit_approach_retract(fdist, update_ui=False)
             except BaseException as e:

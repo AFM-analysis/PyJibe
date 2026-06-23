@@ -262,3 +262,74 @@ def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
         qtbot.keyClicks(war.tab_fit.sp_range_1, text_entered)
         assert war.tab_fit.sp_range_1.value() == resulting_value
     main_window.close()
+
+
+def test_fit_all_matches_single_fit(qtbot):
+    """on_fit_all must produce the same fitted params as fitting one-by-one.
+
+    Regression test for issue #47: fit-all skipped fit_update_parameters(),
+    so ancillary parameters were not recomputed, leading to different TSV
+    output compared to the single-curve path.
+    """
+    main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
+    main_window.load_data(files=make_directory_with_data(2))
+    war = main_window.subwindows[0].widget()
+    war.cb_autosave.setChecked(0)
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+    # Fit first curve via the single-curve path (on_curve_list triggers this)
+    war.on_tab_changed()
+    fdist0 = war.data_set[0]
+    assert fdist0.fit_properties.get("success", False), (
+        "single fit must succeed")
+    single_E = fdist0.fit_properties["params_fitted"]["E"].value
+
+    # Now re-fit everything via fit-all
+    war.on_fit_all()
+    fitall_E = fdist0.fit_properties["params_fitted"]["E"].value
+
+    assert single_E == pytest.approx(fitall_E, rel=1e-6), (
+        f"fit-all gave E={fitall_E:.4g} but single-fit gave E={single_E:.4g}")
+    main_window.close()
+
+
+def test_fit_all_matches_single_fit_kvm(qtbot):
+    """fit-all must match single-fit for the KVM model (issue #47).
+
+    KVM has ancillary parameters (eta, time_ind) that are derived by fitting
+    a preliminary Hertz model to each curve. Before the fix, on_fit_all()
+    skipped fit_update_parameters(), so those ancillaries were never
+    recomputed and the fitted Eu values differed from the single-curve path.
+
+    The KVM model is loaded via PyJibe's extension system at startup.
+    """
+    main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
+    main_window.load_data(files=make_directory_with_data(2))
+    war = main_window.subwindows[0].widget()
+    war.cb_autosave.setChecked(0)
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+    # Switch to the KVM model (loaded via PyJibe's extension system)
+    idx = war.tab_fit.cb_model.findData("hertz_corr_visco_KVM")
+    if idx < 0:
+        pytest.skip("KVM model extension not installed in this environment")
+    war.tab_fit.cb_model.setCurrentIndex(idx)
+
+    # Fit first curve via the single-curve path
+    war.on_tab_changed()
+    fdist0 = war.data_set[0]
+    assert fdist0.fit_properties.get("success", False), "single KVM fit failed"
+    single_Eu = fdist0.fit_properties["params_fitted"]["Eu"].value
+
+    # Re-fit everything via fit-all
+    war.on_fit_all()
+    fitall_Eu = fdist0.fit_properties["params_fitted"]["Eu"].value
+
+    assert single_Eu == pytest.approx(fitall_Eu, rel=1e-6), (
+        f"fit-all gave Eu={fitall_Eu:.4g} but single-fit "
+        f"gave Eu={single_Eu:.4g}")
+    main_window.close()
