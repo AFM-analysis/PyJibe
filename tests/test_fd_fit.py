@@ -265,12 +265,7 @@ def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
 
 
 def test_fit_all_matches_single_fit(qtbot):
-    """on_fit_all must produce the same fitted params as fitting one-by-one.
-
-    Regression test for issue #47: fit-all skipped fit_update_parameters(),
-    so ancillary parameters were not recomputed, leading to different TSV
-    output compared to the single-curve path.
-    """
+    """on_fit_all must produce the same fitted params as fitting one-by-one."""
     main_window = pyjibe.head.PyJibe()
     qtbot.addWidget(main_window)
     main_window.load_data(files=make_directory_with_data(2))
@@ -279,8 +274,11 @@ def test_fit_all_matches_single_fit(qtbot):
     war.tab_preprocess.set_preprocessing(["compute_tip_position"])
     war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
-    # Fit first curve via the single-curve path (on_curve_list triggers this)
-    war.on_tab_changed()
+    # Click through both files via the single-curve path
+    cl1 = war.list_curves.currentItem()
+    cl2 = war.list_curves.itemBelow(cl1)
+    war.list_curves.setCurrentItem(cl1)
+    war.list_curves.setCurrentItem(cl2)
     fdist0 = war.data_set[0]
     assert fdist0.fit_properties.get("success", False), (
         "single fit must succeed")
@@ -299,11 +297,8 @@ def test_fit_all_matches_single_fit_kvm(qtbot):
     """fit-all must match single-fit for the KVM model (issue #47).
 
     KVM has ancillary parameters (eta, time_ind) that are derived by fitting
-    a preliminary Hertz model to each curve. Before the fix, on_fit_all()
-    skipped fit_update_parameters(), so those ancillaries were never
-    recomputed and the fitted Eu values differed from the single-curve path.
-
-    The KVM model is loaded via PyJibe's extension system at startup.
+    a preliminary Hertz model to each curve. The KVM model is loaded via
+    PyJibe's extension system at startup.
     """
     main_window = pyjibe.head.PyJibe()
     qtbot.addWidget(main_window)
@@ -319,8 +314,11 @@ def test_fit_all_matches_single_fit_kvm(qtbot):
         pytest.skip("KVM model extension not installed in this environment")
     war.tab_fit.cb_model.setCurrentIndex(idx)
 
-    # Fit first curve via the single-curve path
-    war.on_tab_changed()
+    # Click through both files via the single-curve path
+    cl1 = war.list_curves.currentItem()
+    cl2 = war.list_curves.itemBelow(cl1)
+    war.list_curves.setCurrentItem(cl1)
+    war.list_curves.setCurrentItem(cl2)
     fdist0 = war.data_set[0]
     assert fdist0.fit_properties.get("success", False), "single KVM fit failed"
     single_Eu = fdist0.fit_properties["params_fitted"]["Eu"].value
