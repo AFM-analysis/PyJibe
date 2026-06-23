@@ -1,4 +1,5 @@
 0.16.4
+ - feat: option to include model and params in autosave tsv filename (#49)
  - setup: support latest python versions (#32, #46)
  - setup: support latest matplotlib versions (#32, #46)
  - fix: remember user's choice upon curve open (#44, #45)

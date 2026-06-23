@@ -262,3 +262,36 @@ def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
         qtbot.keyClicks(war.tab_fit.sp_range_1, text_entered)
         assert war.tab_fit.sp_range_1.value() == resulting_value
     main_window.close()
+
+
+def test_autosave_name_params(qtbot, tmp_path):
+    """cb_autosave_name_params embeds model+params in the TSV filename."""
+    import shutil
+    src = data_path / "spot3-0192.jpk-force"
+    dest = tmp_path / "spot3-0192.jpk-force"
+    shutil.copy2(src, dest)
+
+    main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
+    main_window.load_data(files=[dest])
+    war = main_window.subwindows[0].widget()
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+    # Default (checkbox off): standard filename
+    war.cb_autosave.setChecked(True)
+    war.cb_autosave_name_params.setChecked(False)
+    war.on_tab_changed()
+    default_files = list(tmp_path.glob("pyjibe_fit_results_leaf.tsv"))
+    assert len(default_files) == 1
+
+    # Remove it and re-run with checkbox on
+    default_files[0].unlink()
+    war._autosave_original_files.clear()
+    war.cb_autosave_name_params.setChecked(True)
+    war.on_tab_changed()
+    param_files = [f for f in tmp_path.glob("pyjibe_fit_results_leaf-*.tsv")]
+    assert len(param_files) == 1
+    assert "hertz" in param_files[0].name
+
+    main_window.close()

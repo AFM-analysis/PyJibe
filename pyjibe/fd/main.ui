@@ -502,6 +502,16 @@
           </widget>
          </item>
          <item>
+          <widget class="QCheckBox" name="cb_autosave_name_params">
+           <property name="text">
+            <string>Include model and params in filename</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QRadioButton" name="radioButton">
            <property name="text">
             <string>i&amp;n leaf directories</string>

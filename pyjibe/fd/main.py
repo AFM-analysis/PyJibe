@@ -31,6 +31,22 @@ with importlib.resources.as_file(dlg_ref) as dlg_autosave_path:
     DlgAutosave = uic.loadUiType(dlg_autosave_path)[0]
 
 
+def _make_params_suffix(fit_props):
+    """Build a filename-safe suffix from model key and fixed initial params.
+
+    Sections are separated by hyphens; underscores within model key or
+    parameter names are preserved. Example:
+    ``hertz_cone-E4.5e+03-alpha30-nu0.5-contact_point0``
+    """
+    parts = [fit_props["model_key"]]
+    fp = fit_props.get("params_initial", {})
+    for key in sorted(fp):
+        p = fp[key]
+        if not p.vary and not p.expr and not key.startswith("_"):
+            parts.append(f"{key}{p.value:.3g}")
+    return "-".join(parts)
+
+
 class UiForceDistance(QtWidgets.QWidget):
     _instance_counter = 0
     # remember the user's autosave overwrite choice for the current gui
@@ -266,7 +282,13 @@ class UiForceDistance(QtWidgets.QWidget):
                 ):
                     exp_curv.append(ar)
             # The file to export
-            fname = os.path.join(adir, "pyjibe_fit_results_leaf.tsv")
+            if (self.cb_autosave_name_params.checkState()
+                    == QtCore.Qt.CheckState.Checked):
+                suffix = _make_params_suffix(fdist.fit_properties)
+                basename = f"pyjibe_fit_results_leaf-{suffix}.tsv"
+            else:
+                basename = "pyjibe_fit_results_leaf.tsv"
+            fname = os.path.join(adir, basename)
 
             # Only export if we have curves to export
             if exp_curv:
