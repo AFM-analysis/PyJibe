@@ -115,10 +115,14 @@ class TabFit(QtWidgets.QWidget):
                 if (atab.item(row, 0).checkState() ==
                         QtCore.Qt.CheckState.Checked):
                     # update initial parameters
+                    # (block signals to prevent recursive on_params_init
+                    # while applying ancillary values to itab)
+                    itab.blockSignals(True)
                     for rr in range(itab.rowCount()):
                         if itab.verticalHeaderItem(rr).text() == label:
                             if value_text != "nan":
                                 itab.item(rr, 1).setText(value_text)
+                    itab.blockSignals(False)
                 row += 1
             atab.blockSignals(False)
         else:
@@ -345,14 +349,21 @@ class TabFit(QtWidgets.QWidget):
         # set the model
         # - resets params_initial if model changed
         # - important for computing ancillary parameters
+        prev_model_key = fdist.fit_properties.get("model_key")
         fdist.fit_properties["model_key"] = model_key
-        if fdist.fit_properties.get("params_initial", False):
-            # (cannot coerce this into one line, because "params_initial"
-            # can be None.)
+        if prev_model_key != model_key:
+            # Clear the ancillary cache so anc_update_parameters gets fresh
+            # ancillaries for the new model (the cache may contain stale
+            # values from the previous model's fit)
+            fdist._anc_cache = None
+        if (fdist.fit_properties.get("params_initial", False)
+                and prev_model_key == model_key):
             # set the parameters of the previous fit
             params = fdist.fit_properties["params_initial"]
         else:
-            # use the initial model parameters
+            # use the initial model parameters (also when model changed, to
+            # ensure itab is set up with the new model's parameter labels so
+            # that anc_update_parameters can correctly apply ancillary values)
             params = self.fit_parameters()
 
         # parameter table
