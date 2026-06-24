@@ -265,12 +265,16 @@ def test_set_indentation_depth_manually_infdoublespinbox(qtbot):
 
 
 def test_fit_all_matches_single_fit(qtbot):
-    """on_fit_all must produce the same fitted params as fitting one-by-one."""
+    """on_fit_all must produce the same TSV output as fitting one-by-one."""
+    files = make_directory_with_data(2)
+    tsv_path = files[0].parent / "pyjibe_fit_results_leaf.tsv"
+
     main_window = pyjibe.head.PyJibe()
     qtbot.addWidget(main_window)
-    main_window.load_data(files=make_directory_with_data(2))
+    main_window.load_data(files=files)
     war = main_window.subwindows[0].widget()
-    war.cb_autosave.setChecked(0)
+    war.cb_autosave.setChecked(True)
+    war._autosave_override = 1  # always overwrite, avoid dialog
     war.tab_preprocess.set_preprocessing(["compute_tip_position"])
     war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
@@ -279,32 +283,33 @@ def test_fit_all_matches_single_fit(qtbot):
     cl2 = war.list_curves.itemBelow(cl1)
     war.list_curves.setCurrentItem(cl1)
     war.list_curves.setCurrentItem(cl2)
-    fdist0 = war.data_set[0]
-    assert fdist0.fit_properties.get("success", False), (
-        "single fit must succeed")
-    single_E = fdist0.fit_properties["params_fitted"]["E"].value
+    assert tsv_path.exists(), "autosave TSV not created after single-fit"
+    single_tsv = tsv_path.read_text()
 
-    # Now re-fit everything via fit-all
+    # Re-fit everything via fit-all; TSV must be byte-for-byte identical
     war.on_fit_all()
-    fitall_E = fdist0.fit_properties["params_fitted"]["E"].value
+    fitall_tsv = tsv_path.read_text()
 
-    assert single_E == pytest.approx(fitall_E, rel=1e-6), (
-        f"fit-all gave E={fitall_E:.4g} but single-fit gave E={single_E:.4g}")
+    assert single_tsv == fitall_tsv
     main_window.close()
 
 
 def test_fit_all_matches_single_fit_kvm(qtbot):
-    """fit-all must match single-fit for the KVM model (issue #47).
+    """fit-all must produce the same TSV as single-fit for the KVM model.
 
     KVM has ancillary parameters (eta, time_ind) that are derived by fitting
     a preliminary Hertz model to each curve. The KVM model is loaded via
     PyJibe's extension system at startup.
     """
+    files = make_directory_with_data(2)
+    tsv_path = files[0].parent / "pyjibe_fit_results_leaf.tsv"
+
     main_window = pyjibe.head.PyJibe()
     qtbot.addWidget(main_window)
-    main_window.load_data(files=make_directory_with_data(2))
+    main_window.load_data(files=files)
     war = main_window.subwindows[0].widget()
-    war.cb_autosave.setChecked(0)
+    war.cb_autosave.setChecked(True)
+    war._autosave_override = 1  # always overwrite, avoid dialog
     war.tab_preprocess.set_preprocessing(["compute_tip_position"])
     war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
 
@@ -319,15 +324,12 @@ def test_fit_all_matches_single_fit_kvm(qtbot):
     cl2 = war.list_curves.itemBelow(cl1)
     war.list_curves.setCurrentItem(cl1)
     war.list_curves.setCurrentItem(cl2)
-    fdist0 = war.data_set[0]
-    assert fdist0.fit_properties.get("success", False), "single KVM fit failed"
-    single_Eu = fdist0.fit_properties["params_fitted"]["Eu"].value
+    assert tsv_path.exists(), "autosave TSV not created after single-fit"
+    single_tsv = tsv_path.read_text()
 
-    # Re-fit everything via fit-all
+    # Re-fit everything via fit-all; TSV must be byte-for-byte identical
     war.on_fit_all()
-    fitall_Eu = fdist0.fit_properties["params_fitted"]["Eu"].value
+    fitall_tsv = tsv_path.read_text()
 
-    assert single_Eu == pytest.approx(fitall_Eu, rel=1e-6), (
-        f"fit-all gave Eu={fitall_Eu:.4g} but single-fit "
-        f"gave Eu={single_Eu:.4g}")
+    assert single_tsv == fitall_tsv
     main_window.close()
