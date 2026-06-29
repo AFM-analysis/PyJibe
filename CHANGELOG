@@ -1,5 +1,5 @@
 0.16.4
- - enh: show R^2 annotation and toggle fit line visibility (#48, #52)
+ - enh: show chi^2 annotation and toggle fit line visibility (#48, #52)
  - setup: support latest python versions (#32, #46)
  - setup: support latest matplotlib versions (#32, #46)
  - fix: remember user's choice upon curve open (#44, #45)

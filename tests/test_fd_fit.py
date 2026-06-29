@@ -291,8 +291,8 @@ def test_show_fit_line_toggle(qtbot):
     main_window.close()
 
 
-def test_r2_annotation_shown_after_fit(qtbot):
-    """R² annotation is visible and well-formed after a successful fit."""
+def test_chi_sqr_annotation_shown_after_fit(qtbot):
+    """Chi^2 annotation should be visible after a successful fit."""
     main_window = pyjibe.head.PyJibe()
     qtbot.addWidget(main_window)
     main_window.load_data(files=make_directory_with_data(2))
@@ -303,9 +303,9 @@ def test_r2_annotation_shown_after_fit(qtbot):
     war.on_tab_changed()
 
     mpl = war.widget_plot_fd.mpl_curve
-    assert mpl.ann_r2.get_visible()
-    text = mpl.ann_r2.get_text()
-    assert text.startswith("R²")
-    r2_value = float(text.split("=")[1].strip())
-    assert 0.0 <= r2_value <= 1.0
+    assert mpl.ann_chi2.get_visible()
+    text = mpl.ann_chi2.get_text()
+    assert text.startswith(r"$\chi^2$")
+    chi2_value = float(text.split("=")[1].strip())
+    assert 0.0 <= chi2_value <= 1.0
     main_window.close()

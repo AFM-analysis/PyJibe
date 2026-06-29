@@ -50,7 +50,7 @@ class MPLIndentation(object):
                                                      range(2),
                                                      label="residuals")[0]
 
-        self.ann_r2 = self.axis_main.text(
+        self.ann_chi2 = self.axis_main.text(
             0.98, 0.95, "", transform=self.axis_main.transAxes,
             ha="right", va="top", fontsize=9,
             bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
@@ -109,14 +109,9 @@ class MPLIndentation(object):
             self.plots["residuals"].set_data(fdist["tip position"]*xscale,
                                              (fdist["fit residuals"])*yscale)
 
-            fit_mask = fdist["fit range"]
-            y_true = fdist["force"][fit_mask]
-            y_pred = fdist["fit"][fit_mask]
-            ss_res = np.sum((y_true - y_pred) ** 2)
-            ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
-            r2 = 1 - ss_res / ss_tot if ss_tot != 0 else np.nan
-            self.ann_r2.set_text(f"R² = {r2:.4f}")
-            self.ann_r2.set_visible(True)
+            chi_sqr = fdist.fit_properties["chi_sqr"]
+            self.ann_chi2.set_text(rf"$\chi^2$ = {chi_sqr:.2e}")
+            self.ann_chi2.set_visible(True)
             # fit range
             fitrange = (fdist[xaxis]*xscale)[fdist["fit range"]]
             fitmin = np.min(fitrange)
@@ -146,8 +141,8 @@ class MPLIndentation(object):
             self.plots["residuals"].set_visible(False)
             self.plots["fit"].set_visible(False)
             self.plots["fit range"].set_visible(False)
-            self.ann_r2.set_text("")
-            self.ann_r2.set_visible(False)
+            self.ann_chi2.set_text("")
+            self.ann_chi2.set_visible(False)
             self.canvas.draw()
 
     def update_plot(self, rescale_x=None, rescale_y=None):
