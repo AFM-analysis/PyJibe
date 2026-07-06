@@ -111,3 +111,6 @@ pyjibe/_version.py
 
 # uv
 uv.lock
+
+# ai
+CLAUDE.md
