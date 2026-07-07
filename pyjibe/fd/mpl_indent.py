@@ -50,6 +50,11 @@ class MPLIndentation(object):
                                                      range(2),
                                                      label="residuals")[0]
 
+        self.ann_chi2 = self.axis_main.text(
+            0.98, 0.95, "", transform=self.axis_main.transAxes,
+            ha="right", va="top", fontsize=9,
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
+
         self.canvas = FigureCanvas(self.figure)
 
         self.canvas.draw()
@@ -67,7 +72,7 @@ class MPLIndentation(object):
     def save_data_callback(self, filename):
         self.fdist.export(filename)
 
-    def update(self, fdist, rescale_x=None, rescale_y=None):
+    def update(self, fdist, rescale_x=None, rescale_y=None, show_fit=True):
         self.fdist = fdist
         xaxis = "tip position"
         yaxis = "force"
@@ -96,13 +101,17 @@ class MPLIndentation(object):
 
         if "fit" in fdist and np.sum(fdist["fit range"]):
             self.plots["residuals"].set_visible(True)
-            self.plots["fit"].set_visible(True)
+            self.plots["fit"].set_visible(show_fit)
             self.plots["fit range"].set_visible(True)
 
             self.plots["fit"].set_data(fdist["tip position"]*xscale,
                                        fdist["fit"]*yscale)
             self.plots["residuals"].set_data(fdist["tip position"]*xscale,
                                              (fdist["fit residuals"])*yscale)
+
+            chi_sqr = fdist.fit_properties["chi_sqr"]
+            self.ann_chi2.set_text(rf"$\chi^2$ = {chi_sqr:.2e}")
+            self.ann_chi2.set_visible(True)
             # fit range
             fitrange = (fdist[xaxis]*xscale)[fdist["fit range"]]
             fitmin = np.min(fitrange)
@@ -132,6 +141,8 @@ class MPLIndentation(object):
             self.plots["residuals"].set_visible(False)
             self.plots["fit"].set_visible(False)
             self.plots["fit range"].set_visible(False)
+            self.ann_chi2.set_text("")
+            self.ann_chi2.set_visible(False)
             self.canvas.draw()
 
     def update_plot(self, rescale_x=None, rescale_y=None):

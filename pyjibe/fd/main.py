@@ -83,6 +83,7 @@ class UiForceDistance(QtWidgets.QWidget):
             self.on_cb_rating_scheme)
         self.btn_rater.clicked.connect(self.on_user_rate)
         # plotting parameters
+        self.cb_show_fit_line.stateChanged.connect(self.on_mpl_curve_update)
         self.cb_mpl_rescale_plot_x.stateChanged.connect(
             self.on_mpl_curve_update)
         self.cb_mpl_rescale_plot_x_min.valueChanged.connect(

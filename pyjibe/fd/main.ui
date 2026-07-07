@@ -139,6 +139,16 @@
            <widget class="QWidget" name="plot_prefs" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_8">
              <item>
+              <widget class="QCheckBox" name="cb_show_fit_line">
+               <property name="text">
+                <string>Show fit line</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QCheckBox" name="cb_mpl_rescale_plot_x">
                <property name="text">
                 <string>Autoscale X-axis to fitting range</string>
