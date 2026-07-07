@@ -523,6 +523,10 @@ class UiForceDistance(QtWidgets.QWidget):
                 try:
                     # updating curve list may not be possible
                     self.curve_list_update(item=ii)
+                    # curve_list_update computes the rating; autosave
+                    # again so the exported TSV reflects it (mirrors
+                    # on_curve_list, which does the same)
+                    self.autosave(fdist)
                 except BaseException as e:
                     logger.error(traceback.format_exc())
                     errored.append([fdist.path, e.__class__.__name__, e.args])

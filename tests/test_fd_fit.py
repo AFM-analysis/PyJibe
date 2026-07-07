@@ -294,6 +294,36 @@ def test_fit_all_matches_single_fit(qtbot):
     main_window.close()
 
 
+def test_fit_all_rates_last_curve_before_final_autosave(qtbot):
+    """on_fit_all must not leave the last curve's rating as nan"""
+    files = make_directory_with_data(2)
+    tsv_path = files[0].parent / "pyjibe_fit_results_leaf.tsv"
+
+    main_window = pyjibe.head.PyJibe()
+    qtbot.addWidget(main_window)
+    main_window.load_data(files=files)
+    war = main_window.subwindows[0].widget()
+    war.cb_autosave.setChecked(True)
+    war._autosave_override = 1
+    war.tab_preprocess.set_preprocessing(["compute_tip_position"])
+    war.tab_fit.cb_weight_cp.setCheckState(QtCore.Qt.CheckState.Unchecked)
+
+    # call fit-all directly on freshly-loaded curves - no prior
+    # single-click pass
+    war.on_fit_all()
+
+    rows = tsv_path.read_text().splitlines()
+    header = rows[0].split("\t")
+    regressor_col = header.index("Regressor")
+    rating_col = header.index("Rating")
+    assert len(rows) == 3  # header + 2 curves
+    for row in rows[1:]:
+        cells = row.split("\t")
+        assert cells[regressor_col] != "nan"
+        assert cells[rating_col] != "nan"
+    main_window.close()
+
+
 def test_swap_model_does_not_raise_and_updates_labels(qtbot):
     """Model swap must not crash and itab must show new model params.
 
